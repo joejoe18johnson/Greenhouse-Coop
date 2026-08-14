@@ -93,6 +93,17 @@ export async function hydrateStore() {
       );
     }
     getStoredCart();
+    const storedShipping = getItem<ShippingSettings>(STORAGE_KEYS.shipping, shipping);
+    if (storedShipping?.boxes?.length) {
+      const seedBoxes = new Map(shipping.boxes.map((b) => [b.id, b]));
+      setItem(STORAGE_KEYS.shipping, {
+        ...storedShipping,
+        boxes: storedShipping.boxes.map((box) => {
+          const seed = seedBoxes.get(box.id);
+          return seed ? { ...box, name: seed.name } : box;
+        }),
+      });
+    }
     setItem(STORAGE_KEYS.bank, bank);
     await ensureDemoData({ seedAdmin, products });
     return;

@@ -259,7 +259,7 @@ export default function CheckoutPage() {
             <div className="mt-5 rounded-2xl border border-citrus/40 bg-citrus/10 p-4 text-sm">
               <p className="font-semibold text-forest">How payment works</p>
               <ol className="mt-3 list-decimal space-y-2 pl-5 text-ink/75">
-                <li>Place this order first. You will receive a 6-character reference such as <strong>A7B2K9</strong>.</li>
+                <li>Place this order first. You will receive a 6-character reference such as <strong className="keep-case">A7B2K9</strong>.</li>
                 <li>Make the bank transfer and put that reference in the payment notes.</li>
                 <li>Then send your transfer screenshot on WhatsApp with the same reference. A WhatsApp button appears on your order page after checkout.</li>
               </ol>

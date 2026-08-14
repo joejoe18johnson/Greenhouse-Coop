@@ -40,10 +40,10 @@ export default function AdminOrderDetailPage() {
       </Button>
       <div className="mt-4 flex flex-wrap items-start justify-between gap-4 print:hidden">
         <div>
-          <h1 className="font-display text-4xl font-semibold text-forest-dark">{order.reference}</h1>
+          <h1 className="font-display text-4xl font-semibold text-forest-dark keep-case">{order.reference}</h1>
           <p className="mt-1 flex flex-wrap items-center gap-2 text-ink/50">
             <StatusBadge status={order.status} />
-            {order.invoiceNumber} · {new Date(order.createdAt).toLocaleString()}
+            <span className="keep-case">{order.invoiceNumber}</span> · {new Date(order.createdAt).toLocaleString()}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -97,10 +97,10 @@ export default function AdminOrderDetailPage() {
           <p className="mt-3 text-base font-medium text-forest-dark">
             {order.shipping.firstName} {order.shipping.lastName}
           </p>
-          <p className="mt-2 flex items-center gap-2 text-ink/70">
+          <p className="mt-2 flex items-center gap-2 text-ink/70 keep-case">
             <Mail className="h-4 w-4 text-leaf" /> {order.shipping.email}
           </p>
-          <p className="mt-1 flex items-center gap-2 text-ink/70">
+          <p className="mt-1 flex items-center gap-2 text-ink/70 keep-case">
             <Phone className="h-4 w-4 text-leaf" /> {order.shipping.phone}
           </p>
           {customer && (
@@ -110,7 +110,7 @@ export default function AdminOrderDetailPage() {
           )}
           {customer?.addresses?.length ? (
             <div className="mt-4 space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink/40">Saved addresses</p>
+              <p className="text-xs font-semibold text-ink/40">Saved addresses</p>
               {customer.addresses.map((a) => (
                 <p key={a.id} className="text-ink/65">
                   {a.label}: {a.fullAddress}, {a.town}, {a.district}
@@ -146,8 +146,8 @@ export default function AdminOrderDetailPage() {
         <div className="rounded-[24px] bg-white p-6">
           <h2 className="font-semibold text-forest">Payment</h2>
           <p className="mt-3 text-sm text-ink/70">
-            Bank transfer · proof on WhatsApp with reference {order.reference}
-            {customer?.phone ? ` · ${customer.phone}` : ""}.
+            Bank transfer · proof on WhatsApp with reference <span className="keep-case">{order.reference}</span>
+            {customer?.phone ? <> · <span className="keep-case">{customer.phone}</span></> : ""}.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button onClick={() => { updateOrderStatus(order.id, "Paid", "Payment confirmed. Invoice issued."); refresh(); }}>

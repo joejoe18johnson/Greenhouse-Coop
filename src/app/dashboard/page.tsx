@@ -38,7 +38,7 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-5xl px-6 py-12">
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-leaf">Account</p>
+          <p className="text-xs text-leaf">Account</p>
           <h1 className="mt-2 font-display text-4xl text-forest-dark">Hello, {user.firstName}</h1>
         </div>
         <Button variant="outline" onClick={() => { logout(); router.push("/"); }}>
@@ -75,11 +75,11 @@ export default function DashboardPage() {
                 <Link key={order.id} href={`/dashboard/orders/${order.id}`} className="block rounded-[24px] bg-white/80 p-5">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="inline-flex items-center gap-2 font-semibold text-forest">
+                      <p className="inline-flex items-center gap-2 font-semibold text-forest keep-case">
                         <Package className="h-4 w-4" />
                         {order.reference}
                       </p>
-                      <p className="text-sm text-ink/50">{new Date(order.createdAt).toLocaleString()} · {order.invoiceNumber}</p>
+                      <p className="text-sm text-ink/50">{new Date(order.createdAt).toLocaleString()} · <span className="keep-case">{order.invoiceNumber}</span></p>
                     </div>
                     <div className="text-right">
                       <StatusBadge status={order.status} />
@@ -95,8 +95,8 @@ export default function DashboardPage() {
         <TabsContent value="profile">
           <div className="rounded-[24px] bg-white/80 p-6 text-sm">
             <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
-            <p className="mt-2"><strong>Email:</strong> {user.email}</p>
-            <p className="mt-2"><strong>Phone:</strong> {user.phone}</p>
+            <p className="mt-2"><strong>Email:</strong> <span className="keep-case">{user.email}</span></p>
+            <p className="mt-2"><strong>Phone:</strong> <span className="keep-case">{user.phone}</span></p>
           </div>
         </TabsContent>
 

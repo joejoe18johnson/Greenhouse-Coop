@@ -100,7 +100,7 @@ export default function AdminProductsPage() {
 
       <div className="mt-8 overflow-x-auto rounded-[24px] bg-white">
         <table className="w-full text-left text-sm">
-          <thead className="text-xs uppercase text-ink/45">
+          <thead className="text-xs text-ink/45">
             <tr>
               <th className="p-4">Name</th>
               <th className="p-4">Category</th>

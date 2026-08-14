@@ -34,9 +34,25 @@
 
   body {
     @apply bg-cream text-ink antialiased;
+    text-transform: capitalize;
     background-image:
       radial-gradient(1200px 600px at 10% -10%, rgba(64, 145, 108, 0.08), transparent 50%),
       radial-gradient(900px 500px at 100% 0%, rgba(255, 140, 66, 0.08), transparent 45%);
+  }
+
+  input,
+  textarea,
+  select,
+  option,
+  .font-mono,
+  .keep-case,
+  code {
+    text-transform: none;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    text-transform: capitalize;
   }
 
   ::selection {

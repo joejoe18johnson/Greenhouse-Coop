@@ -17,7 +17,7 @@ export function FilterPills({
   return (
     <div>
       {label && (
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/40">
+        <p className="mb-3 text-[11px] font-semibold text-ink/40">
           {label}
         </p>
       )}

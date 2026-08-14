@@ -46,7 +46,7 @@ export default function AdminHomePage() {
         {stats.map((s) => (
           <Link key={s.label} href={s.href} className="rounded-[24px] bg-white p-5 shadow-card transition hover:-translate-y-0.5">
             <s.icon className="h-5 w-5 text-leaf" />
-            <p className="mt-3 text-xs uppercase tracking-[0.14em] text-ink/45">{s.label}</p>
+            <p className="mt-3 text-xs text-ink/45">{s.label}</p>
             <p className="mt-2 text-2xl font-semibold text-forest">{s.value}</p>
           </Link>
         ))}
@@ -77,9 +77,9 @@ export default function AdminHomePage() {
             {pendingPay.slice(0, 6).map((o) => (
               <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center justify-between rounded-xl p-3 hover:bg-cream">
                 <span>
-                  <span className="font-medium text-forest">{o.reference}</span>
+                  <span className="font-medium text-forest keep-case">{o.reference}</span>
                   <span className="mt-0.5 block text-xs text-ink/50">
-                    {o.shipping.firstName} {o.shipping.lastName} · {o.shipping.phone}
+                    {o.shipping.firstName} {o.shipping.lastName} · <span className="keep-case">{o.shipping.phone}</span>
                   </span>
                 </span>
                 <span className="text-right">
@@ -103,7 +103,7 @@ export default function AdminHomePage() {
             {[...toFulfill, ...sent.filter((o) => o.status === "Shipped")].slice(0, 6).map((o) => (
               <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center justify-between rounded-xl p-3 hover:bg-cream">
                 <span>
-                  <span className="font-medium text-forest">{o.reference}</span>
+                  <span className="font-medium text-forest keep-case">{o.reference}</span>
                   <span className="mt-0.5 block text-xs text-ink/50">
                     {o.shipping.firstName} {o.shipping.lastName} · {o.shipping.town}
                   </span>
@@ -125,7 +125,7 @@ export default function AdminHomePage() {
         </div>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="text-xs uppercase tracking-[0.12em] text-ink/45">
+            <thead className="text-xs text-ink/45">
               <tr>
                 <th className="pb-2 pr-3">Reference</th>
                 <th className="pb-2 pr-3">Customer</th>
@@ -138,7 +138,7 @@ export default function AdminHomePage() {
               {orders.slice(0, 8).map((o) => (
                 <tr key={o.id} className="border-t border-forest/5">
                   <td className="py-3 pr-3">
-                    <Link className="font-medium text-forest" href={`/admin/orders/${o.id}`}>{o.reference}</Link>
+                    <Link className="font-medium text-forest keep-case" href={`/admin/orders/${o.id}`}>{o.reference}</Link>
                   </td>
                   <td className="py-3 pr-3">{o.shipping.firstName} {o.shipping.lastName}</td>
                   <td className="py-3 pr-3 capitalize">{o.shipping.method}</td>

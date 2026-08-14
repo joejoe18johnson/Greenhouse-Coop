@@ -41,22 +41,22 @@ export function OrderInvoice({
             <p className="text-2xl font-semibold tracking-tight text-forest-dark">{BRAND.name}</p>
             <p className="text-sm text-ink/55">{BRAND.tagline}</p>
             <p className="mt-1 text-xs text-ink/45">
-              {BRAND.location} · {BRAND.phone}
+              {BRAND.location} · <span className="keep-case">{BRAND.phone}</span>
             </p>
           </div>
         </div>
         <div className="text-right">
           <p className="text-3xl font-semibold text-forest-dark">Invoice</p>
-          <p className="mt-1 text-sm text-ink/50">{order.invoiceNumber}</p>
+          <p className="mt-1 text-sm text-ink/50 keep-case">{order.invoiceNumber}</p>
           {confirmed && (
-            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-leaf">Issued</p>
+            <p className="mt-1 text-xs font-semibold text-leaf">Issued</p>
           )}
         </div>
       </div>
 
       <div className="grid gap-6 px-8 py-6 md:grid-cols-2">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink/40">To</p>
+          <p className="text-[11px] font-semibold text-ink/40">To</p>
           <p className="mt-1 font-semibold text-forest-dark">
             {order.shipping.firstName} {order.shipping.lastName}
           </p>
@@ -68,17 +68,17 @@ export function OrderInvoice({
           <p className="text-sm text-ink/65">
             {order.shipping.town}, {order.shipping.district}
           </p>
-          <p className="text-sm text-ink/65">{order.shipping.phone}</p>
-          <p className="text-sm text-ink/65">{order.shipping.email}</p>
+          <p className="text-sm text-ink/65 keep-case">{order.shipping.phone}</p>
+          <p className="text-sm text-ink/65 keep-case">{order.shipping.email}</p>
           {customer?.addresses[0] && (
-            <p className="mt-1 text-xs text-ink/45">Account: {customer.email}</p>
+            <p className="mt-1 text-xs text-ink/45">Account: <span className="keep-case">{customer.email}</span></p>
           )}
         </div>
         <div className="text-sm md:text-right">
           <p><span className="text-ink/45">Date</span> · {new Date(issued).toLocaleDateString()}</p>
-          <p className="mt-1"><span className="text-ink/45">Invoice #</span> · {order.invoiceNumber}</p>
-          <p className="mt-1"><span className="text-ink/45">Reference</span> · {order.reference}</p>
-          <p className="mt-1"><span className="text-ink/45">Customer ID</span> · {order.userId.replace("user_", "").slice(0, 8).toUpperCase()}</p>
+          <p className="mt-1"><span className="text-ink/45">Invoice #</span> · <span className="keep-case">{order.invoiceNumber}</span></p>
+          <p className="mt-1"><span className="text-ink/45">Reference</span> · <span className="keep-case">{order.reference}</span></p>
+          <p className="mt-1"><span className="text-ink/45">Customer ID</span> · <span className="keep-case">{order.userId.replace("user_", "").slice(0, 8).toUpperCase()}</span></p>
         </div>
       </div>
 
@@ -162,7 +162,7 @@ export function OrderInvoice({
       </div>
 
       <div className="border-t border-forest/10 px-8 py-6">
-        <p className="text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/40">
+        <p className="text-center text-[11px] font-semibold text-ink/40">
           Banking and payment information
         </p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -176,7 +176,7 @@ export function OrderInvoice({
           ))}
         </div>
         <p className="mt-4 text-center text-xs text-ink/50">
-          Include reference <strong className="text-forest">{order.reference}</strong> in your transfer notes.
+          Include reference <strong className="keep-case text-forest">{order.reference}</strong> in your transfer notes.
         </p>
         <p className="mt-4 text-center text-sm italic text-ink/45">Thank you for your business.</p>
         <p className="mt-1 text-center text-[11px] text-ink/35">{fulfillmentLabel(order.shipping)}</p>

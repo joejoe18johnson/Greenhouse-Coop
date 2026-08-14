@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
-import { ProductCard } from "@/components/product/product-card";
+import { ProductCarousel } from "@/components/product/product-carousel";
 import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
 import { categoryIcon } from "@/lib/icons";
@@ -25,7 +25,7 @@ export default function ProductPage() {
   const [view, setView] = useState<"fruit" | "plant">("fruit");
 
   const related = useMemo(
-    () => products.filter((p) => p.category === product?.category && p.id !== product?.id).slice(0, 4),
+    () => products.filter((p) => p.category === product?.category && p.id !== product?.id),
     [products, product]
   );
   const CategoryIcon = product ? categoryIcon(product.category) : Sprout;
@@ -69,7 +69,7 @@ export default function ProductPage() {
         </div>
 
         <div>
-          <p className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-leaf">
+          <p className="inline-flex items-center gap-1.5 text-xs text-leaf">
             <CategoryIcon className="h-3.5 w-3.5" />
             {product.category}
           </p>
@@ -99,7 +99,7 @@ export default function ProductPage() {
           )}
           <p className="mt-6 leading-relaxed text-ink/70">{product.description}</p>
           <div className="mt-6 rounded-[24px] bg-forest-deep p-6 text-cream">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-lime-bright">Flavor Profile</p>
+            <p className="text-sm font-semibold text-lime-bright">Flavor Profile</p>
             <p className="mt-3 leading-relaxed text-cream/85">{product.flavorProfile}</p>
           </div>
           <div className="mt-6 flex items-center gap-3">
@@ -127,11 +127,7 @@ export default function ProductPage() {
       {related.length > 0 && (
         <section className="mt-24">
           <h2 className="font-display text-3xl text-forest-dark">More in {product.category}</h2>
-          <div className="mt-8 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {related.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
+          <ProductCarousel className="mt-8" products={related} />
         </section>
       )}
     </div>

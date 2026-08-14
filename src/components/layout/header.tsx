@@ -36,7 +36,7 @@ export function Header() {
           />
           <span className="hidden sm:block">
             <span className="block font-semibold leading-none text-forest">GreenHouse</span>
-            <span className="text-[11px] uppercase tracking-[0.18em] text-ink/50">co-operative</span>
+            <span className="text-[11px] text-ink/50">Co-Operative</span>
           </span>
         </Link>
 
@@ -83,7 +83,7 @@ export function Header() {
         <SheetContent>
           <Link href="/" className="mb-8 flex items-center gap-2" onClick={() => setOpen(false)}>
             <Image src="/logos/logo-icon.png" alt="" width={40} height={40} />
-            <span className="font-semibold text-forest">GreenHouse co-operative</span>
+            <span className="font-semibold text-forest">GreenHouse Co-Operative</span>
           </Link>
           <NavSearch className="mb-6" onNavigate={() => setOpen(false)} />
           <div className="flex flex-col gap-4">

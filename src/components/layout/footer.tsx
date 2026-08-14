@@ -28,7 +28,7 @@ export function Footer() {
           </p>
         </div>
         <div>
-          <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.16em]">Explore</h4>
+          <h4 className="mb-4 text-sm font-semibold">Explore</h4>
           <div className="flex flex-col gap-2 text-sm text-cream/75">
             {NAV_LINKS.filter((l) => l.href !== "/").map((link) => (
               <Link key={link.href} href={link.href} className="inline-flex items-center gap-2 hover:text-cream">
@@ -39,24 +39,24 @@ export function Footer() {
           </div>
         </div>
         <div>
-          <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.16em]">Visit</h4>
+          <h4 className="mb-4 text-sm font-semibold">Visit</h4>
           <div className="space-y-3 text-sm leading-relaxed text-cream/75">
             <p className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-lime-bright" />
               {BRAND.location}
             </p>
-            <p className="flex items-center gap-2">
+            <p className="flex items-center gap-2 keep-case">
               <Phone className="h-4 w-4 shrink-0 text-lime-bright" />
               {BRAND.phone}
             </p>
-            <p className="flex items-center gap-2">
+            <p className="flex items-center gap-2 keep-case">
               <Mail className="h-4 w-4 shrink-0 text-lime-bright" />
               {BRAND.email}
             </p>
           </div>
         </div>
         <div>
-          <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.16em]">Catalog</h4>
+          <h4 className="mb-4 text-sm font-semibold">Catalog</h4>
           <p className="mb-4 text-sm text-cream/75">
             Download the current variety guide and product catalog.
           </p>

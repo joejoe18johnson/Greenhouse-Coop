@@ -59,7 +59,7 @@ export function FruitPlantSwap({
           />
         </motion.div>
       </AnimatePresence>
-      <div className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest backdrop-blur">
+      <div className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white/70 px-3 py-1 text-[10px] font-semibold text-forest backdrop-blur">
         {showPlant ? "Tree size" : "Fruit"}
       </div>
     </div>

@@ -3,7 +3,7 @@ import { Clock, Leaf, Percent } from "lucide-react";
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs uppercase tracking-[0.22em] text-leaf">About</p>
+      <p className="text-xs text-leaf">About</p>
       <h1 className="mt-2 font-display text-5xl text-forest-dark">Greenhouse Co-Op</h1>
       <p className="mt-6 text-lg leading-relaxed text-ink/70">
         Greenhouse Co-Op is a Belize nursery growing grafted, air-layered, and seedling fruit trees for home gardens and small orchards. We select varieties that perform in Belize heat, humidity, and rainfall — from Belmopan yards to coastal plots.

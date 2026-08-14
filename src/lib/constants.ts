@@ -10,13 +10,13 @@ export const BRAND = {
 
 export const PICKUP_LOCATION = "Belmopan Bus Terminal";
 export const PICKUP_NOTE =
-  "Collect your trees at the Belmopan Bus Terminal — a central pickup point. No delivery or courier fee. We will confirm when the order is ready.";
+  "Collect Your Trees At The Belmopan Bus Terminal — A Central Pickup Point. No Delivery Or Courier Fee. We Will Confirm When The Order Is Ready.";
 
 export const INVENTORY_NOTICE =
-  "Plant availability is subject to seasonal supply and nursery stock levels. If an item becomes unavailable after your order is placed, Greenhouse Co-Op will contact you with alternative options or issue a full refund for the unavailable item.";
+  "Plant Availability Is Subject To Seasonal Supply And Nursery Stock Levels. If An Item Becomes Unavailable After Your Order Is Placed, Greenhouse Co-Op Will Contact You With Alternative Options Or Issue A Full Refund For The Unavailable Item.";
 
 export const PAYMENT_NOTICE =
-  "First place your order to receive a 6-character reference number. Include that number in your bank transfer notes, then send your payment screenshot to us on WhatsApp with the same reference. Failure to include your reference number may delay order processing.";
+  "First Place Your Order To Receive A 6-Character Reference Number. Include That Number In Your Bank Transfer Notes, Then Send Your Payment Screenshot To Us On WhatsApp With The Same Reference. Failure To Include Your Reference Number May Delay Order Processing.";
 
 export const CART_HOLD_HOURS = 72;
 export const CART_HOLD_MS = CART_HOLD_HOURS * 60 * 60 * 1000;

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | Greenhouse Co-Op",
   },
   description:
-    "Grafted, air-layered, and seedling fruit trees grown for Belize gardens. Shop avocados, mangoes, citrus, and tropical specialties.",
+    "Grafted, Air-Layered, And Seedling Fruit Trees Grown For Belize Gardens. Shop Avocados, Mangoes, Citrus, And Tropical Specialties.",
   icons: { icon: "/favicon.png" },
 };
 

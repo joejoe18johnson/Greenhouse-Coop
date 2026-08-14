@@ -37,7 +37,7 @@ export default function AdminOrdersPage() {
       </div>
       <div className="mt-6 overflow-x-auto rounded-[24px] bg-white">
         <table className="w-full text-left text-sm">
-          <thead className="text-xs uppercase tracking-[0.12em] text-ink/45">
+          <thead className="text-xs text-ink/45">
             <tr>
               <th className="p-4">Reference</th>
               <th className="p-4">Customer</th>
@@ -52,20 +52,20 @@ export default function AdminOrdersPage() {
             {filtered.map((o) => (
               <tr key={o.id} className="border-t border-forest/5">
                 <td className="p-4">
-                  <Link className="font-medium text-forest" href={`/admin/orders/${o.id}`}>{o.reference}</Link>
+                  <Link className="font-medium text-forest keep-case" href={`/admin/orders/${o.id}`}>{o.reference}</Link>
                   <p className="text-xs text-ink/40">{new Date(o.createdAt).toLocaleDateString()}</p>
                 </td>
                 <td className="p-4">
                   {o.shipping.firstName} {o.shipping.lastName}
                   <p className="text-xs text-ink/45">{o.shipping.town}</p>
                 </td>
-                <td className="p-4">
+                <td className="p-4 keep-case">
                   {o.shipping.phone}
                   <p className="text-xs text-ink/45">{o.shipping.email}</p>
                 </td>
                 <td className="p-4 capitalize">{o.shipping.method}</td>
                 <td className="p-4"><StatusBadge status={o.status as OrderStatus} /></td>
-                <td className="p-4">{o.invoiceNumber}</td>
+                <td className="p-4 keep-case">{o.invoiceNumber}</td>
                 <td className="p-4 text-right">{formatBZD(o.total)}</td>
               </tr>
             ))}

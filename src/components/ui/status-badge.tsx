@@ -15,7 +15,7 @@ export function StatusBadge({ status }: { status: OrderStatus | string }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]",
+        "inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold",
         STYLES[status as OrderStatus] ?? "bg-forest/10 text-forest"
       )}
     >

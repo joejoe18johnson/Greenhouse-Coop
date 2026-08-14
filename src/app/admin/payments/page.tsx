@@ -17,9 +17,10 @@ export default function AdminPaymentsPage() {
         {orders.map((o) => (
           <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center justify-between rounded-[24px] bg-white p-5">
             <div>
-              <p className="font-semibold text-forest">{o.reference}</p>
+              <p className="font-semibold text-forest keep-case">{o.reference}</p>
               <p className="text-sm text-ink/50">
-                {o.shipping.firstName} {o.shipping.lastName} · {o.shipping.phone} · {o.shipping.email}
+                {o.shipping.firstName} {o.shipping.lastName} ·{" "}
+                <span className="keep-case">{o.shipping.phone} · {o.shipping.email}</span>
               </p>
             </div>
             <div className="text-right">

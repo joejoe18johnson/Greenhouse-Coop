@@ -10,7 +10,7 @@ import { FAQ_ICONS } from "@/lib/icons";
 export default function FaqPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs uppercase tracking-[0.22em] text-leaf">Help</p>
+      <p className="text-xs text-leaf">Help</p>
       <h1 className="mt-2 font-display text-5xl text-forest-dark">Frequently asked questions</h1>
       <p className="mt-4 text-ink/65">
         Quick answers about ordering, delivery, and nursery stock. If you still need help, chat with us on WhatsApp.

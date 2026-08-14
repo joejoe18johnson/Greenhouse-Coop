@@ -50,14 +50,14 @@ export function OrderReceipt({
             className="mx-auto"
           />
           <p className="mt-2 font-display text-xl leading-none">Greenhouse Co-Op</p>
-          <p className="mt-2 text-[10px] uppercase tracking-[0.22em] text-lime-bright">
+          <p className="mt-2 text-[10px] text-lime-bright">
             Belmopan, Belize
           </p>
         </div>
 
         <div className="px-6 pb-5 pt-5">
           <p className="text-center font-display text-2xl text-forest">{title}</p>
-          <p className="mt-1 text-center text-[11px] uppercase tracking-[0.18em] text-ink/40">
+          <p className="mt-1 text-center text-[11px] text-ink/40">
             {new Date().toLocaleDateString("en-BZ", {
               day: "numeric",
               month: "short",
@@ -93,7 +93,7 @@ export function OrderReceipt({
           </div>
 
           {note && (
-            <p className="mt-3 text-center text-[11px] font-medium uppercase tracking-[0.12em] text-leaf">
+            <p className="mt-3 text-center text-[11px] font-medium text-leaf">
               {note}
             </p>
           )}

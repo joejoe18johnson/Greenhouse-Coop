@@ -28,7 +28,7 @@ export function WhatsAppWidget() {
             className="w-[min(92vw,360px)] overflow-hidden rounded-[28px] border border-white/60 bg-cream shadow-float"
           >
             <div className="bg-forest px-5 py-4 text-cream">
-              <p className="text-xs uppercase tracking-[0.18em] text-lime-bright">Support</p>
+              <p className="text-xs text-lime-bright">Support</p>
               <h3 className="mt-1 font-display text-2xl">How can we help?</h3>
               <p className="mt-1 text-sm text-cream/75">Quick answers, or chat with us on WhatsApp.</p>
             </div>

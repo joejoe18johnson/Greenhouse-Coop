@@ -8,7 +8,7 @@
   "boxes": [
     {
       "id": "box-1",
-      "name": "1 SQ.FT BOX",
+      "name": "1 Sq.Ft Box",
       "price": 12,
       "minPlants": 1,
       "maxPlants": 3,
@@ -16,7 +16,7 @@
     },
     {
       "id": "box-2",
-      "name": "2 SQ.FT BOX",
+      "name": "2 Sq.Ft Box",
       "price": 16,
       "minPlants": 4,
       "maxPlants": 6,
@@ -24,7 +24,7 @@
     },
     {
       "id": "box-3",
-      "name": "3 SQ.FT BOX",
+      "name": "3 Sq.Ft Box",
       "price": 20,
       "minPlants": 7,
       "maxPlants": 10,
@@ -32,7 +32,7 @@
     },
     {
       "id": "box-4",
-      "name": "4 SQ.FT BOX",
+      "name": "4 Sq.Ft Box",
       "price": 24,
       "minPlants": 11,
       "maxPlants": 13,

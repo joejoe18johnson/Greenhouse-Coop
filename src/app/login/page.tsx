@@ -59,7 +59,7 @@ export default function LoginPage() {
           <LogIn className="h-4 w-4" />
           Sign in
         </Button>
-        <div className="space-y-1 text-center text-xs text-ink/45">
+        <div className="space-y-1 text-center text-xs text-ink/45 keep-case">
           <p>Admin: <button type="button" className="text-forest underline" onClick={() => { setEmail("admin@greenhousecoop.com"); setPassword("admin123"); }}>admin@greenhousecoop.com</button> / admin123</p>
           <p>Customer: <button type="button" className="text-forest underline" onClick={() => { setEmail("customer@greenhousecoop.com"); setPassword("customer123"); }}>customer@greenhousecoop.com</button> / customer123</p>
         </div>

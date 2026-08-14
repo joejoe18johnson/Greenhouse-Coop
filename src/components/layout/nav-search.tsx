@@ -102,7 +102,7 @@ export function NavSearch({
           <button
             type="button"
             onClick={() => goToShop()}
-            className="w-full border-t border-forest/10 px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-[0.14em] text-forest hover:bg-forest/5"
+            className="w-full border-t border-forest/10 px-4 py-2.5 text-left text-xs font-semibold text-forest hover:bg-forest/5"
           >
             View all results
           </button>

@@ -41,13 +41,13 @@ export default function OrderDetailPage() {
           Back
         </Link>
       </Button>
-      <p className="mt-4 text-xs uppercase tracking-[0.2em] text-leaf print:hidden">Order tracking</p>
+      <p className="mt-4 text-xs text-leaf print:hidden">Order tracking</p>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3 print:hidden">
         <div>
-          <h1 className="font-display text-4xl font-semibold text-forest-dark">{order.reference}</h1>
+          <h1 className="font-display text-4xl font-semibold text-forest-dark keep-case">{order.reference}</h1>
           <p className="mt-2 flex items-center gap-2 text-ink/55">
             <StatusBadge status={order.status} />
-            {order.invoiceNumber}
+            <span className="keep-case">{order.invoiceNumber}</span>
           </p>
         </div>
         {invoiceReady && (
@@ -61,7 +61,7 @@ export default function OrderDetailPage() {
       {awaitingPay && (
         <div className="mt-8 rounded-[28px] bg-citrus/10 p-5 text-sm print:hidden">
           <p className="font-semibold text-forest">Next step: send proof on WhatsApp</p>
-          <p className="mt-2">Your order is placed. Transfer the total, then send the screenshot here with reference <strong>{order.reference}</strong>.</p>
+          <p className="mt-2">Your order is placed. Transfer the total, then send the screenshot here with reference <strong className="keep-case">{order.reference}</strong>.</p>
           <p className="mt-2">{PAYMENT_NOTICE}</p>
           <a
             href={whatsappPaymentLink(order.reference, formatBZD(order.total))}
