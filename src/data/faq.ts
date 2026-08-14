@@ -1,3 +1,5 @@
+import { BRAND } from "@/lib/constants";
+
 export const FAQS = [
   {
     id: "payment",
@@ -9,7 +11,7 @@ export const FAQS = [
     id: "delivery",
     question: "Do you deliver outside Belmopan?",
     answer:
-      "You can collect at the nursery in Belmopan if you do not want delivery. Local delivery is $10 BZD to Belmopan, Roaring Creek, and Camalote — free over $100 BZD. All other locations ship with IDS or EZY Courier. Couriers usually work office-to-office: collect at the courier office in your area, not at your door. Box size is calculated automatically from how many plants you order.",
+      "You can collect centrally at the Belmopan Bus Terminal if you do not want delivery. Local delivery is $10 BZD to Belmopan, Roaring Creek, and Camalote — free over $100 BZD. All other locations ship with IDS or EZY Courier. Couriers usually work office-to-office: collect at the courier office in your area, not at your door. Box size is calculated automatically from how many plants you order.",
   },
   {
     id: "stock",
@@ -49,7 +51,8 @@ export function whatsappLink(message?: string) {
   const text =
     message ??
     "Hello Greenhouse Co-Op, I have a question about fruit trees.";
-  return `https://wa.me/5016150000?text=${encodeURIComponent(text)}`;
+  const number = BRAND.whatsapp.replace(/\D/g, "");
+  return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }
 
 export function whatsappPaymentLink(reference: string, total: string) {

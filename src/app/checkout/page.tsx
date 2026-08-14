@@ -3,20 +3,23 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Building2, CircleCheck, Landmark, Store, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Radio } from "@/components/ui/checkbox";
+import { IconBubble } from "@/components/ui/icon-bubble";
 import { OrderReceipt } from "@/components/checkout/order-receipt";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
 import { getBankDetails, getCouriers, getShippingSettings, createOrder } from "@/lib/store";
+import { bankAccounts } from "@/lib/bank";
 import { isLocalTown, quoteShipping } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
-import { PAYMENT_NOTICE } from "@/lib/constants";
+import { PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import locations from "@/data/locations.json";
 
 export default function CheckoutPage() {
@@ -110,7 +113,7 @@ export default function CheckoutPage() {
         district: wantsDelivery ? district : "Cayo",
         town: wantsDelivery ? town : "Belmopan",
         village: wantsDelivery ? village : "",
-        fullAddress: wantsDelivery ? fullAddress : "Nursery collection, Belmopan",
+        fullAddress: wantsDelivery ? fullAddress : PICKUP_LOCATION,
         method,
         courierId: method === "courier" ? courier?.id : undefined,
         courierName: method === "courier" ? courier?.name : undefined,
@@ -131,7 +134,10 @@ export default function CheckoutPage() {
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="space-y-8">
           <section className="rounded-[28px] bg-white/80 p-6">
-            <h2 className="font-display text-2xl text-forest">Delivery</h2>
+            <h2 className="flex items-center gap-2 font-display text-2xl text-forest">
+              <Truck className="h-6 w-6" />
+              Delivery
+            </h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <Radio
                 name="fulfillment"
@@ -139,9 +145,12 @@ export default function CheckoutPage() {
                 onChange={() => setWantsDelivery(true)}
                 className={`rounded-2xl border p-4 ${wantsDelivery ? "border-forest bg-forest/5" : "border-forest/10"}`}
                 label={
-                  <span>
-                    <span className="block font-semibold text-forest">I want delivery</span>
-                    <span className="text-sm text-ink/60">Local drop-off or courier to your area</span>
+                  <span className="flex items-start gap-3">
+                    <IconBubble icon={Truck} size="sm" />
+                    <span>
+                      <span className="block font-semibold text-forest">I want delivery</span>
+                      <span className="text-sm text-ink/60">Local drop-off or courier to your area</span>
+                    </span>
                   </span>
                 }
               />
@@ -151,17 +160,21 @@ export default function CheckoutPage() {
                 onChange={() => setWantsDelivery(false)}
                 className={`rounded-2xl border p-4 ${!wantsDelivery ? "border-forest bg-forest/5" : "border-forest/10"}`}
                 label={
-                  <span>
-                    <span className="block font-semibold text-forest">No delivery — I’ll collect</span>
-                    <span className="text-sm text-ink/60">Pick up at the nursery in Belmopan</span>
+                  <span className="flex items-start gap-3">
+                    <IconBubble icon={Store} size="sm" />
+                    <span>
+                      <span className="block font-semibold text-forest">No delivery — I’ll collect</span>
+                      <span className="text-sm text-ink/60">Pick up at the Belmopan Bus Terminal</span>
+                    </span>
                   </span>
                 }
               />
             </div>
 
             {!wantsDelivery ? (
-              <p className="mt-4 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
-                Collect your trees at Greenhouse Co-Op in Belmopan. No delivery or courier fee. We will confirm when the order is ready.
+              <p className="mt-4 flex items-start gap-3 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
+                <Store className="mt-0.5 h-4 w-4 shrink-0" />
+                {PICKUP_NOTE}
               </p>
             ) : (
               <>
@@ -188,14 +201,18 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 {local ? (
-                  <p className="mt-4 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
+                  <p className="mt-4 flex items-start gap-3 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
+                    <Truck className="mt-0.5 h-4 w-4 shrink-0" />
                     Local delivery to {town}. Flat {formatBZD(shipping.localDelivery.fee)}
                     {subtotal >= shipping.localDelivery.freeThreshold ? " — waived because your order is over $100." : "."}
                   </p>
                 ) : (
                   <div className="mt-4">
-                    <p className="rounded-2xl border border-citrus/30 bg-citrus/10 p-4 text-sm text-ink/75">
-                      Couriers usually work <strong>office-to-office</strong>. Your trees go to the courier office in your area — not door-to-door. Collect them at that office location.
+                    <p className="flex items-start gap-3 rounded-2xl border border-citrus/30 bg-citrus/10 p-4 text-sm text-ink/75">
+                      <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
+                      <span>
+                        Couriers usually work <strong>office-to-office</strong>. Your trees go to the courier office in your area — not door-to-door. Collect them at that office location.
+                      </span>
                     </p>
                     <Label className="mt-4 block">Courier</Label>
                     <div className="mt-2 grid gap-3">
@@ -207,10 +224,13 @@ export default function CheckoutPage() {
                           onChange={() => setCourierId(c.id)}
                           className={`rounded-2xl border p-4 ${courierId === c.id ? "border-forest bg-forest/5" : "border-forest/10"}`}
                           label={
-                            <span>
-                              <span className="block font-semibold text-forest">{c.name}</span>
-                              <span className="text-sm text-ink/60">{c.notes}</span>
-                              <span className="mt-1 block text-sm">{formatBZD(c.rates.find(r => r.district === district)?.fee || 0)} to {district}</span>
+                            <span className="flex items-start gap-3">
+                              <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
+                              <span>
+                                <span className="block font-semibold text-forest">{c.name}</span>
+                                <span className="text-sm text-ink/60">{c.notes}</span>
+                                <span className="mt-1 block text-sm">{formatBZD(c.rates.find(r => r.district === district)?.fee || 0)} to {district}</span>
+                              </span>
                             </span>
                           }
                         />
@@ -223,12 +243,18 @@ export default function CheckoutPage() {
           </section>
 
           <section className="rounded-[28px] bg-white/80 p-6">
-            <h2 className="font-display text-2xl text-forest">Pay by bank transfer</h2>
-            <div className="mt-4 space-y-1 text-sm">
-              <p><strong>Bank:</strong> {bank.bankName}</p>
-              <p><strong>Account name:</strong> {bank.accountName}</p>
-              <p><strong>Account number:</strong> {bank.accountNumber}</p>
-              <p><strong>Branch:</strong> {bank.branch}</p>
+            <h2 className="flex items-center gap-2 font-display text-2xl text-forest">
+              <Landmark className="h-6 w-6" />
+              Pay by bank transfer
+            </h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
+              {bankAccounts(bank).map((account) => (
+                <div key={account.accountNumber} className="rounded-2xl bg-cream p-4">
+                  <p><strong>{account.bankName}</strong></p>
+                  <p className="mt-1">{account.accountName}</p>
+                  <p className="mt-1 font-mono text-sm">{account.accountNumber}</p>
+                </div>
+              ))}
             </div>
             <div className="mt-5 rounded-2xl border border-citrus/40 bg-citrus/10 p-4 text-sm">
               <p className="font-semibold text-forest">How payment works</p>
@@ -242,7 +268,10 @@ export default function CheckoutPage() {
           </section>
           <InventoryNotice />
           {error && <p className="text-sm text-red-600">{error}</p>}
-          <Button size="lg" onClick={placeOrder}>Place order</Button>
+          <Button size="lg" onClick={placeOrder}>
+            <CircleCheck className="h-4 w-4" />
+            Place order
+          </Button>
           <p className="text-sm text-ink/50">You will send payment proof on WhatsApp after this order is placed.</p>
         </div>
 

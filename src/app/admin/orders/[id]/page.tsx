@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { ArrowLeft, Mail, MapPin, Phone, Printer, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { ORDER_STATUSES } from "@/lib/constants";
-import { getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
+import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
 import { fulfillmentLabel } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
 import type { OrderStatus } from "@/types";
@@ -16,6 +19,7 @@ export default function AdminOrderDetailPage() {
   const [, setTick] = useState(0);
   const order = getOrders().find((o) => o.id === id);
   const customer = order ? getUsers().find((u) => u.id === order.userId) : null;
+  const bank = getBankDetails();
   const [reason, setReason] = useState("");
 
   if (!order) return <p>Order not found.</p>;
@@ -24,13 +28,55 @@ export default function AdminOrderDetailPage() {
     setTick((n) => n + 1);
   }
 
+  const invoiceReady = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
+
   return (
     <div>
-      <Button variant="ghost" asChild><Link href="/admin/orders">← Orders</Link></Button>
-      <h1 className="mt-4 font-display text-4xl text-forest-dark">{order.reference}</h1>
-      <p className="text-ink/50">{order.status} · {customer?.firstName} {customer?.lastName} · {customer?.email}</p>
+      <Button variant="ghost" className="print:hidden" asChild>
+        <Link href="/admin/orders">
+          <ArrowLeft className="h-4 w-4" />
+          Orders
+        </Link>
+      </Button>
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-4 print:hidden">
+        <div>
+          <h1 className="font-display text-4xl font-semibold text-forest-dark">{order.reference}</h1>
+          <p className="mt-1 flex flex-wrap items-center gap-2 text-ink/50">
+            <StatusBadge status={order.status} />
+            {order.invoiceNumber} · {new Date(order.createdAt).toLocaleString()}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {order.status === "Payment Pending" || order.status === "Payment Review" ? (
+            <Button onClick={() => { updateOrderStatus(order.id, "Paid", "Payment confirmed. Invoice issued."); refresh(); }}>
+              Confirm payment
+            </Button>
+          ) : null}
+          {order.status === "Paid" && (
+            <Button onClick={() => { updateOrderStatus(order.id, "Processing", "Order confirmed for fulfillment."); refresh(); }}>
+              Fulfill order
+            </Button>
+          )}
+          {order.status === "Processing" && (
+            <Button onClick={() => { updateOrderStatus(order.id, "Shipped", "Order sent."); refresh(); }}>
+              Mark as sent
+            </Button>
+          )}
+          {order.status === "Shipped" && (
+            <Button onClick={() => { updateOrderStatus(order.id, "Completed", "Order completed."); refresh(); }}>
+              Complete
+            </Button>
+          )}
+          {invoiceReady && (
+            <Button variant="outline" onClick={() => window.print()}>
+              <Printer className="h-4 w-4" />
+              Print invoice
+            </Button>
+          )}
+        </div>
+      </div>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-6 flex flex-wrap gap-2 print:hidden">
         {ORDER_STATUSES.map((status) => (
           <Button
             key={status}
@@ -43,30 +89,46 @@ export default function AdminOrderDetailPage() {
         ))}
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-[24px] bg-white p-6">
-          <h2 className="font-semibold text-forest">Payment proof</h2>
-          <p className="mt-3 text-sm text-ink/70">
-            Customers send transfer screenshots on WhatsApp with their reference number. Check WhatsApp for {order.reference}
-            {customer?.phone ? ` · ${customer.phone}` : ""}.
-          </p>
-          <div className="mt-4 flex gap-2">
-            <Button onClick={() => { updateOrderStatus(order.id, "Paid", "Payment approved"); refresh(); }}>Approve payment</Button>
-            <Button variant="outline" onClick={() => {
-              updateOrder({ ...order, status: "Payment Pending", payment: { ...order.payment, rejectionReason: reason } });
-              updateOrderStatus(order.id, "Payment Pending", reason || "Payment rejected");
-              refresh();
-            }}>Reject</Button>
-          </div>
-          <Textarea className="mt-3" placeholder="Rejection reason" value={reason} onChange={(e) => setReason(e.target.value)} />
-        </div>
+      <div className="mt-8 grid gap-6 lg:grid-cols-2 print:hidden">
         <div className="rounded-[24px] bg-white p-6 text-sm">
-          <h2 className="font-semibold text-forest">Fulfillment</h2>
-          <p className="mt-3">{order.shipping.fullAddress}</p>
-          {order.shipping.method !== "pickup" && (
-            <p>{order.shipping.town}, {order.shipping.district}</p>
+          <h2 className="flex items-center gap-2 font-semibold text-forest">
+            <UserRound className="h-4 w-4" /> Customer
+          </h2>
+          <p className="mt-3 text-base font-medium text-forest-dark">
+            {order.shipping.firstName} {order.shipping.lastName}
+          </p>
+          <p className="mt-2 flex items-center gap-2 text-ink/70">
+            <Mail className="h-4 w-4 text-leaf" /> {order.shipping.email}
+          </p>
+          <p className="mt-1 flex items-center gap-2 text-ink/70">
+            <Phone className="h-4 w-4 text-leaf" /> {order.shipping.phone}
+          </p>
+          {customer && (
+            <p className="mt-3 text-xs text-ink/45">
+              Account created {new Date(customer.createdAt).toLocaleDateString()} · {customer.role}
+            </p>
           )}
-          <p className="mt-2">{fulfillmentLabel(order.shipping)}</p>
+          {customer?.addresses?.length ? (
+            <div className="mt-4 space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink/40">Saved addresses</p>
+              {customer.addresses.map((a) => (
+                <p key={a.id} className="text-ink/65">
+                  {a.label}: {a.fullAddress}, {a.town}, {a.district}
+                </p>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="rounded-[24px] bg-white p-6 text-sm">
+          <h2 className="flex items-center gap-2 font-semibold text-forest">
+            <MapPin className="h-4 w-4" /> Fulfillment
+          </h2>
+          <p className="mt-3 font-medium">{fulfillmentLabel(order.shipping)}</p>
+          <p className="mt-2">{order.shipping.fullAddress}</p>
+          {order.shipping.method !== "pickup" && (
+            <p>{order.shipping.village ? `${order.shipping.village}, ` : ""}{order.shipping.town}, {order.shipping.district}</p>
+          )}
           {order.shipping.method === "courier" && (
             <p className="mt-1 text-ink/60">Collect at the courier office in their area (office-to-office).</p>
           )}
@@ -80,7 +142,46 @@ export default function AdminOrderDetailPage() {
           </ul>
           <p className="mt-4 font-semibold">Total {formatBZD(order.total)}</p>
         </div>
+
+        <div className="rounded-[24px] bg-white p-6">
+          <h2 className="font-semibold text-forest">Payment</h2>
+          <p className="mt-3 text-sm text-ink/70">
+            Bank transfer · proof on WhatsApp with reference {order.reference}
+            {customer?.phone ? ` · ${customer.phone}` : ""}.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button onClick={() => { updateOrderStatus(order.id, "Paid", "Payment confirmed. Invoice issued."); refresh(); }}>
+              Confirm payment
+            </Button>
+            <Button variant="outline" onClick={() => {
+              updateOrder({ ...order, status: "Payment Pending", payment: { ...order.payment, rejectionReason: reason } });
+              updateOrderStatus(order.id, "Payment Pending", reason || "Payment rejected");
+              refresh();
+            }}>Reject</Button>
+          </div>
+          <Textarea className="mt-3" placeholder="Rejection reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+        </div>
+
+        <div className="rounded-[24px] bg-white p-6">
+          <h2 className="font-semibold text-forest">Timeline</h2>
+          <ol className="mt-3 space-y-2 text-sm">
+            {order.timeline.map((event, i) => (
+              <li key={i} className="rounded-xl bg-cream/80 p-3">
+                <p className="font-medium text-forest">{event.status}</p>
+                <p className="text-xs text-ink/45">{new Date(event.at).toLocaleString()}</p>
+                {event.note && <p className="text-ink/65">{event.note}</p>}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
+
+      {invoiceReady && (
+        <div className="mt-8">
+          <h2 className="mb-4 font-semibold text-forest print:hidden">Invoice</h2>
+          <OrderInvoice order={order} customer={customer} bank={bank} />
+        </div>
+      )}
     </div>
   );
 }

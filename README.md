@@ -11,10 +11,19 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Admin demo
+## Demo accounts
+
+Admin
 
 - Email: `admin@greenhousecoop.com`
 - Password: `admin123`
+
+Customer
+
+- Email: `customer@greenhousecoop.com`
+- Password: `customer123`
+
+Open `/admin` after signing in as admin. Demo orders cover payment pending through sent and completed. Confirming payment issues a branded invoice.
 
 ## Stack
 

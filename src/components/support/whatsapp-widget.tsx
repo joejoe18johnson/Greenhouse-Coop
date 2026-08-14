@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircle, X, ChevronRight } from "lucide-react";
+import { CircleHelp, MessageCircle, X, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
 import { CHAT_FAQS, whatsappLink } from "@/data/faq";
+import { FAQ_ICONS } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 export function WhatsAppWidget() {
@@ -16,7 +17,7 @@ export function WhatsAppWidget() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3 print:hidden">
       <AnimatePresence>
         {open && (
           <motion.div
@@ -35,6 +36,7 @@ export function WhatsAppWidget() {
             <div className="space-y-2 p-4">
               {CHAT_FAQS.map((faq) => {
                 const expanded = active === faq.id;
+                const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
                 return (
                   <div key={faq.id} className="overflow-hidden rounded-2xl bg-white">
                     <button
@@ -42,7 +44,10 @@ export function WhatsAppWidget() {
                       onClick={() => setActive(expanded ? null : faq.id)}
                       className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium text-forest"
                     >
-                      {faq.question}
+                      <span className="flex items-center gap-2">
+                        <Icon className="h-4 w-4 shrink-0 text-leaf" />
+                        {faq.question}
+                      </span>
                       <ChevronRight className={cn("h-4 w-4 shrink-0 transition", expanded && "rotate-90")} />
                     </button>
                     <AnimatePresence>

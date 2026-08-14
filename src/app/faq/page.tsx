@@ -1,8 +1,11 @@
 "use client";
 
+import { CircleHelp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
 import { FAQS, whatsappLink } from "@/data/faq";
+import { FAQ_ICONS } from "@/lib/icons";
 
 export default function FaqPage() {
   return (
@@ -14,12 +17,20 @@ export default function FaqPage() {
       </p>
 
       <Accordion type="single" collapsible className="mt-10 rounded-[28px] bg-white/80 px-6">
-        {FAQS.map((faq) => (
+        {FAQS.map((faq) => {
+          const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
+          return (
           <AccordionItem key={faq.id} value={faq.id}>
-            <AccordionTrigger className="text-base text-forest-dark">{faq.question}</AccordionTrigger>
+            <AccordionTrigger className="text-base text-forest-dark">
+              <span className="flex items-center gap-3 pr-3">
+                <Icon className="h-4 w-4 shrink-0 text-leaf" />
+                {faq.question}
+              </span>
+            </AccordionTrigger>
             <AccordionContent className="text-base">{faq.answer}</AccordionContent>
           </AccordionItem>
-        ))}
+          );
+        })}
       </Accordion>
 
       <div className="mt-10 rounded-[28px] bg-forest p-8 text-cream">
@@ -29,6 +40,7 @@ export default function FaqPage() {
         </p>
         <Button variant="citrus" className="mt-6" asChild>
           <a href={whatsappLink()} target="_blank" rel="noreferrer">
+            <WhatsAppIcon className="h-4 w-4" />
             Chat on WhatsApp
           </a>
         </Button>

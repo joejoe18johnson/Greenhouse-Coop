@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight, Clock, Minus, Package, Plus, ShoppingBag, Sprout, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useCart } from "@/hooks/use-cart";
@@ -17,18 +18,26 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="font-display text-5xl text-forest-dark">Cart</h1>
+      <h1 className="inline-flex items-center gap-3 font-display text-5xl text-forest-dark">
+        <ShoppingBag className="h-10 w-10 text-forest" />
+        Cart
+      </h1>
       {items.length > 0 && (
-        <p className="mt-3 text-sm text-ink/60">
+        <p className="mt-3 inline-flex items-start gap-2 text-sm text-ink/60">
+          <Clock className="mt-0.5 h-4 w-4 shrink-0 text-leaf" />
           Items in your cart are held for 72 hours
           {holdUntil ? ` (until ${holdUntil.toLocaleString()}).` : "."} After that the cart resets.
         </p>
       )}
       {items.length === 0 ? (
         <div className="mt-12 rounded-[28px] bg-white/70 p-12 text-center">
-          <p className="text-ink/60">Your cart is empty.</p>
+          <ShoppingBag className="mx-auto h-12 w-12 text-forest/30" />
+          <p className="mt-4 text-ink/60">Your cart is empty.</p>
           <Button className="mt-6" asChild>
-            <Link href="/shop">Shop trees</Link>
+            <Link href="/shop">
+              <Sprout className="h-4 w-4" />
+              Shop trees
+            </Link>
           </Button>
         </div>
       ) : (
@@ -47,12 +56,16 @@ export default function CartPage() {
                   <p className="text-sm font-medium">{formatBZD(product.price)}</p>
                 </div>
                 <div className="flex items-center rounded-full border border-forest/10">
-                  <button className="h-9 w-9" onClick={() => setQty(product.id, quantity - 1)}>−</button>
+                  <button className="grid h-9 w-9 place-items-center" onClick={() => setQty(product.id, quantity - 1)} aria-label="Decrease quantity">
+                    <Minus className="h-3.5 w-3.5" />
+                  </button>
                   <span className="w-6 text-center text-sm">{quantity}</span>
-                  <button className="h-9 w-9" onClick={() => setQty(product.id, quantity + 1)}>+</button>
+                  <button className="grid h-9 w-9 place-items-center" onClick={() => setQty(product.id, quantity + 1)} aria-label="Increase quantity">
+                    <Plus className="h-3.5 w-3.5" />
+                  </button>
                 </div>
-                <button className="text-sm text-ink/40 hover:text-red-600" onClick={() => remove(product.id)}>
-                  Remove
+                <button className="grid h-9 w-9 place-items-center text-ink/40 hover:text-red-600" onClick={() => remove(product.id)} aria-label="Remove">
+                  <Trash2 className="h-4 w-4" />
                 </button>
               </div>
             ))}
@@ -65,15 +78,21 @@ export default function CartPage() {
               <span>{formatBZD(subtotal)}</span>
             </div>
             <div className="mt-2 flex justify-between text-sm text-cream/70">
-              <span>Suggested box</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Package className="h-3.5 w-3.5" />
+                Suggested box
+              </span>
               <span>{box.label}</span>
             </div>
             <p className="mt-4 text-xs text-cream/60">
-              Collect at the nursery, or choose delivery at checkout. Local delivery {formatBZD(shipping.localDelivery.fee)} to Belmopan, Roaring Creek, and Camalote.
+              Collect at the Belmopan Bus Terminal, or choose delivery at checkout. Local delivery {formatBZD(shipping.localDelivery.fee)} to Belmopan, Roaring Creek, and Camalote.
               Free over {formatBZD(shipping.localDelivery.freeThreshold)}. Couriers are usually office-to-office.
             </p>
             <Button variant="citrus" className="mt-6 w-full" asChild>
-              <Link href="/checkout">Checkout</Link>
+              <Link href="/checkout">
+                Checkout
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </Button>
           </aside>
         </div>

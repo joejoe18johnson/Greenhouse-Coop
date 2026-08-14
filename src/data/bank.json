@@ -1,8 +1,22 @@
 {
   "bankName": "Belize Bank",
-  "accountName": "Greenhouse Co-Op",
-  "accountNumber": "123-456789-001",
+  "accountName": "Johannes Joe Johnson",
+  "accountNumber": "279411010160000",
   "branch": "Belmopan",
   "swift": "BBLZBZBZ",
-  "instructions": "Please include your Greenhouse Co-Op reference number in the payment notes. Orders are processed after payment proof is reviewed."
+  "instructions": "Include your Greenhouse Co-Op reference number in the payment notes. Orders are processed after payment is confirmed.",
+  "accounts": [
+    {
+      "bankName": "Belize Bank",
+      "accountName": "Johannes Joe Johnson",
+      "accountNumber": "279411010160000",
+      "branch": "Belmopan"
+    },
+    {
+      "bankName": "Atlantic Bank",
+      "accountName": "Johannes Joe Johnson",
+      "accountNumber": "2110071333",
+      "branch": "Belmopan"
+    }
+  ]
 }

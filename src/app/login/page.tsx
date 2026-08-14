@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Lock, LogIn, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { IconInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { safeNextPath } from "@/lib/utils";
@@ -47,15 +48,21 @@ export default function LoginPage() {
       <form onSubmit={onSubmit} className="mt-8 space-y-4 rounded-[28px] bg-white/80 p-6">
         <div>
           <Label>Email</Label>
-          <Input className="mt-1" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <IconInput className="mt-1" icon={Mail} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div>
           <Label>Password</Label>
-          <Input className="mt-1" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <IconInput className="mt-1" icon={Lock} type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button className="w-full" type="submit">Sign in</Button>
-        <p className="text-center text-xs text-ink/40">Admin demo: admin@greenhousecoop.com / admin123</p>
+        <Button className="w-full" type="submit">
+          <LogIn className="h-4 w-4" />
+          Sign in
+        </Button>
+        <div className="space-y-1 text-center text-xs text-ink/45">
+          <p>Admin: <button type="button" className="text-forest underline" onClick={() => { setEmail("admin@greenhousecoop.com"); setPassword("admin123"); }}>admin@greenhousecoop.com</button> / admin123</p>
+          <p>Customer: <button type="button" className="text-forest underline" onClick={() => { setEmail("customer@greenhousecoop.com"); setPassword("customer123"); }}>customer@greenhousecoop.com</button> / customer123</p>
+        </div>
       </form>
     </div>
   );

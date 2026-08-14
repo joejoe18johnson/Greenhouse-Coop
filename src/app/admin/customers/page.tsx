@@ -17,6 +17,9 @@ export default function AdminCustomersPage() {
             <div key={u.id} className="rounded-[24px] bg-white p-5">
               <p className="font-semibold text-forest">{u.firstName} {u.lastName}</p>
               <p className="text-sm text-ink/60">{u.email} · {u.phone}</p>
+              {u.addresses[0] && (
+                <p className="mt-1 text-sm text-ink/50">{u.addresses[0].fullAddress}, {u.addresses[0].town}, {u.addresses[0].district}</p>
+              )}
               <p className="mt-2 text-sm">{theirs.length} orders · {formatBZD(spent)}</p>
             </div>
           );

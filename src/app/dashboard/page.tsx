@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ClipboardList, LogOut, MapPin, Package, UserRound } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { useAuth } from "@/hooks/use-auth";
 import { getOrders, updateUser } from "@/lib/store";
 import { formatBZD, generateId } from "@/lib/utils";
@@ -39,31 +41,49 @@ export default function DashboardPage() {
           <p className="text-xs uppercase tracking-[0.2em] text-leaf">Account</p>
           <h1 className="mt-2 font-display text-4xl text-forest-dark">Hello, {user.firstName}</h1>
         </div>
-        <Button variant="outline" onClick={() => { logout(); router.push("/"); }}>Sign out</Button>
+        <Button variant="outline" onClick={() => { logout(); router.push("/"); }}>
+          <LogOut className="h-4 w-4" />
+          Sign out
+        </Button>
       </div>
 
       <Tabs defaultValue="orders" className="mt-10">
         <TabsList>
-          <TabsTrigger value="orders">Orders</TabsTrigger>
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="addresses">Addresses</TabsTrigger>
+          <TabsTrigger value="orders" className="gap-1.5">
+            <Package className="h-3.5 w-3.5" />
+            Orders
+          </TabsTrigger>
+          <TabsTrigger value="profile" className="gap-1.5">
+            <UserRound className="h-3.5 w-3.5" />
+            Profile
+          </TabsTrigger>
+          <TabsTrigger value="addresses" className="gap-1.5">
+            <MapPin className="h-3.5 w-3.5" />
+            Addresses
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="orders">
           {orders.length === 0 ? (
-            <p className="text-ink/60">No orders yet.</p>
+            <p className="inline-flex items-center gap-2 text-ink/60">
+              <ClipboardList className="h-4 w-4" />
+              No orders yet.
+            </p>
           ) : (
             <div className="space-y-3">
               {orders.map((order) => (
                 <Link key={order.id} href={`/dashboard/orders/${order.id}`} className="block rounded-[24px] bg-white/80 p-5">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-forest">{order.reference}</p>
+                      <p className="inline-flex items-center gap-2 font-semibold text-forest">
+                        <Package className="h-4 w-4" />
+                        {order.reference}
+                      </p>
                       <p className="text-sm text-ink/50">{new Date(order.createdAt).toLocaleString()} · {order.invoiceNumber}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium">{order.status}</p>
-                      <p className="text-sm">{formatBZD(order.total)}</p>
+                      <StatusBadge status={order.status} />
+                      <p className="mt-1 text-sm">{formatBZD(order.total)}</p>
                     </div>
                   </div>
                 </Link>
@@ -84,7 +104,10 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {user.addresses.map((a) => (
               <div key={a.id} className="rounded-[24px] bg-white/80 p-5">
-                <p className="font-semibold text-forest">{a.label}{a.isDefault ? " · Default" : ""}</p>
+                <p className="inline-flex items-center gap-2 font-semibold text-forest">
+                  <MapPin className="h-4 w-4" />
+                  {a.label}{a.isDefault ? " · Default" : ""}
+                </p>
                 <p className="text-sm text-ink/65">{a.fullAddress}, {a.village} {a.town}, {a.district}</p>
               </div>
             ))}

@@ -118,7 +118,7 @@ export function fulfillmentLabel(shipping: {
   method: "local" | "courier" | "pickup";
   courierName?: string;
 }) {
-  if (shipping.method === "pickup") return "Nursery collection in Belmopan";
+  if (shipping.method === "pickup") return "Collection at Belmopan Bus Terminal";
   if (shipping.method === "local") return "Local delivery";
   return shipping.courierName
     ? `${shipping.courierName} · office-to-office`

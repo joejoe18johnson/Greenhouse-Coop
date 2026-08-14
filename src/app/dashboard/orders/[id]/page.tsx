@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
+import { OrderInvoice } from "@/components/invoice/order-invoice";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { useAuth } from "@/hooks/use-auth";
 import { getBankDetails, getOrders } from "@/lib/store";
-import { fulfillmentLabel } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
 import { PAYMENT_NOTICE } from "@/lib/constants";
 import { whatsappPaymentLink } from "@/data/faq";
@@ -28,30 +30,53 @@ export default function OrderDetailPage() {
     return <div className="px-6 py-20 text-center">Order not found.</div>;
   }
 
+  const invoiceReady = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
+  const awaitingPay = order.status === "Payment Pending" || order.status === "Payment Review";
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <Button variant="ghost" asChild><Link href="/dashboard">← Back</Link></Button>
-      <p className="mt-4 text-xs uppercase tracking-[0.2em] text-leaf">Order tracking</p>
-      <h1 className="mt-2 font-display text-4xl text-forest-dark">{order.reference}</h1>
-      <p className="mt-2 text-ink/55">{order.invoiceNumber} · {order.status}</p>
-
-      <div className="mt-8 rounded-[28px] bg-citrus/10 p-5 text-sm">
-        <p className="font-semibold text-forest">Next step: send proof on WhatsApp</p>
-        <p className="mt-2">Your order is placed. Transfer the total, then send the screenshot here with reference <strong>{order.reference}</strong>.</p>
-        <p className="mt-2">{PAYMENT_NOTICE}</p>
-        <a
-          href={whatsappPaymentLink(order.reference, formatBZD(order.total))}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1ebe5d]"
-        >
-          <WhatsAppIcon className="h-5 w-5" />
-          Send proof on WhatsApp
-        </a>
-        <p className="mt-2 text-xs text-ink/50">Attach your transfer screenshot in the chat. Do not upload files on this site.</p>
+      <Button variant="ghost" className="print:hidden" asChild>
+        <Link href="/dashboard">
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Link>
+      </Button>
+      <p className="mt-4 text-xs uppercase tracking-[0.2em] text-leaf print:hidden">Order tracking</p>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-3 print:hidden">
+        <div>
+          <h1 className="font-display text-4xl font-semibold text-forest-dark">{order.reference}</h1>
+          <p className="mt-2 flex items-center gap-2 text-ink/55">
+            <StatusBadge status={order.status} />
+            {order.invoiceNumber}
+          </p>
+        </div>
+        {invoiceReady && (
+          <Button variant="outline" onClick={() => window.print()}>
+            <Printer className="h-4 w-4" />
+            Print invoice
+          </Button>
+        )}
       </div>
 
-      <ol className="mt-8 space-y-3">
+      {awaitingPay && (
+        <div className="mt-8 rounded-[28px] bg-citrus/10 p-5 text-sm print:hidden">
+          <p className="font-semibold text-forest">Next step: send proof on WhatsApp</p>
+          <p className="mt-2">Your order is placed. Transfer the total, then send the screenshot here with reference <strong>{order.reference}</strong>.</p>
+          <p className="mt-2">{PAYMENT_NOTICE}</p>
+          <a
+            href={whatsappPaymentLink(order.reference, formatBZD(order.total))}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1ebe5d]"
+          >
+            <WhatsAppIcon className="h-5 w-5" />
+            Send proof on WhatsApp
+          </a>
+          <p className="mt-2 text-xs text-ink/50">Attach your transfer screenshot in the chat. Do not upload files on this site.</p>
+        </div>
+      )}
+
+      <ol className="mt-8 space-y-3 print:hidden">
         {order.timeline.map((event, i) => (
           <li key={i} className="rounded-2xl bg-white/80 p-4">
             <p className="font-medium text-forest">{event.status}</p>
@@ -61,37 +86,16 @@ export default function OrderDetailPage() {
         ))}
       </ol>
 
-      <div className="mt-8 rounded-[28px] bg-white/80 p-6">
-        <h2 className="font-display text-2xl text-forest">Invoice {order.invoiceNumber}</h2>
-        <ul className="mt-4 space-y-2 text-sm">
-          {order.items.map((item) => (
-            <li key={item.productId} className="flex justify-between">
-              <span>{item.name} × {item.quantity}</span>
-              <span>{formatBZD(item.price * item.quantity)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-4 space-y-1 border-t border-forest/10 pt-4 text-sm">
-          <div className="flex justify-between"><span>Subtotal</span><span>{formatBZD(order.subtotal)}</span></div>
-          <div className="flex justify-between"><span>Delivery</span><span>{order.shipping.method === "pickup" ? "Collect" : formatBZD(order.deliveryFee)}</span></div>
-          {order.courierFee > 0 && <div className="flex justify-between"><span>Courier</span><span>{formatBZD(order.courierFee)}</span></div>}
-          {order.shipping.method !== "pickup" && (
-            <div className="flex justify-between"><span>Box {order.boxRecommendation.label}</span><span>{formatBZD(order.boxFee)}</span></div>
-          )}
-          <div className="flex justify-between font-semibold"><span>Total</span><span>{formatBZD(order.total)}</span></div>
-        </div>
-        <p className="mt-4 text-sm text-ink/60">
-          {order.shipping.method === "pickup"
-            ? fulfillmentLabel(order.shipping)
-            : `Ship to ${order.shipping.fullAddress}, ${order.shipping.town}, ${order.shipping.district} · ${fulfillmentLabel(order.shipping)}`}
-          {order.shipping.method === "courier"
-            ? ". Collect at the courier office in your area."
-            : ""}
-        </p>
-        <p className="mt-3 text-sm">Pay to {bank.accountName} · {bank.bankName} · {bank.accountNumber}</p>
-        <Button className="mt-6" variant="outline" onClick={() => window.print()}>Print invoice</Button>
+      <div className="mt-8">
+        {invoiceReady ? (
+          <OrderInvoice order={order} customer={user} bank={bank} />
+        ) : (
+          <p className="rounded-[24px] bg-white/80 p-6 text-sm text-ink/60 print:hidden">
+            An invoice is created automatically when Greenhouse Co-Op confirms your payment.
+          </p>
+        )}
       </div>
-      <InventoryNotice className="mt-6" />
+      <InventoryNotice className="mt-6 print:hidden" />
     </div>
   );
 }

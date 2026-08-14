@@ -133,6 +133,7 @@ export interface Order {
   id: string;
   reference: string;
   invoiceNumber: string;
+  invoiceIssuedAt?: string;
   userId: string;
   items: { productId: string; name: string; price: number; quantity: number }[];
   subtotal: number;
@@ -149,6 +150,13 @@ export interface Order {
   timeline: OrderEvent[];
 }
 
+export interface BankAccount {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  branch?: string;
+}
+
 export interface BankDetails {
   bankName: string;
   accountName: string;
@@ -156,6 +164,7 @@ export interface BankDetails {
   branch: string;
   swift: string;
   instructions: string;
+  accounts?: BankAccount[];
 }
 
 export interface Session {

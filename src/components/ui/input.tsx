@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
@@ -15,5 +16,18 @@ const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputEl
   )
 );
 Input.displayName = "Input";
+
+export function IconInput({
+  icon: Icon,
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & { icon: LucideIcon }) {
+  return (
+    <div className="relative">
+      <Icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-forest/45" />
+      <Input className={cn("pl-11", className)} {...props} />
+    </div>
+  );
+}
 
 export { Input };

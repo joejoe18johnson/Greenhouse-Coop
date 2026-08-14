@@ -62,3 +62,14 @@
     border-radius: 180px 180px 28px 28px;
   }
 }
+
+@media print {
+  body {
+    background: white !important;
+    background-image: none !important;
+  }
+
+  .print-hidden {
+    display: none !important;
+  }
+}

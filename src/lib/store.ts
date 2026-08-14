@@ -2,9 +2,15 @@ import productsSeed from "@/data/products.json";
 import shippingSeed from "@/data/shipping.json";
 import couriersSeed from "@/data/couriers.json";
 import bankSeed from "@/data/bank.json";
-import { ADMIN_EMAIL, ADMIN_PASSWORD, CART_HOLD_MS, STORAGE_KEYS } from "@/lib/constants";
+import {
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+  CART_HOLD_MS,
+  STORAGE_KEYS,
+} from "@/lib/constants";
 import { getItem, setItem } from "@/lib/storage";
 import { generateId, generateInvoiceNumber, generateReference, hashPassword } from "@/lib/utils";
+import { ensureDemoData } from "@/lib/demo";
 import type {
   BankDetails,
   CartItem,
@@ -30,7 +36,7 @@ async function seedAdmin(): Promise<User> {
     firstName: "Nursery",
     lastName: "Admin",
     email: ADMIN_EMAIL,
-    phone: "+501 615-0000",
+    phone: "+501 624-0588",
     passwordHash,
     addresses: [
       {
@@ -76,11 +82,19 @@ export async function hydrateStore() {
         stored.map((item) => {
           const seed = byId.get(item.id);
           if (!seed) return item;
-          return { ...item, fruitImage: seed.fruitImage, plantImage: seed.plantImage };
+          return {
+            ...item,
+            fruitImage: seed.fruitImage,
+            plantImage: seed.plantImage,
+            featured: seed.featured,
+            limitedSupply: seed.limitedSupply,
+          };
         })
       );
     }
     getStoredCart();
+    setItem(STORAGE_KEYS.bank, bank);
+    await ensureDemoData({ seedAdmin, products });
     return;
   }
 
@@ -92,6 +106,7 @@ export async function hydrateStore() {
   setItem(STORAGE_KEYS.orders, [] as Order[]);
   setItem(STORAGE_KEYS.cart, { items: [], updatedAt: new Date().toISOString() } as StoredCart);
   setItem(STORAGE_KEYS.hydrated, true);
+  await ensureDemoData({ seedAdmin, products });
 }
 
 export function getProducts(): Product[] {
@@ -240,6 +255,7 @@ export function createOrder(input: Omit<Order, "id" | "createdAt" | "updatedAt" 
 
 export function updateOrderStatus(id: string, status: OrderStatus, note?: string) {
   const orders = getOrders();
+  const issuedStatuses: OrderStatus[] = ["Paid", "Processing", "Shipped", "Completed"];
   const next = orders.map((order) => {
     if (order.id !== id) return order;
     const now = new Date().toISOString();
@@ -247,6 +263,13 @@ export function updateOrderStatus(id: string, status: OrderStatus, note?: string
       ...order,
       status,
       updatedAt: now,
+      invoiceIssuedAt: issuedStatuses.includes(status)
+        ? order.invoiceIssuedAt ?? now
+        : order.invoiceIssuedAt,
+      payment:
+        status === "Paid"
+          ? { ...order.payment, reviewedAt: now, reviewedBy: "admin" }
+          : order.payment,
       timeline: [...order.timeline, { status, at: now, note }],
     };
   });

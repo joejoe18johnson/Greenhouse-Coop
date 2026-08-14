@@ -2,13 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { LayoutGrid, Search } from "lucide-react";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { ProductCard } from "@/components/product/product-card";
 import { FilterPills } from "@/components/ui/filter-pills";
 import { Input } from "@/components/ui/input";
 import { useProducts } from "@/hooks/use-products";
 import { CATEGORIES } from "@/lib/constants";
+import { PROP_ICONS, categoryIcon } from "@/lib/icons";
 
 const PROP_TYPES = ["Grafted", "Air-Layered", "Seedling"] as const;
 
@@ -29,22 +30,24 @@ export default function ShopPage() {
       counts[p.category] = (counts[p.category] || 0) + 1;
     });
     return [
-      { value: "All", label: "All", count: products.length },
+      { value: "All", label: "All", count: products.length, icon: LayoutGrid },
       ...CATEGORIES.filter((c) => counts[c] > 0).map((c) => ({
         value: c,
         label: c,
         count: counts[c],
+        icon: categoryIcon(c),
       })),
     ];
   }, [products]);
 
   const propOptions = useMemo(() => {
     return [
-      { value: "All", label: "All types", count: products.length },
+      { value: "All", label: "All types", count: products.length, icon: LayoutGrid },
       ...PROP_TYPES.map((type) => ({
         value: type,
         label: type,
         count: products.filter((p) => p.propagationType === type).length,
+        icon: PROP_ICONS[type],
       })),
     ];
   }, [products]);
@@ -105,7 +108,10 @@ export default function ShopPage() {
         ))}
       </div>
       {filtered.length === 0 && (
-        <p className="mt-12 text-center text-ink/50">No trees match these filters.</p>
+        <div className="mt-12 text-center text-ink/50">
+          <Search className="mx-auto h-10 w-10 text-forest/30" />
+          <p className="mt-3">No trees match these filters.</p>
+        </div>
       )}
     </div>
   );

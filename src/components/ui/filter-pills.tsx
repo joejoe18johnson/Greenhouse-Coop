@@ -1,5 +1,6 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function FilterPills({
@@ -8,7 +9,7 @@ export function FilterPills({
   onChange,
   label,
 }: {
-  options: { value: string; label: string; count?: number }[];
+  options: { value: string; label: string; count?: number; icon?: LucideIcon }[];
   value: string;
   onChange: (value: string) => void;
   label?: string;
@@ -35,6 +36,7 @@ export function FilterPills({
                   : "border-forest/15 bg-white/80 text-forest hover:border-forest/40 hover:bg-forest/5"
               )}
             >
+              {option.icon && <option.icon className="h-3.5 w-3.5" />}
               {option.label}
               {typeof option.count === "number" && (
                 <span

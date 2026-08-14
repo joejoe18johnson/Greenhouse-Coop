@@ -1,3 +1,5 @@
+import { Clock, Leaf, Percent } from "lucide-react";
+
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
@@ -11,10 +13,19 @@ export default function AboutPage() {
       </p>
       <div className="mt-10 rounded-[28px] bg-forest-dark p-8 text-cream">
         <h2 className="font-display text-3xl">Nursery notes</h2>
-        <ul className="mt-4 space-y-2 text-cream/80">
-          <li>50% may be requested to process larger custom orders.</li>
-          <li>Seasonal crops can take 6–8 weeks if a tree is still finishing in the nursery.</li>
-          <li>Organic compost and coco peat are available — ask when you order.</li>
+        <ul className="mt-4 space-y-3 text-cream/80">
+          <li className="flex items-start gap-3">
+            <Percent className="mt-0.5 h-4 w-4 shrink-0 text-lime-bright" />
+            50% may be requested to process larger custom orders.
+          </li>
+          <li className="flex items-start gap-3">
+            <Clock className="mt-0.5 h-4 w-4 shrink-0 text-lime-bright" />
+            Seasonal crops can take 6–8 weeks if a tree is still finishing in the nursery.
+          </li>
+          <li className="flex items-start gap-3">
+            <Leaf className="mt-0.5 h-4 w-4 shrink-0 text-lime-bright" />
+            Organic compost and coco peat are available — ask when you order.
+          </li>
         </ul>
       </div>
     </div>
