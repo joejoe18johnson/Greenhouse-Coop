@@ -1,0 +1,272 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
+import { Radio } from "@/components/ui/checkbox";
+import { OrderReceipt } from "@/components/checkout/order-receipt";
+import { InventoryNotice } from "@/components/product/inventory-notice";
+import { useAuth } from "@/hooks/use-auth";
+import { useCart } from "@/hooks/use-cart";
+import { getBankDetails, getCouriers, getShippingSettings, createOrder } from "@/lib/store";
+import { isLocalTown, quoteShipping } from "@/lib/shipping";
+import { formatBZD } from "@/lib/utils";
+import { PAYMENT_NOTICE } from "@/lib/constants";
+import locations from "@/data/locations.json";
+
+export default function CheckoutPage() {
+  const { user, ready } = useAuth();
+  const { items, subtotal, clear } = useCart();
+  const router = useRouter();
+  const shipping = getShippingSettings();
+  const couriers = getCouriers().filter((c) => c.active);
+  const bank = getBankDetails();
+
+  const [wantsDelivery, setWantsDelivery] = useState(true);
+  const [district, setDistrict] = useState(user?.addresses[0]?.district || "Cayo");
+  const [town, setTown] = useState(user?.addresses[0]?.town || "Belmopan");
+  const [village, setVillage] = useState(user?.addresses[0]?.village || "");
+  const [fullAddress, setFullAddress] = useState(user?.addresses[0]?.fullAddress || "");
+  const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
+  const [error, setError] = useState("");
+  const [placed, setPlaced] = useState<string>();
+
+  const towns = locations.districts.find((d) => d.name === district)?.towns || [];
+  const local = isLocalTown(town, shipping.localDelivery);
+  const method = !wantsDelivery ? "pickup" : local ? "local" : "courier";
+  const courier = couriers.find((c) => c.id === courierId);
+  const plantCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const quote = useMemo(
+    () =>
+      quoteShipping({
+        plantCount,
+        subtotal,
+        town,
+        district,
+        method,
+        courier,
+        shipping,
+      }),
+    [plantCount, subtotal, town, district, method, courier, shipping]
+  );
+  const total = subtotal + quote.deliveryFee + quote.courierFee + quote.boxFee;
+
+  if (!ready) return null;
+
+  if (!user) {
+    return (
+      <div className="mx-auto max-w-lg px-6 py-24 text-center">
+        <h1 className="font-display text-4xl text-forest-dark">Create an account to checkout</h1>
+        <p className="mt-4 text-ink/65">Orders require an account so we can track payment, delivery, and invoices.</p>
+        <div className="mt-8 flex justify-center gap-3">
+          <Button asChild><Link href="/register?next=/cart">Create account</Link></Button>
+          <Button variant="outline" asChild><Link href="/login?next=/cart">Sign in</Link></Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (items.length === 0 && !placed) {
+    return (
+      <div className="mx-auto max-w-lg px-6 py-24 text-center">
+        <h1 className="font-display text-4xl">Your cart is empty</h1>
+        <Button className="mt-6" asChild><Link href="/shop">Shop trees</Link></Button>
+      </div>
+    );
+  }
+
+  function placeOrder() {
+    setError("");
+    if (wantsDelivery && !fullAddress.trim()) {
+      setError("Please enter your full delivery address.");
+      return;
+    }
+
+    const order = createOrder({
+      userId: user!.id,
+      items: items.map((i) => ({
+        productId: i.product.id,
+        name: i.product.name,
+        price: i.product.price,
+        quantity: i.quantity,
+      })),
+      subtotal,
+      deliveryFee: quote.deliveryFee,
+      boxFee: quote.boxFee,
+      courierFee: quote.courierFee,
+      total,
+      boxRecommendation: quote.box,
+      status: "Payment Pending",
+      shipping: {
+        firstName: user!.firstName,
+        lastName: user!.lastName,
+        email: user!.email,
+        phone: user!.phone,
+        district: wantsDelivery ? district : "Cayo",
+        town: wantsDelivery ? town : "Belmopan",
+        village: wantsDelivery ? village : "",
+        fullAddress: wantsDelivery ? fullAddress : "Nursery collection, Belmopan",
+        method,
+        courierId: method === "courier" ? courier?.id : undefined,
+        courierName: method === "courier" ? courier?.name : undefined,
+      },
+      payment: {
+        method: "bank-transfer",
+        proofChannel: "whatsapp",
+      },
+    });
+    clear();
+    setPlaced(order.reference);
+    router.push(`/dashboard/orders/${order.id}`);
+  }
+
+  return (
+    <div className="mx-auto max-w-6xl px-6 py-12">
+      <h1 className="font-display text-5xl text-forest-dark">Checkout</h1>
+      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
+        <div className="space-y-8">
+          <section className="rounded-[28px] bg-white/80 p-6">
+            <h2 className="font-display text-2xl text-forest">Delivery</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <Radio
+                name="fulfillment"
+                checked={wantsDelivery}
+                onChange={() => setWantsDelivery(true)}
+                className={`rounded-2xl border p-4 ${wantsDelivery ? "border-forest bg-forest/5" : "border-forest/10"}`}
+                label={
+                  <span>
+                    <span className="block font-semibold text-forest">I want delivery</span>
+                    <span className="text-sm text-ink/60">Local drop-off or courier to your area</span>
+                  </span>
+                }
+              />
+              <Radio
+                name="fulfillment"
+                checked={!wantsDelivery}
+                onChange={() => setWantsDelivery(false)}
+                className={`rounded-2xl border p-4 ${!wantsDelivery ? "border-forest bg-forest/5" : "border-forest/10"}`}
+                label={
+                  <span>
+                    <span className="block font-semibold text-forest">No delivery — I’ll collect</span>
+                    <span className="text-sm text-ink/60">Pick up at the nursery in Belmopan</span>
+                  </span>
+                }
+              />
+            </div>
+
+            {!wantsDelivery ? (
+              <p className="mt-4 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
+                Collect your trees at Greenhouse Co-Op in Belmopan. No delivery or courier fee. We will confirm when the order is ready.
+              </p>
+            ) : (
+              <>
+                <div className="mt-6 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <Label>District</Label>
+                    <Select className="mt-1" value={district} onChange={(e) => { setDistrict(e.target.value); setTown(locations.districts.find(d => d.name === e.target.value)?.towns[0] || ""); }}>
+                      {locations.districts.map((d) => <option key={d.name}>{d.name}</option>)}
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Town</Label>
+                    <Select className="mt-1" value={town} onChange={(e) => setTown(e.target.value)}>
+                      {towns.map((t) => <option key={t}>{t}</option>)}
+                    </Select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Village</Label>
+                    <Input className="mt-1" value={village} onChange={(e) => setVillage(e.target.value)} placeholder="Optional" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>Full address</Label>
+                    <Textarea className="mt-1" value={fullAddress} onChange={(e) => setFullAddress(e.target.value)} placeholder="Street, lot, landmarks" />
+                  </div>
+                </div>
+                {local ? (
+                  <p className="mt-4 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
+                    Local delivery to {town}. Flat {formatBZD(shipping.localDelivery.fee)}
+                    {subtotal >= shipping.localDelivery.freeThreshold ? " — waived because your order is over $100." : "."}
+                  </p>
+                ) : (
+                  <div className="mt-4">
+                    <p className="rounded-2xl border border-citrus/30 bg-citrus/10 p-4 text-sm text-ink/75">
+                      Couriers usually work <strong>office-to-office</strong>. Your trees go to the courier office in your area — not door-to-door. Collect them at that office location.
+                    </p>
+                    <Label className="mt-4 block">Courier</Label>
+                    <div className="mt-2 grid gap-3">
+                      {couriers.map((c) => (
+                        <Radio
+                          key={c.id}
+                          name="courier"
+                          checked={courierId === c.id}
+                          onChange={() => setCourierId(c.id)}
+                          className={`rounded-2xl border p-4 ${courierId === c.id ? "border-forest bg-forest/5" : "border-forest/10"}`}
+                          label={
+                            <span>
+                              <span className="block font-semibold text-forest">{c.name}</span>
+                              <span className="text-sm text-ink/60">{c.notes}</span>
+                              <span className="mt-1 block text-sm">{formatBZD(c.rates.find(r => r.district === district)?.fee || 0)} to {district}</span>
+                            </span>
+                          }
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+
+          <section className="rounded-[28px] bg-white/80 p-6">
+            <h2 className="font-display text-2xl text-forest">Pay by bank transfer</h2>
+            <div className="mt-4 space-y-1 text-sm">
+              <p><strong>Bank:</strong> {bank.bankName}</p>
+              <p><strong>Account name:</strong> {bank.accountName}</p>
+              <p><strong>Account number:</strong> {bank.accountNumber}</p>
+              <p><strong>Branch:</strong> {bank.branch}</p>
+            </div>
+            <div className="mt-5 rounded-2xl border border-citrus/40 bg-citrus/10 p-4 text-sm">
+              <p className="font-semibold text-forest">How payment works</p>
+              <ol className="mt-3 list-decimal space-y-2 pl-5 text-ink/75">
+                <li>Place this order first. You will receive a 6-character reference such as <strong>A7B2K9</strong>.</li>
+                <li>Make the bank transfer and put that reference in the payment notes.</li>
+                <li>Then send your transfer screenshot on WhatsApp with the same reference. A WhatsApp button appears on your order page after checkout.</li>
+              </ol>
+              <p className="mt-3">{PAYMENT_NOTICE}</p>
+            </div>
+          </section>
+          <InventoryNotice />
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <Button size="lg" onClick={placeOrder}>Place order</Button>
+          <p className="text-sm text-ink/50">You will send payment proof on WhatsApp after this order is placed.</p>
+        </div>
+
+        <OrderReceipt
+          items={items.map((i) => ({
+            id: i.product.id,
+            name: i.product.name,
+            quantity: i.quantity,
+            amount: formatBZD(i.product.price * i.quantity),
+          }))}
+          rows={[
+            { label: "Subtotal", value: formatBZD(subtotal) },
+            { label: "Delivery", value: wantsDelivery ? formatBZD(quote.deliveryFee) : "Collect" },
+            ...(quote.courierFee > 0
+              ? [{ label: "Courier", value: formatBZD(quote.courierFee) }]
+              : []),
+            ...(wantsDelivery
+              ? [{ label: "Box", value: quote.boxFee ? formatBZD(quote.boxFee) : "Included" }]
+              : []),
+          ]}
+          total={formatBZD(total)}
+          note={wantsDelivery && quote.box.label ? `Recommended: ${quote.box.label}` : undefined}
+        />
+      </div>
+    </div>
+  );
+}

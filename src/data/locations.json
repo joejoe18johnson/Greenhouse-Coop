@@ -1,0 +1,28 @@
+{
+  "districts": [
+    {
+      "name": "Cayo",
+      "towns": ["Belmopan", "San Ignacio", "Santa Elena", "Benque Viejo del Carmen", "Roaring Creek", "Camalote", "Spanish Lookout", "Bullet Tree Falls", "Unitedville", "Teakettle", "Ontario", "St. Margaret"]
+    },
+    {
+      "name": "Belize",
+      "towns": ["Belize City", "Ladyville", "Hattieville", "Burrell Boom", "Sandhill", "Caye Caulker", "San Pedro", "Citrus Walk", "Lord's Bank"]
+    },
+    {
+      "name": "Orange Walk",
+      "towns": ["Orange Walk Town", "Trial Farm", "San Estevan", "San Pablo", "Guinea Grass", "Shipyard", "Yo Creek", "San Jose Palmar"]
+    },
+    {
+      "name": "Corozal",
+      "towns": ["Corozal Town", "Consejo", "Calcutta", "San Narciso", "Patchakan", "Xaibe", "Sarteneja", "Little Belize"]
+    },
+    {
+      "name": "Stann Creek",
+      "towns": ["Dangriga", "Hopkins", "Placencia", "Independence", "Seine Bight", "Maya Mopan", "Pomona", "Middlesex"]
+    },
+    {
+      "name": "Toledo",
+      "towns": ["Punta Gorda", "Barranco", "San Antonio", "San Pedro Columbia", "Big Falls", "Dump", "Silver Creek", "Monkey River"]
+    }
+  ]
+}

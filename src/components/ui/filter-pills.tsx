@@ -1,0 +1,55 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+
+export function FilterPills({
+  options,
+  value,
+  onChange,
+  label,
+}: {
+  options: { value: string; label: string; count?: number }[];
+  value: string;
+  onChange: (value: string) => void;
+  label?: string;
+}) {
+  return (
+    <div>
+      {label && (
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/40">
+          {label}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => {
+          const active = value === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onChange(option.value)}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200",
+                active
+                  ? "border-forest bg-forest text-cream shadow-md"
+                  : "border-forest/15 bg-white/80 text-forest hover:border-forest/40 hover:bg-forest/5"
+              )}
+            >
+              {option.label}
+              {typeof option.count === "number" && (
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
+                    active ? "bg-white/20 text-cream" : "bg-forest/10 text-forest"
+                  )}
+                >
+                  {option.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

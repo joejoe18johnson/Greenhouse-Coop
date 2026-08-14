@@ -1,0 +1,165 @@
+export type PropagationType = "Grafted" | "Air-Layered" | "Seedling";
+
+export interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  propagationType: PropagationType;
+  size: string;
+  fruitImage: string;
+  plantImage: string;
+  description: string;
+  flavorProfile: string;
+  featured: boolean;
+  limitedSupply?: boolean;
+  certified?: boolean;
+  inStock?: boolean;
+}
+
+export interface Address {
+  id: string;
+  label: string;
+  district: string;
+  town: string;
+  village: string;
+  fullAddress: string;
+  isDefault?: boolean;
+}
+
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  passwordHash: string;
+  addresses: Address[];
+  createdAt: string;
+  role: "customer" | "admin";
+}
+
+export interface CartItem {
+  productId: string;
+  quantity: number;
+}
+
+export interface StoredCart {
+  items: CartItem[];
+  updatedAt: string;
+}
+
+export interface BoxSize {
+  id: string;
+  name: string;
+  price: number;
+  minPlants: number;
+  maxPlants: number;
+  description: string;
+}
+
+export interface BoxRecommendation {
+  boxes: { box: BoxSize; quantity: number }[];
+  plantCount: number;
+  total: number;
+  label: string;
+}
+
+export interface CourierRate {
+  district: string;
+  fee: number;
+}
+
+export interface Courier {
+  id: string;
+  name: string;
+  active: boolean;
+  notes: string;
+  rates: CourierRate[];
+}
+
+export interface LocalDeliverySettings {
+  towns: string[];
+  fee: number;
+  freeThreshold: number;
+  currency: string;
+}
+
+export interface ShippingSettings {
+  localDelivery: LocalDeliverySettings;
+  boxes: BoxSize[];
+}
+
+export type OrderStatus =
+  | "Payment Pending"
+  | "Payment Review"
+  | "Paid"
+  | "Processing"
+  | "Shipped"
+  | "Completed"
+  | "Refunded";
+
+export interface ShippingInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  district: string;
+  town: string;
+  village: string;
+  fullAddress: string;
+  method: "local" | "courier" | "pickup";
+  courierId?: string;
+  courierName?: string;
+}
+
+export interface PaymentInfo {
+  method: "bank-transfer";
+  proofChannel?: "whatsapp" | "upload";
+  proofDataUrl?: string;
+  proofFileName?: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  rejectionReason?: string;
+}
+
+export interface OrderEvent {
+  status: OrderStatus | string;
+  at: string;
+  note?: string;
+}
+
+export interface Order {
+  id: string;
+  reference: string;
+  invoiceNumber: string;
+  userId: string;
+  items: { productId: string; name: string; price: number; quantity: number }[];
+  subtotal: number;
+  deliveryFee: number;
+  boxFee: number;
+  courierFee: number;
+  total: number;
+  boxRecommendation: BoxRecommendation;
+  status: OrderStatus;
+  shipping: ShippingInfo;
+  payment: PaymentInfo;
+  createdAt: string;
+  updatedAt: string;
+  timeline: OrderEvent[];
+}
+
+export interface BankDetails {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  branch: string;
+  swift: string;
+  instructions: string;
+}
+
+export interface Session {
+  userId: string;
+  email: string;
+  role: "customer" | "admin";
+}

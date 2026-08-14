@@ -1,0 +1,42 @@
+{
+  "localDelivery": {
+    "towns": ["Belmopan", "Roaring Creek", "Camalote"],
+    "fee": 10,
+    "freeThreshold": 100,
+    "currency": "BZD"
+  },
+  "boxes": [
+    {
+      "id": "box-1",
+      "name": "1 SQ.FT BOX",
+      "price": 12,
+      "minPlants": 1,
+      "maxPlants": 3,
+      "description": "2–3 plants"
+    },
+    {
+      "id": "box-2",
+      "name": "2 SQ.FT BOX",
+      "price": 16,
+      "minPlants": 4,
+      "maxPlants": 6,
+      "description": "4–6 plants"
+    },
+    {
+      "id": "box-3",
+      "name": "3 SQ.FT BOX",
+      "price": 20,
+      "minPlants": 7,
+      "maxPlants": 10,
+      "description": "7–10 plants"
+    },
+    {
+      "id": "box-4",
+      "name": "4 SQ.FT BOX",
+      "price": 24,
+      "minPlants": 11,
+      "maxPlants": 13,
+      "description": "12–13 plants"
+    }
+  ]
+}

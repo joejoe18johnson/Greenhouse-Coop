@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 44 33% 93%;
+    --foreground: 217 33% 17%;
+    --card: 40 33% 97%;
+    --card-foreground: 217 33% 17%;
+    --primary: 152 40% 30%;
+    --primary-foreground: 44 33% 96%;
+    --secondary: 152 38% 41%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 44 24% 88%;
+    --muted-foreground: 215 16% 37%;
+    --accent: 24 100% 63%;
+    --accent-foreground: 217 33% 17%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 44 20% 82%;
+    --input: 44 20% 82%;
+    --ring: 152 40% 30%;
+    --radius: 0.9rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-ink antialiased;
+    background-image:
+      radial-gradient(1200px 600px at 10% -10%, rgba(64, 145, 108, 0.08), transparent 50%),
+      radial-gradient(900px 500px at 100% 0%, rgba(255, 140, 66, 0.08), transparent 45%);
+  }
+
+  ::selection {
+    background: #2D6A4F;
+    color: #F5F1E3;
+  }
+
+  input[type="file"] {
+    @apply cursor-pointer text-sm text-ink file:mr-4 file:rounded-full file:border-0 file:bg-forest file:px-4 file:py-2 file:text-sm file:font-medium file:text-cream hover:file:bg-forest-dark;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/60 backdrop-blur-xl border border-white/50 shadow-glass;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .arch-frame {
+    border-radius: 180px 180px 28px 28px;
+  }
+}

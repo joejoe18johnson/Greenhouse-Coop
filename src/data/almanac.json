@@ -1,0 +1,29 @@
+{
+  "intro": "Belize’s tropical climate allows year-round planting with irrigation. Time new trees with rainfall for the strongest start.",
+  "bestWindows": [
+    {
+      "title": "Primary planting window",
+      "months": "May – July",
+      "detail": "Just before and into the rainy season. Roots establish quickly with natural rainfall."
+    },
+    {
+      "title": "Secondary window",
+      "months": "November – December",
+      "detail": "After peak rains, while soils are still moist. Excellent for citrus and avocado."
+    }
+  ],
+  "months": [
+    { "month": "January", "season": "Dry", "advice": "Plant with irrigation. Ideal for citrus, coconut, and container trees. Mulch heavily." },
+    { "month": "February", "season": "Dry", "advice": "Continue irrigated plantings. Prune established mangoes after harvest. Watch for mites in dry heat." },
+    { "month": "March", "season": "Dry", "advice": "Hottest stretch begins. Water young trees twice weekly. Good month to order for May planting." },
+    { "month": "April", "season": "Dry", "advice": "Prepare holes and compost. Avocado ‘April’ and early mangoes often fruit now. Hold off on bare-root moves." },
+    { "month": "May", "season": "Transition", "advice": "Best month to plant most fruit trees. Rains arrive. Grafted mango, avocado, and citrus take off." },
+    { "month": "June", "season": "Rainy", "advice": "Prime planting. Passion fruit, guava, soursop, and lychee establish well. Stake in windy sites." },
+    { "month": "July", "season": "Rainy", "advice": "Still excellent for planting. Watch drainage in heavy clay. Apply compost around drip line." },
+    { "month": "August", "season": "Rainy", "advice": "Plant on mounds if flooding is a risk. Good for banana relatives, coconut, and breadfruit." },
+    { "month": "September", "season": "Rainy", "advice": "Peak rains. Focus on weeding and disease watch. Hold delicate air-layers until soils firm." },
+    { "month": "October", "season": "Rainy", "advice": "Late rainy-season planting still works with raised beds. Begin dry-season irrigation plans." },
+    { "month": "November", "season": "Transition", "advice": "Second-best planting window. Cooler nights help citrus, peach, and pomegranate." },
+    { "month": "December", "season": "Dry", "advice": "Plant with a watering plan. Holiday citrus makes a beautiful gift tree. Mulch and protect from wind." }
+  ]
+}
