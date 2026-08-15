@@ -1,6 +1,7 @@
 import productsSeed from "@/data/products.json";
 import shippingSeed from "@/data/shipping.json";
 import couriersSeed from "@/data/couriers.json";
+import idsRatesSeed from "@/data/ids-rates.json";
 import bankSeed from "@/data/bank.json";
 import {
   ADMIN_EMAIL,
@@ -16,6 +17,7 @@ import type {
   BankDetails,
   CartItem,
   Courier,
+  IdsRates,
   Order,
   OrderStatus,
   Product,
@@ -28,6 +30,7 @@ import type {
 const products = productsSeed as Product[];
 const shipping = shippingSeed as ShippingSettings;
 const couriers = couriersSeed as Courier[];
+const idsRates = idsRatesSeed as IdsRates;
 const bank = bankSeed as BankDetails;
 
 function normalizeOrder(order: Order & { courierFee?: number }): Order {
@@ -90,7 +93,7 @@ export async function hydrateStore() {
         storedCouriers.map((item) => {
           const seed = byId.get(item.id);
           if (!seed) return item;
-          return { ...item, notes: seed.notes };
+          return { ...item, notes: seed.notes, rateModel: seed.rateModel ?? item.rateModel, rates: seed.rateModel === "ids" ? [] : item.rates.length ? item.rates : seed.rates };
         })
       );
     }
@@ -125,6 +128,7 @@ export async function hydrateStore() {
       });
     }
     setItem(STORAGE_KEYS.bank, bank);
+    setItem(STORAGE_KEYS.idsRates, idsRates);
     const storedOrders = getItem<(Order & { courierFee?: number })[]>(STORAGE_KEYS.orders, []);
     if (storedOrders.length) {
       setItem(STORAGE_KEYS.orders, normalizeOrders(storedOrders));
@@ -136,6 +140,7 @@ export async function hydrateStore() {
   setItem(STORAGE_KEYS.products, products);
   setItem(STORAGE_KEYS.shipping, shipping);
   setItem(STORAGE_KEYS.couriers, couriers);
+  setItem(STORAGE_KEYS.idsRates, idsRates);
   setItem(STORAGE_KEYS.bank, bank);
   setItem(STORAGE_KEYS.users, [await seedAdmin()]);
   setItem(STORAGE_KEYS.orders, [] as Order[]);
@@ -229,6 +234,14 @@ export function getCouriers(): Courier[] {
 
 export function saveCouriers(next: Courier[]) {
   setItem(STORAGE_KEYS.couriers, next);
+}
+
+export function getIdsRates(): IdsRates {
+  return getItem<IdsRates>(STORAGE_KEYS.idsRates, idsRates);
+}
+
+export function saveIdsRates(next: IdsRates) {
+  setItem(STORAGE_KEYS.idsRates, next);
 }
 
 export function getBankDetails(): BankDetails {

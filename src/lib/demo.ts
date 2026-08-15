@@ -207,7 +207,7 @@ export function seedDemoOrders(products: Product[]): Order[] {
     subtotal: 58,
     deliveryFee: 0,
     boxFee: courierBox.total,
-    courierEstimate: 22,
+    courierEstimate: 11.25,
     total: 58 + courierBox.total,
     boxRecommendation: courierBox,
     status: "Processing",

@@ -70,11 +70,42 @@ export interface CourierRate {
   fee: number;
 }
 
+export type IdsPackageTier =
+  | "envelope"
+  | "xs"
+  | "small"
+  | "medium"
+  | "large"
+  | "xl";
+
+export interface IdsZoneRates {
+  label: string;
+  districts: string[];
+  packages: Record<IdsPackageTier, number>;
+}
+
+export interface IdsRates {
+  courierName: string;
+  gstNote: string;
+  zones: {
+    "central-northern": IdsZoneRates;
+    south: IdsZoneRates;
+  };
+  packageLabels: Record<IdsPackageTier, string>;
+  boxToPackage: Record<string, IdsPackageTier>;
+  deliverySurcharges: {
+    townLimits: number;
+    outOfTown: number;
+    note: string;
+  };
+}
+
 export interface Courier {
   id: string;
   name: string;
   active: boolean;
   notes: string;
+  rateModel?: "flat" | "ids";
   rates: CourierRate[];
 }
 

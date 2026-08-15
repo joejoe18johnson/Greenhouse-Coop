@@ -5,6 +5,8 @@ import type {
   LocalDeliverySettings,
   ShippingSettings,
 } from "@/types";
+import { estimateIdsShipping } from "@/lib/ids-rates";
+import type { IdsRates } from "@/types";
 
 export function recommendBox(
   plantCount: number,
@@ -58,9 +60,15 @@ export function getLocalDeliveryFee(
 
 export function getCourierEstimate(
   courier: Courier | undefined,
-  district: string
+  district: string,
+  box?: BoxRecommendation,
+  idsRates?: IdsRates
 ) {
   if (!courier) return 0;
+  if (courier.rateModel === "ids" || courier.id === "ids") {
+    if (!box) return 0;
+    return estimateIdsShipping(district, box, idsRates).total;
+  }
   const match = courier.rates.find(
     (r) => r.district.toLowerCase() === district.toLowerCase()
   );
@@ -86,6 +94,7 @@ export function quoteShipping(options: {
   method: "local" | "courier" | "pickup";
   courier?: Courier;
   shipping: ShippingSettings;
+  idsRates?: IdsRates;
 }) {
   const box = recommendBox(options.plantCount, options.shipping.boxes);
   const local = isLocalTown(options.town, options.shipping.localDelivery);
@@ -118,7 +127,12 @@ export function quoteShipping(options: {
   return {
     method: "courier" as const,
     deliveryFee: 0,
-    courierEstimate: getCourierEstimate(options.courier, options.district),
+    courierEstimate: getCourierEstimate(
+      options.courier,
+      options.district,
+      box,
+      options.idsRates
+    ),
     boxFee: box.total,
     box,
     localEligible: local,

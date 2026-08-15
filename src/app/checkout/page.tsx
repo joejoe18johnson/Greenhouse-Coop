@@ -15,9 +15,10 @@ import { OrderReceipt } from "@/components/checkout/order-receipt";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
-import { getBankDetails, getCouriers, getShippingSettings, createOrder } from "@/lib/store";
+import { getBankDetails, getCouriers, getIdsRates, getShippingSettings, createOrder } from "@/lib/store";
 import { bankAccounts } from "@/lib/bank";
-import { isLocalTown, computeOrderTotal, quoteShipping } from "@/lib/shipping";
+import { isLocalTown, computeOrderTotal, getCourierEstimate, quoteShipping } from "@/lib/shipping";
+import { getIdsZoneLabel } from "@/lib/ids-rates";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import locations from "@/data/locations.json";
@@ -28,6 +29,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const shipping = getShippingSettings();
   const couriers = getCouriers().filter((c) => c.active);
+  const idsRateTable = getIdsRates();
   const bank = getBankDetails();
 
   const [wantsDelivery, setWantsDelivery] = useState(true);
@@ -54,8 +56,9 @@ export default function CheckoutPage() {
         method,
         courier,
         shipping,
+        idsRates: idsRateTable,
       }),
-    [plantCount, subtotal, town, district, method, courier, shipping]
+    [plantCount, subtotal, town, district, method, courier, shipping, idsRateTable]
   );
   const total = computeOrderTotal({
     subtotal,
@@ -220,7 +223,13 @@ export default function CheckoutPage() {
                     </p>
                     <Label className="mt-4 block">Courier</Label>
                     <div className="mt-2 grid gap-3">
-                      {couriers.map((c) => (
+                      {couriers.map((c) => {
+                        const estimate = getCourierEstimate(c, district, quote.box, idsRateTable);
+                        const zone =
+                          c.rateModel === "ids" || c.id === "ids"
+                            ? getIdsZoneLabel(district, idsRateTable)
+                            : district;
+                        return (
                         <Radio
                           key={c.id}
                           name="courier"
@@ -234,14 +243,16 @@ export default function CheckoutPage() {
                                 <span className="block font-semibold text-forest">{c.name}</span>
                                 <span className="text-sm text-ink/60">{c.notes}</span>
                                 <span className="mt-1 block text-sm text-forest">
-                                  Approx. {formatBZD(c.rates.find(r => r.district === district)?.fee || 0)} at courier · {district}
+                                  Approx. {formatBZD(estimate)} at courier · {zone}
+                                  {(c.rateModel === "ids" || c.id === "ids") && quote.box.label ? ` · ${quote.box.label}` : ""}
                                 </span>
                                 <span className="mt-0.5 block text-[11px] text-ink/45">Paid at courier office, not in your order total</span>
                               </span>
                             </span>
                           }
                         />
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}

@@ -1,0 +1,49 @@
+{
+  "courierName": "IDS (Inter District Shipping)",
+  "gstNote": "All rates include GST 12.5%",
+  "zones": {
+    "central-northern": {
+      "label": "Central & Northern",
+      "districts": ["Cayo", "Belize", "Orange Walk", "Corozal"],
+      "packages": {
+        "envelope": 8.7,
+        "xs": 9.55,
+        "small": 11.25,
+        "medium": 16.35,
+        "large": 20.2,
+        "xl": 25.35
+      }
+    },
+    "south": {
+      "label": "South",
+      "districts": ["Stann Creek", "Toledo"],
+      "packages": {
+        "envelope": 11,
+        "xs": 11.85,
+        "small": 14.65,
+        "medium": 18.55,
+        "large": 22.45,
+        "xl": 27.6
+      }
+    }
+  },
+  "packageLabels": {
+    "envelope": "Envelope (documents)",
+    "xs": "XS (6×6×4 in)",
+    "small": "Small (12×12×10 in)",
+    "medium": "Medium (16×16×12 in)",
+    "large": "Large (18×18×14 in)",
+    "xl": "XL (24×24×18 in)"
+  },
+  "boxToPackage": {
+    "box-1": "small",
+    "box-2": "medium",
+    "box-3": "large",
+    "box-4": "xl"
+  },
+  "deliverySurcharges": {
+    "townLimits": 5,
+    "outOfTown": 7,
+    "note": "Optional door delivery surcharges at IDS — office-to-office collection uses package rates only."
+  }
+}
