@@ -11,7 +11,7 @@ export const FAQS = [
     id: "delivery",
     question: "Do you deliver outside Belmopan?",
     answer:
-      "You can collect centrally at the Belmopan Bus Terminal if you do not want delivery. Local delivery is $10 BZD to Belmopan, Roaring Creek, and Camalote — free over $100 BZD. All other locations ship with IDS or EZY Courier. Couriers usually work office-to-office: collect at the courier office in your area, not at your door. Box size is calculated automatically from how many plants you order.",
+      "You can collect centrally at the Belmopan Bus Terminal if you do not want delivery. Local delivery is $10 BZD to Belmopan, Roaring Creek, and Camalote — free over $100 BZD. All other locations ship with IDS or EZY Courier. Couriers usually work office-to-office: collect at the courier office in your area, not at your door. Courier shipping is paid directly at the courier office — we show approximate rates at checkout to help you plan. Box size is calculated automatically from how many plants you order.",
   },
   {
     id: "stock",
@@ -41,7 +41,7 @@ export const FAQS = [
     id: "boxes",
     question: "How are shipping boxes chosen?",
     answer:
-      "You do not pick a box. At checkout we recommend 1, 2, 3, or 4 sq.ft boxes from the number of plants in your cart. Local Belmopan-area deliveries include packing; courier orders add the box fee.",
+      "You do not pick a box. At checkout we recommend 1, 2, 3, or 4 sq.ft boxes from the number of plants in your cart. Local Belmopan-area deliveries include packing. Courier orders add the nursery box fee to your order; courier office shipping is paid separately when you collect.",
   },
 ];
 

@@ -86,7 +86,7 @@ export default function CartPage() {
             </div>
             <p className="mt-4 text-xs text-cream/60">
               Collect at the Belmopan Bus Terminal, or choose delivery at checkout. Local delivery {formatBZD(shipping.localDelivery.fee)} to Belmopan, Roaring Creek, and Camalote.
-              Free over {formatBZD(shipping.localDelivery.freeThreshold)}. Couriers are usually office-to-office.
+              Free over {formatBZD(shipping.localDelivery.freeThreshold)}. Couriers are office-to-office — you pay shipping at their office; we show approximate rates at checkout.
             </p>
             <Button variant="citrus" className="mt-6 w-full" asChild>
               <Link href="/checkout">

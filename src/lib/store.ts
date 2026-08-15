@@ -10,6 +10,7 @@ import {
 } from "@/lib/constants";
 import { getItem, setItem } from "@/lib/storage";
 import { generateId, generateInvoiceNumber, generateReference, hashPassword } from "@/lib/utils";
+import { computeOrderTotal } from "@/lib/shipping";
 import { ensureDemoData } from "@/lib/demo";
 import type {
   BankDetails,
@@ -28,6 +29,25 @@ const products = productsSeed as Product[];
 const shipping = shippingSeed as ShippingSettings;
 const couriers = couriersSeed as Courier[];
 const bank = bankSeed as BankDetails;
+
+function normalizeOrder(order: Order & { courierFee?: number }): Order {
+  const courierEstimate = order.courierEstimate ?? order.courierFee ?? 0;
+  const { courierFee: _legacy, ...rest } = order;
+  return {
+    ...rest,
+    courierEstimate,
+    total: computeOrderTotal({
+      subtotal: order.subtotal,
+      deliveryFee: order.deliveryFee,
+      boxFee: order.boxFee,
+    }),
+  };
+}
+
+function normalizeOrders(stored: (Order & { courierFee?: number })[]) {
+  if (!stored.length) return stored;
+  return stored.map(normalizeOrder);
+}
 
 async function seedAdmin(): Promise<User> {
   const passwordHash = await hashPassword(ADMIN_PASSWORD);
@@ -105,6 +125,10 @@ export async function hydrateStore() {
       });
     }
     setItem(STORAGE_KEYS.bank, bank);
+    const storedOrders = getItem<(Order & { courierFee?: number })[]>(STORAGE_KEYS.orders, []);
+    if (storedOrders.length) {
+      setItem(STORAGE_KEYS.orders, normalizeOrders(storedOrders));
+    }
     await ensureDemoData({ seedAdmin, products });
     return;
   }

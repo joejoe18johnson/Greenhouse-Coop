@@ -17,9 +17,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
 import { getBankDetails, getCouriers, getShippingSettings, createOrder } from "@/lib/store";
 import { bankAccounts } from "@/lib/bank";
-import { isLocalTown, quoteShipping } from "@/lib/shipping";
+import { isLocalTown, computeOrderTotal, quoteShipping } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
-import { PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
+import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import locations from "@/data/locations.json";
 
 export default function CheckoutPage() {
@@ -57,7 +57,11 @@ export default function CheckoutPage() {
       }),
     [plantCount, subtotal, town, district, method, courier, shipping]
   );
-  const total = subtotal + quote.deliveryFee + quote.courierFee + quote.boxFee;
+  const total = computeOrderTotal({
+    subtotal,
+    deliveryFee: quote.deliveryFee,
+    boxFee: quote.boxFee,
+  });
 
   if (!ready) return null;
 
@@ -101,7 +105,7 @@ export default function CheckoutPage() {
       subtotal,
       deliveryFee: quote.deliveryFee,
       boxFee: quote.boxFee,
-      courierFee: quote.courierFee,
+      courierEstimate: quote.courierEstimate,
       total,
       boxRecommendation: quote.box,
       status: "Payment Pending",
@@ -211,7 +215,7 @@ export default function CheckoutPage() {
                     <p className="flex items-start gap-3 rounded-2xl border border-citrus/30 bg-citrus/10 p-4 text-sm text-ink/75">
                       <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
                       <span>
-                        Couriers usually work <strong>office-to-office</strong>. Your trees go to the courier office in your area — not door-to-door. Collect them at that office location.
+                        Couriers usually work <strong>office-to-office</strong>. Your trees go to the courier office in your area — not door-to-door. You pay courier shipping directly at their office when you collect. We show approximate rates below to help you plan.
                       </span>
                     </p>
                     <Label className="mt-4 block">Courier</Label>
@@ -229,7 +233,10 @@ export default function CheckoutPage() {
                               <span>
                                 <span className="block font-semibold text-forest">{c.name}</span>
                                 <span className="text-sm text-ink/60">{c.notes}</span>
-                                <span className="mt-1 block text-sm">{formatBZD(c.rates.find(r => r.district === district)?.fee || 0)} to {district}</span>
+                                <span className="mt-1 block text-sm text-forest">
+                                  Approx. {formatBZD(c.rates.find(r => r.district === district)?.fee || 0)} at courier · {district}
+                                </span>
+                                <span className="mt-0.5 block text-[11px] text-ink/45">Paid at courier office, not in your order total</span>
                               </span>
                             </span>
                           }
@@ -285,15 +292,30 @@ export default function CheckoutPage() {
           rows={[
             { label: "Subtotal", value: formatBZD(subtotal) },
             { label: "Delivery", value: wantsDelivery ? formatBZD(quote.deliveryFee) : "Collect" },
-            ...(quote.courierFee > 0
-              ? [{ label: "Courier", value: formatBZD(quote.courierFee) }]
-              : []),
-            ...(wantsDelivery
+            ...(wantsDelivery && method === "courier"
               ? [{ label: "Box", value: quote.boxFee ? formatBZD(quote.boxFee) : "Included" }]
-              : []),
+              : wantsDelivery && method === "local"
+                ? [{ label: "Box", value: "Included" }]
+                : []),
           ]}
+          estimates={
+            quote.courierEstimate > 0
+              ? [
+                  {
+                    label: `${courier?.name || "Courier"} (approx.)`,
+                    value: formatBZD(quote.courierEstimate),
+                  },
+                ]
+              : undefined
+          }
           total={formatBZD(total)}
-          note={wantsDelivery && quote.box.label ? `Recommended: ${quote.box.label}` : undefined}
+          note={
+            wantsDelivery && quote.box.label
+              ? method === "courier"
+                ? `Recommended: ${quote.box.label}. ${COURIER_ESTIMATE_NOTICE}`
+                : `Recommended: ${quote.box.label}`
+              : undefined
+          }
         />
       </div>
     </div>

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, CalendarDays, CircleHelp, Download, Leaf, MapPin, Sparkles, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
+import { OrderProcess } from "@/components/home/order-process";
 import { ProductCarousel } from "@/components/product/product-carousel";
 import { useProducts } from "@/hooks/use-products";
 import { FAST_SELLER_IDS } from "@/lib/constants";
@@ -17,7 +18,7 @@ const reasons = [
   { icon: Sparkles, title: "Quality Trees", text: "Grafted and air-layered trees selected for vigor, true-to-type fruit, and nursery-grade structure." },
   { icon: Leaf, title: "Expert Knowledge", text: "Grown by people who plant in Belize soil, humidity, and rainfall — not imported guesswork." },
   { icon: MapPin, title: "Belize Adapted Varieties", text: "Citrus, mango, avocado, and tropical specialties proven in local gardens from Cayo to the cayes." },
-  { icon: Truck, title: "Reliable Delivery", text: "Collect at the Belmopan Bus Terminal, local delivery nearby, or nationwide courier. Couriers are usually office-to-office." },
+  { icon: Truck, title: "Reliable Delivery", text: "Collect at the Belmopan Bus Terminal, local delivery nearby, or nationwide courier. Courier shipping is paid at their office — we show approximate rates to help you plan." },
 ];
 
 export default function HomePage() {
@@ -76,7 +77,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-24">
+      <OrderProcess />
+
+      <section className="mx-auto max-w-7xl px-6 pb-24 pt-16">
         <div className="mb-12 flex items-end justify-between gap-6">
           <div>
             <p className="text-xs text-leaf">Selling fast</p>
@@ -179,7 +182,7 @@ export default function HomePage() {
           <h2 className="mt-3 font-display text-4xl">Collect, or we can send them.</h2>
           <p className="mt-4 max-w-xl text-cream/75">
             Pick up centrally at the Belmopan Bus Terminal, or use local delivery to Belmopan, Roaring Creek, and Camalote — {shipping.localDelivery.fee} BZD flat, free over {shipping.localDelivery.freeThreshold} BZD.
-            Farther away, IDS and EZY Courier usually deliver office-to-office at their location in your area.
+            Farther away, IDS and EZY Courier usually deliver office-to-office. You pay courier shipping at their office when you collect — we show approximate rates at checkout.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button variant="citrus" asChild>

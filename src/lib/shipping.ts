@@ -56,7 +56,7 @@ export function getLocalDeliveryFee(
   return settings.fee;
 }
 
-export function getCourierFee(
+export function getCourierEstimate(
   courier: Courier | undefined,
   district: string
 ) {
@@ -65,6 +65,17 @@ export function getCourierFee(
     (r) => r.district.toLowerCase() === district.toLowerCase()
   );
   return match?.fee ?? 0;
+}
+
+/** @deprecated Use getCourierEstimate */
+export const getCourierFee = getCourierEstimate;
+
+export function computeOrderTotal(options: {
+  subtotal: number;
+  deliveryFee: number;
+  boxFee: number;
+}) {
+  return options.subtotal + options.deliveryFee + options.boxFee;
 }
 
 export function quoteShipping(options: {
@@ -83,7 +94,7 @@ export function quoteShipping(options: {
     return {
       method: "pickup" as const,
       deliveryFee: 0,
-      courierFee: 0,
+      courierEstimate: 0,
       boxFee: 0,
       box,
       localEligible: local,
@@ -97,7 +108,7 @@ export function quoteShipping(options: {
         options.subtotal,
         options.shipping.localDelivery
       ),
-      courierFee: 0,
+      courierEstimate: 0,
       boxFee: 0,
       box,
       localEligible: true,
@@ -107,7 +118,7 @@ export function quoteShipping(options: {
   return {
     method: "courier" as const,
     deliveryFee: 0,
-    courierFee: getCourierFee(options.courier, options.district),
+    courierEstimate: getCourierEstimate(options.courier, options.district),
     boxFee: box.total,
     box,
     localEligible: local,

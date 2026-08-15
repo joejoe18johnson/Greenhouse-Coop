@@ -15,6 +15,9 @@ export const PICKUP_NOTE =
 export const INVENTORY_NOTICE =
   "Plant Availability Is Subject To Seasonal Supply And Nursery Stock Levels. If An Item Becomes Unavailable After Your Order Is Placed, Greenhouse Co-Op Will Contact You With Alternative Options Or Issue A Full Refund For The Unavailable Item.";
 
+export const COURIER_ESTIMATE_NOTICE =
+  "Courier Shipping Is Paid Directly At The Courier Office When You Collect Your Trees. The Amounts Shown Are Approximate Guides Only — Final Rates Are Set By IDS Or EZY Courier.";
+
 export const PAYMENT_NOTICE =
   "First Place Your Order To Receive A 6-Character Reference Number. Include That Number In Your Bank Transfer Notes, Then Send Your Payment Screenshot To Us On WhatsApp With The Same Reference. Failure To Include Your Reference Number May Delay Order Processing.";
 
@@ -36,7 +39,7 @@ export const ADMIN_EMAIL = "admin@greenhousecoop.com";
 export const ADMIN_PASSWORD = "admin123";
 export const DEMO_CUSTOMER_EMAIL = "customer@greenhousecoop.com";
 export const DEMO_CUSTOMER_PASSWORD = "customer123";
-export const DEMO_SEED_VERSION = "v2";
+export const DEMO_SEED_VERSION = "v3";
 
 export const STORAGE_KEYS = {
   products: "products",

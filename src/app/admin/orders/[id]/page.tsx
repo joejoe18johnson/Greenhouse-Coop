@@ -12,6 +12,7 @@ import { ORDER_STATUSES } from "@/lib/constants";
 import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
 import { fulfillmentLabel } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
+import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import type { OrderStatus } from "@/types";
 
 export default function AdminOrderDetailPage() {
@@ -29,6 +30,8 @@ export default function AdminOrderDetailPage() {
   }
 
   const invoiceReady = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
+  const courierEstimate =
+    order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
 
   return (
     <div>
@@ -130,7 +133,14 @@ export default function AdminOrderDetailPage() {
             <p>{order.shipping.village ? `${order.shipping.village}, ` : ""}{order.shipping.town}, {order.shipping.district}</p>
           )}
           {order.shipping.method === "courier" && (
-            <p className="mt-1 text-ink/60">Collect at the courier office in their area (office-to-office).</p>
+            <>
+              <p className="mt-1 text-ink/60">Collect at the courier office in their area (office-to-office).</p>
+              {courierEstimate > 0 && (
+                <p className="mt-2 rounded-xl bg-citrus/10 px-3 py-2 text-ink/70">
+                  Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "courier"} — customer pays at courier, not on this invoice.
+                </p>
+              )}
+            </>
           )}
           {order.shipping.method !== "pickup" && (
             <p className="mt-2">Box: {order.boxRecommendation.label}</p>
@@ -139,8 +149,15 @@ export default function AdminOrderDetailPage() {
             {order.items.map((i) => (
               <li key={i.productId}>{i.name} × {i.quantity} — {formatBZD(i.price * i.quantity)}</li>
             ))}
+            {order.deliveryFee > 0 && <li>Local delivery — {formatBZD(order.deliveryFee)}</li>}
+            {order.boxFee > 0 && <li>Box — {formatBZD(order.boxFee)}</li>}
           </ul>
-          <p className="mt-4 font-semibold">Total {formatBZD(order.total)}</p>
+          <p className="mt-4 font-semibold">Total due {formatBZD(order.total)}</p>
+          {courierEstimate > 0 && (
+            <p className="mt-2 text-sm text-ink/55">
+              + Approx. {formatBZD(courierEstimate)} at courier ({COURIER_ESTIMATE_NOTICE})
+            </p>
+          )}
         </div>
 
         <div className="rounded-[24px] bg-white p-6">

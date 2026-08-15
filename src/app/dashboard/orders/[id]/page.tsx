@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { useAuth } from "@/hooks/use-auth";
 import { getBankDetails, getOrders } from "@/lib/store";
 import { formatBZD } from "@/lib/utils";
-import { PAYMENT_NOTICE } from "@/lib/constants";
+import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import { whatsappPaymentLink } from "@/data/faq";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
 
@@ -32,6 +32,8 @@ export default function OrderDetailPage() {
 
   const invoiceReady = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
   const awaitingPay = order.status === "Payment Pending" || order.status === "Payment Review";
+  const courierEstimate =
+    order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
@@ -61,7 +63,12 @@ export default function OrderDetailPage() {
       {awaitingPay && (
         <div className="mt-8 rounded-[28px] bg-citrus/10 p-5 text-sm print:hidden">
           <p className="font-semibold text-forest">Next step: send proof on WhatsApp</p>
-          <p className="mt-2">Your order is placed. Transfer the total, then send the screenshot here with reference <strong className="keep-case">{order.reference}</strong>.</p>
+          <p className="mt-2">Your order is placed. Transfer <strong>{formatBZD(order.total)}</strong> to Greenhouse Co-Op, then send the screenshot here with reference <strong className="keep-case">{order.reference}</strong>.</p>
+          {courierEstimate > 0 && (
+            <p className="mt-2 text-ink/70">
+              Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "the courier"} is paid separately when you collect — not in this transfer.
+            </p>
+          )}
           <p className="mt-2">{PAYMENT_NOTICE}</p>
           <a
             href={whatsappPaymentLink(order.reference, formatBZD(order.total))}
@@ -76,6 +83,11 @@ export default function OrderDetailPage() {
         </div>
       )}
 
+      {order.shipping.method === "courier" && courierEstimate > 0 && !awaitingPay && (
+        <p className="mt-6 rounded-2xl bg-leaf/10 px-4 py-3 text-sm text-forest print:hidden">
+          Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "courier"} when you collect. {COURIER_ESTIMATE_NOTICE}
+        </p>
+      )}
       <ol className="mt-8 space-y-3 print:hidden">
         {order.timeline.map((event, i) => (
           <li key={i} className="rounded-2xl bg-white/80 p-4">

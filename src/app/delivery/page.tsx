@@ -37,18 +37,19 @@ export default function DeliveryPage() {
           <h2 className="font-display text-3xl text-forest">All other locations</h2>
         </div>
         <p className="mt-3 text-ink/65">
-          Choose IDS or EZY Courier at checkout. Couriers usually work <strong>office-to-office</strong> — trees go to the courier office in your area, not door-to-door. Collect them at that office location. Box size is calculated automatically from the number of plants — you never pick a box.
+          Choose IDS or EZY Courier at checkout. Couriers usually work <strong>office-to-office</strong> — trees go to the courier office in your area, not door-to-door. You pay courier shipping directly at their office when you collect. We show approximate rates below so you can plan ahead — they are not charged on your Greenhouse Co-Op order. Box size is calculated automatically from the number of plants — you never pick a box.
         </p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {couriers.map((c) => (
             <div key={c.id} className="rounded-2xl border border-forest/10 p-5">
               <h3 className="font-semibold text-forest">{c.name}</h3>
               <p className="mt-1 text-sm text-ink/60">{c.notes}</p>
-              <ul className="mt-3 space-y-1 text-sm">
+              <p className="mt-3 text-xs font-semibold text-ink/40">Approximate rates — pay at courier office</p>
+              <ul className="mt-2 space-y-1 text-sm">
                 {c.rates.map((r) => (
                   <li key={r.district} className="flex justify-between">
                     <span>{r.district}</span>
-                    <span>{formatBZD(r.fee)}</span>
+                    <span>≈ {formatBZD(r.fee)}</span>
                   </li>
                 ))}
               </ul>

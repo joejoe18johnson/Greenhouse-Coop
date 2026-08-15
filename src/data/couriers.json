@@ -3,7 +3,7 @@
     "id": "ids",
     "name": "IDS Courier",
     "active": true,
-    "notes": "Nationwide coverage. Typical 1–3 business days after dispatch. Office-to-office: collect at the courier office in your area.",
+    "notes": "Nationwide coverage. Typical 1–3 business days after dispatch. Office-to-office: collect at the courier office in your area. Shipping is paid directly at the courier — rates below are approximate guides.",
     "rates": [
       { "district": "Cayo", "fee": 18 },
       { "district": "Belize", "fee": 22 },
@@ -17,7 +17,7 @@
     "id": "ezy",
     "name": "EZY Courier",
     "active": true,
-    "notes": "Reliable nationwide service. Typical 2–4 business days after dispatch. Office-to-office: collect at the courier office in your area.",
+    "notes": "Reliable nationwide service. Typical 2–4 business days after dispatch. Office-to-office: collect at the courier office in your area. Shipping is paid directly at the courier — rates below are approximate guides.",
     "rates": [
       { "district": "Cayo", "fee": 16 },
       { "district": "Belize", "fee": 20 },

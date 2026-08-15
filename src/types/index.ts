@@ -139,7 +139,8 @@ export interface Order {
   subtotal: number;
   deliveryFee: number;
   boxFee: number;
-  courierFee: number;
+  /** Approximate fee the customer pays at the courier office — not charged by Greenhouse Co-Op. */
+  courierEstimate: number;
   total: number;
   boxRecommendation: BoxRecommendation;
   status: OrderStatus;

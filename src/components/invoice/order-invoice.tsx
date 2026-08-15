@@ -3,7 +3,12 @@ import { BRAND } from "@/lib/constants";
 import { bankAccounts } from "@/lib/bank";
 import { fulfillmentLabel } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
+import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import type { BankDetails, Order, User } from "@/types";
+
+function courierEstimate(order: Order) {
+  return order.courierEstimate ?? (order as Order & { courierFee?: number }).courierFee ?? 0;
+}
 
 function conditionLine(order: Order) {
   if (order.shipping.method === "pickup") return "Collect at Belmopan Bus Terminal";
@@ -130,14 +135,6 @@ export function OrderInvoice({
                 <td className="px-4 py-2.5 text-right">{formatBZD(order.deliveryFee)}</td>
               </tr>
             )}
-            {order.courierFee > 0 && (
-              <tr>
-                <td className="px-4 py-2.5">1.00</td>
-                <td className="px-4 py-2.5">{order.shipping.courierName || "Courier"}</td>
-                <td className="px-4 py-2.5 text-right">{formatBZD(order.courierFee)}</td>
-                <td className="px-4 py-2.5 text-right">{formatBZD(order.courierFee)}</td>
-              </tr>
-            )}
             {order.boxFee > 0 && (
               <tr className="bg-cream/50">
                 <td className="px-4 py-2.5">1.00</td>
@@ -155,9 +152,18 @@ export function OrderInvoice({
             <span className="tabular-nums">{formatBZD(order.subtotal)}</span>
           </div>
           <div className="flex justify-between border-t border-forest/10 pt-2 text-base font-semibold text-forest-dark">
-            <span>Total</span>
+            <span>Total due to {BRAND.short}</span>
             <span className="tabular-nums">{formatBZD(order.total)}</span>
           </div>
+          {courierEstimate(order) > 0 && (
+            <div className="border-t border-dashed border-forest/15 pt-2 text-ink/55">
+              <div className="flex justify-between">
+                <span>{order.shipping.courierName || "Courier"} (approx.)</span>
+                <span className="tabular-nums">{formatBZD(courierEstimate(order))}</span>
+              </div>
+              <p className="mt-1 text-[11px] leading-relaxed text-ink/45">{COURIER_ESTIMATE_NOTICE}</p>
+            </div>
+          )}
         </div>
       </div>
 

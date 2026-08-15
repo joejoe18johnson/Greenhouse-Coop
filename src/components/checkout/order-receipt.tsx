@@ -29,6 +29,7 @@ export function OrderReceipt({
   rows,
   total,
   note,
+  estimates,
   children,
 }: {
   title?: string;
@@ -36,6 +37,7 @@ export function OrderReceipt({
   rows: { label: string; value: string }[];
   total: string;
   note?: string;
+  estimates?: { label: string; value: string }[];
   children?: React.ReactNode;
 }) {
   return (
@@ -104,6 +106,15 @@ export function OrderReceipt({
             <span>Total</span>
             <span className="tabular-nums">{total}</span>
           </div>
+
+          {estimates && estimates.length > 0 && (
+            <div className="mt-4 space-y-1.5 border-t border-dashed border-forest/20 pt-4 text-sm">
+              <p className="text-[11px] font-medium text-ink/45">Pay separately at courier</p>
+              {estimates.map((row) => (
+                <ReceiptRow key={row.label} label={row.label} value={row.value} />
+              ))}
+            </div>
+          )}
 
           {children}
 
