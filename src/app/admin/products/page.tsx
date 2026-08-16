@@ -24,6 +24,8 @@ const empty: Product = {
   description: "",
   flavorProfile: "",
   featured: false,
+  limitedSupply: false,
+  veryRare: false,
   inStock: true,
 };
 
@@ -92,7 +94,9 @@ export default function AdminProductsPage() {
           <Textarea className="mt-1" value={form.flavorProfile} onChange={(e) => setForm({ ...form, flavorProfile: e.target.value })} />
         </div>
         <Checkbox checked={form.featured} onChange={(checked) => setForm({ ...form, featured: checked })} label="Featured" />
-        <Checkbox checked={!!form.limitedSupply} onChange={(checked) => setForm({ ...form, limitedSupply: checked })} label="Limited supply" />
+        <Checkbox checked={!!form.limitedSupply} onChange={(checked) => setForm({ ...form, limitedSupply: checked })} label="Limited availability" />
+        <Checkbox checked={!!form.veryRare} onChange={(checked) => setForm({ ...form, veryRare: checked })} label="Very rare item" />
+        <Checkbox checked={form.inStock !== false} onChange={(checked) => setForm({ ...form, inStock: checked })} label="In stock" />
         <div className="md:col-span-2">
           <Button type="submit">{editing ? "Update product" : "Add product"}</Button>
         </div>
@@ -105,6 +109,7 @@ export default function AdminProductsPage() {
               <th className="p-4">Name</th>
               <th className="p-4">Category</th>
               <th className="p-4">Price</th>
+              <th className="p-4">Stock</th>
               <th className="p-4"></th>
             </tr>
           </thead>
@@ -114,6 +119,11 @@ export default function AdminProductsPage() {
                 <td className="p-4">{p.name}</td>
                 <td className="p-4">{p.category}</td>
                 <td className="p-4">{formatBZD(p.price)}</td>
+                <td className="p-4 text-xs text-ink/55">
+                  {p.inStock === false ? "Out of stock" : "In stock"}
+                  {p.veryRare ? " · Rare" : ""}
+                  {p.limitedSupply ? " · Limited" : ""}
+                </td>
                 <td className="p-4 text-right">
                   <button className="mr-3 text-forest" onClick={() => { setForm(p); setEditing(true); }}>Edit</button>
                   <button className="text-red-600" onClick={() => { deleteProduct(p.id); refresh(); }}>Delete</button>

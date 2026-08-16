@@ -11,9 +11,10 @@
     "price": 25,
     "propagationType": "Grafted",
     "description": "A premium grafted avocado selected for Belize gardens. Reliable producer with excellent fruit quality.",
-    "flavorProfile": "Maria avocados have a rich, creamy texture with a mild nutty flavor. The flesh is smooth and buttery — ideal for spreading, salads, or enjoying fresh.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "flavorProfile": "Maria avocados have a rich, creamy texture with a mild nutty flavor. The flesh is smooth and buttery \u2014 ideal for spreading, salads, or enjoying fresh.",
+    "fruitImage": "/products/maria-avocado-product-image-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -28,8 +29,9 @@
     "propagationType": "Grafted",
     "description": "March-crop variety grown for Belize conditions. Grafted and certified.",
     "flavorProfile": "Febroy avocados offer a mild, refreshing flavor with a lighter, less oily texture. A clean tasting fruit that shines in salads and ceviche.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "fruitImage": "/products/Febroy-product-image-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -44,8 +46,9 @@
     "propagationType": "Grafted",
     "description": "A popular Belize favorite. Grafted and certified for reliable production.",
     "flavorProfile": "The April avocado has a light, mild flavor with a slightly watery texture. It's less creamy than other varieties, offering a refreshing, subtle taste with a hint of nuttiness.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "fruitImage": "/products/april-product-image-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -58,10 +61,11 @@
     "category": "Avocado",
     "price": 20,
     "propagationType": "Grafted",
-    "description": "An early-season avocado that fruits ahead of most varieties — perfect for extending your harvest.",
+    "description": "An early-season avocado that fruits ahead of most varieties \u2014 perfect for extending your harvest.",
     "flavorProfile": "Early avocados have a gentle, buttery flavor with a smooth texture. Harvest them first and enjoy avocado season weeks sooner.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "fruitImage": "/products/early-product-image-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -76,8 +80,9 @@
     "propagationType": "Grafted",
     "description": "Named for its luxurious texture. A standout grafted avocado for home orchards.",
     "flavorProfile": "The Butter Delicious avocado is known for its rich, creamy texture and mild, buttery flavor. It offers a slightly nutty taste with a smooth, velvety flesh that's perfect for spreading or adding to salads.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "fruitImage": "/products/butter-delcious-product-image-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": false
   },
   {
     "featured": true,
@@ -92,24 +97,9 @@
     "propagationType": "Grafted",
     "description": "The world's most loved avocado, adapted for Belize. Dark pebbled skin when ripe.",
     "flavorProfile": "The Hass Black avocado has a rich, creamy flavor with a slightly nutty taste. Its smooth, buttery texture makes it a favorite for guacamole, toast, or simply enjoyed on its own.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "black-longneck-avocado",
-    "name": "Black Longneck Avocado",
-    "category": "Avocado",
-    "price": 20,
-    "propagationType": "Grafted",
-    "description": "Distinctive elongated fruit with dark skin and generous flesh-to-seed ratio.",
-    "flavorProfile": "Black Longneck avocados have a deep, creamy flavor and a satisfyingly thick flesh. Excellent for slicing, toast, and rich guacamole.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "fruitImage": "/products/hass-mexican-avocado-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -122,26 +112,28 @@
     "category": "Avocado",
     "price": 20,
     "propagationType": "Grafted",
-    "description": "A smooth-skinned grafted avocado with refined flavor — a nursery favorite.",
+    "description": "A smooth-skinned grafted avocado with refined flavor \u2014 a nursery favorite.",
     "flavorProfile": "The Italian avocado has a smooth, creamy texture with a mild, slightly tangy flavor. It offers a refreshing taste with subtle nutty undertones, making it perfect for both savory and sweet dishes.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "fruitImage": "/products/italian-product-image-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": true,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "chutle-long-avocado",
-    "name": "Chutle Long",
+    "name": "Chulete",
     "category": "Avocado",
     "price": 25,
     "propagationType": "Grafted",
-    "description": "Limited supply. A distinctive long-fruit avocado prized by collectors and serious growers.",
+    "description": "A distinctive long-neck avocado \u2014 limited, very rare, and currently unavailable at the nursery.",
     "flavorProfile": "The Chutle avocado has a creamy texture with a mild, slightly sweet flavor. It's smooth and buttery, with a subtle nutty taste, making it perfect for salads, guacamole, or simply enjoyed on toast.",
-    "fruitImage": "/products/avocado-fruit.png",
-    "plantImage": "/products/avocado-plant.png"
+    "fruitImage": "/products/chutles-long-product-image-fruit.png",
+    "plantImage": "/products/avocado-plant.png",
+    "veryRare": true
   },
   {
     "featured": false,
@@ -156,8 +148,9 @@
     "propagationType": "Grafted",
     "description": "The classic seedless lime. Juicy, aromatic, and essential for Belize kitchens.",
     "flavorProfile": "Tahiti limes have a bright, zesty flavor with a clean acidity and fragrant oils in the peel. Perfect for drinks, marinades, ceviche, and everyday cooking.",
-    "fruitImage": "/products/lime-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/ptahiti-lime-roduct-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -172,14 +165,15 @@
     "propagationType": "Grafted",
     "description": "A Caribbean lime with bold aroma and generous juice.",
     "flavorProfile": "Jamaican limes are intensely aromatic with a sharp, lively acidity. Their juice is excellent in punches, gravies, and seafood.",
-    "fruitImage": "/products/lime-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/jamaican-lime-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "sweet-lime",
     "name": "Sweet Lime",
@@ -187,25 +181,10 @@
     "price": 15,
     "propagationType": "Grafted",
     "description": "A milder lime enjoyed fresh and in juices.",
-    "flavorProfile": "Sweet limes have a gentle citrus flavor with low acidity. Refreshing to eat fresh or juice — less tart than common limes.",
-    "fruitImage": "/products/lime-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "giant-sweet-lime",
-    "name": "Giant Sweet Lime",
-    "category": "Lime",
-    "price": 15,
-    "propagationType": "Grafted",
-    "description": "An oversized sweet lime with abundant juice.",
-    "flavorProfile": "Giant Sweet Limes offer a mellow, lightly sweet citrus flavor and lots of juice. Ideal for family juicing and fresh eating.",
-    "fruitImage": "/products/lime-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "flavorProfile": "Sweet limes have a gentle citrus flavor with low acidity. Refreshing to eat fresh or juice \u2014 less tart than common limes.",
+    "fruitImage": "/products/sweet-lime-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -220,8 +199,9 @@
     "propagationType": "Grafted",
     "description": "Tiny, intensely fragrant citrus used across tropical kitchens.",
     "flavorProfile": "Kalamansi has a floral, tart-sweet flavor that sits between lime and mandarin. Extraordinary in drinks, dipping sauces, and desserts.",
-    "fruitImage": "/products/lime-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/kalamansi-lime-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -236,8 +216,9 @@
     "propagationType": "Grafted",
     "description": "Grown for both fruit and the prized double leaves used in cooking.",
     "flavorProfile": "Kaffir lime fruit is intensely aromatic and tart. The leaves add unmistakable citrus perfume to curries, soups, and teas.",
-    "fruitImage": "/products/lime-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/kaffir-lime-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -250,10 +231,11 @@
     "category": "Lime",
     "price": 15,
     "propagationType": "Grafted",
-    "description": "Belize's everyday lime — adapted, productive, and kitchen-ready.",
+    "description": "Belize's everyday lime \u2014 adapted, productive, and kitchen-ready.",
     "flavorProfile": "Local limes have a classic sharp citrus bite with plenty of juice. The workhorse lime for Belize cooking.",
-    "fruitImage": "/products/lime-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/local-lime-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -268,8 +250,9 @@
     "propagationType": "Grafted",
     "description": "A classic navel-style orange for fresh eating.",
     "flavorProfile": "Washington oranges are sweet, juicy, and easy to peel with a classic orange flavor and low seeds.",
-    "fruitImage": "/products/orange-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/washington-orange-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": true,
@@ -284,14 +267,15 @@
     "propagationType": "Grafted",
     "description": "Striking ruby flesh with a flavor unlike any other citrus. A Greenhouse Co-Op signature tree.",
     "flavorProfile": "Blood Oranges have a sweet, tangy flavor with hints of raspberry and citrus. Their vibrant, deep red flesh offers a unique balance of tartness and sweetness, perfect for juicing, salads, or enjoying fresh.",
-    "fruitImage": "/products/blood-orange-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/blood-range-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "honey-orange",
     "name": "Honey Orange",
@@ -299,9 +283,10 @@
     "price": 15,
     "propagationType": "Grafted",
     "description": "Exceptionally sweet orange for snacking and juice.",
-    "flavorProfile": "Honey oranges live up to the name — lush, sweet, and low-acid with a silky juice that's wonderful fresh or blended.",
-    "fruitImage": "/products/orange-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "flavorProfile": "Honey oranges live up to the name \u2014 lush, sweet, and low-acid with a silky juice that's wonderful fresh or blended.",
+    "fruitImage": "/products/honey-orange-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": true,
@@ -316,14 +301,15 @@
     "propagationType": "Grafted",
     "description": "A juice orange with a blush of color and late-season fruit.",
     "flavorProfile": "Valencia Red oranges are juicy and balanced, with a sweet-tart flavor that makes exceptional juice.",
-    "fruitImage": "/products/orange-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/valencia-red-orange-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "pineapple-orange",
     "name": "Pineapple Orange",
@@ -331,9 +317,10 @@
     "price": 15,
     "propagationType": "Grafted",
     "description": "Named for a tropical sweetness reminiscent of pineapple.",
-    "flavorProfile": "Pineapple oranges have a sweet, tropical citrus flavor with a hint of pineapple. Juicy and aromatic — excellent fresh or juiced.",
-    "fruitImage": "/products/orange-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "flavorProfile": "Pineapple oranges have a sweet, tropical citrus flavor with a hint of pineapple. Juicy and aromatic \u2014 excellent fresh or juiced.",
+    "fruitImage": "/products/pineapple-orange-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -348,8 +335,9 @@
     "propagationType": "Grafted",
     "description": "An early, productive juice orange well suited to Belize.",
     "flavorProfile": "Hamlin oranges are known for their sweet, tangy flavor with a refreshing, juicy texture. Their bright orange flesh is mild and less acidic, making them perfect for fresh eating, juices, and desserts.",
-    "fruitImage": "/products/orange-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/hamlin-orange-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -364,8 +352,9 @@
     "propagationType": "Grafted",
     "description": "Pink-fleshed navel orange with berry notes. A premium grafted citrus.",
     "flavorProfile": "Cara-Cara oranges have a sweet, tangy flavor with hints of berry and cherry. Their vibrant pinkish-red flesh is juicy and less acidic, making them perfect for snacking, juicing, or adding to fruit salads.",
-    "fruitImage": "/products/orange-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/cara-cara-orange-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -380,14 +369,15 @@
     "propagationType": "Grafted",
     "description": "A pink-fleshed Eureka-type lemon with ornamental fruit.",
     "flavorProfile": "Pink Eurica lemons have a bright lemon tang with a slightly sweeter edge. The blush flesh is beautiful in drinks and garnishes.",
-    "fruitImage": "/products/lemon-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/pink-eurica-lemon-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "lisbon-lemon",
     "name": "Lisbon Lemon",
@@ -396,30 +386,32 @@
     "propagationType": "Grafted",
     "description": "A vigorous true lemon with abundant, highly acidic fruit.",
     "flavorProfile": "Lisbon lemons have a sharp, tangy flavor with a strong acidity. Their juicy flesh is highly tart, making them perfect for zesting, juicing, and adding a bold citrus kick to dishes and drinks.",
-    "fruitImage": "/products/lemon-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/lisbon-lemon-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "genoa-lemon",
     "name": "Genoa Lemon",
     "category": "Lemon",
     "price": 15,
     "propagationType": "Grafted",
-    "description": "A smoother, more aromatic lemon — a chef's favorite.",
+    "description": "A smoother, more aromatic lemon \u2014 a chef's favorite.",
     "flavorProfile": "Genoa lemons have a bright, tangy flavor with a balance of sweetness and acidity. Their juicy flesh is less tart than traditional lemons, offering a smooth, aromatic taste for beverages, cooking, and desserts.",
-    "fruitImage": "/products/lemon-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/ginoa-lemon-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "ponderosa-lemon",
     "name": "Ponderosa Lemon",
@@ -428,8 +420,9 @@
     "propagationType": "Grafted",
     "description": "Remarkably large fruit. A conversation-piece lemon tree.",
     "flavorProfile": "Ponderosa lemons have a strong, tangy flavor with a high acidity. They are larger than most lemons, offering a bold, zesty citrus taste that's perfect for juicing, garnishes, or adding intense flavor to dishes.",
-    "fruitImage": "/products/lemon-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/ponderosa-lemon-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -444,40 +437,9 @@
     "propagationType": "Grafted",
     "description": "The beloved thin-skinned lemon with floral sweetness.",
     "flavorProfile": "Meyer lemons are sweeter and more floral than standard lemons, with a perfume of honey and blossom. Perfect for desserts, dressings, and drinks.",
-    "fruitImage": "/products/lemon-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "harvey-lemon",
-    "name": "Harvey Lemon",
-    "category": "Lemon",
-    "price": 15,
-    "propagationType": "Grafted",
-    "description": "A productive lemon selected for tropical gardens.",
-    "flavorProfile": "Harvey lemons offer classic lemon brightness with abundant juice and a fragrant peel.",
-    "fruitImage": "/products/lemon-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "bear-lemon",
-    "name": "Bear Lemon",
-    "category": "Lemon",
-    "price": 15,
-    "propagationType": "Grafted",
-    "description": "A hardy lemon with bold flavor and reliable crops.",
-    "flavorProfile": "Bear lemons have a robust, tart citrus flavor and plenty of juice — a dependable kitchen lemon.",
-    "fruitImage": "/products/lemon-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/meyer-lemon-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -492,8 +454,9 @@
     "propagationType": "Grafted",
     "description": "A large, richly flavored mandarin.",
     "flavorProfile": "King mandarins are sweet, deep, and aromatic with easy-to-peel segments. A luxurious snacking citrus.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/king-mandarin-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -506,16 +469,17 @@
     "category": "Specialty Citrus",
     "price": 15,
     "propagationType": "Grafted",
-    "description": "The classic Christmas mandarin — easy to peel and wonderfully fragrant.",
+    "description": "The classic Christmas mandarin \u2014 easy to peel and wonderfully fragrant.",
     "flavorProfile": "Dancy mandarins have a sweet, tangy flavor with a refreshing citrus taste. Their juicy segments are easy to peel and less acidic, making them ideal for snacking or adding to fruit salads and desserts.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/dancy-mandarin-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "jamaican-mandarin",
     "name": "Jamaican Mandarin",
@@ -524,8 +488,9 @@
     "propagationType": "Grafted",
     "description": "A Caribbean mandarin with vibrant flavor.",
     "flavorProfile": "Jamaican mandarins have a sweet, tangy flavor with a smooth, juicy texture. Their easy-to-peel segments are less acidic, offering a vibrant citrus taste perfect for snacking or adding to salads.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/jamaican-mandarin-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -538,10 +503,11 @@
     "category": "Specialty Citrus",
     "price": 15,
     "propagationType": "Grafted",
-    "description": "Eat the whole fruit — peel and all. A unique citrus for Belize gardens.",
+    "description": "Eat the whole fruit \u2014 peel and all. A unique citrus for Belize gardens.",
     "flavorProfile": "Kumquats are sweet on the peel and tart in the flesh. Pop them whole for a burst of sweet-sour citrus, or candy and preserve them.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/kumquat-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -549,21 +515,39 @@
     "certified": true,
     "inStock": true,
     "size": "2-3 ft",
-    "id": "grapefruit",
-    "name": "Grapefruit",
+    "id": "red-grapefruit",
+    "name": "Red Grapefruit",
     "category": "Specialty Citrus",
     "price": 15,
     "propagationType": "Grafted",
-    "description": "Red, white, or pink fruit. Specify preference in order notes.",
-    "flavorProfile": "Grapefruit is refreshingly bitter-sweet with juicy segments. Excellent for breakfast, juices, and savory salads.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "description": "Classic red-fleshed grapefruit grafted for Belize gardens.",
+    "flavorProfile": "Red grapefruit is refreshingly bitter-sweet with ruby segments and bright juice. Excellent for breakfast, juices, and savory salads.",
+    "fruitImage": "/products/red-grapefruit-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
     "inStock": true,
+    "size": "2-3 ft",
+    "id": "white-grapefruit",
+    "name": "White Grapefruit",
+    "category": "Specialty Citrus",
+    "price": 15,
+    "propagationType": "Grafted",
+    "description": "Mild white-fleshed grapefruit grafted for Belize gardens.",
+    "flavorProfile": "White grapefruit has a mellow, slightly sweet flavor with pale, juicy flesh. A gentler grapefruit for fresh eating and juices.",
+    "fruitImage": "/products/white-grapefruit-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
+  },
+  {
+    "featured": false,
+    "limitedSupply": false,
+    "certified": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "ortanique",
     "name": "Ortanique",
@@ -572,8 +556,9 @@
     "propagationType": "Grafted",
     "description": "A tangerine-orange hybrid (also called Ortanich).",
     "flavorProfile": "Ortanique are known for their sweet, juicy flavor with a hint of tanginess. Their orange flesh combines the best qualities of a tangerine and an orange. Perfect for fresh use, juices, and desserts.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/ortanique-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -588,8 +573,9 @@
     "propagationType": "Grafted",
     "description": "Easy-peel citrus with bright, kid-friendly flavor.",
     "flavorProfile": "Tangerines are sweet, fragrant, and easy to peel. A daily snacking fruit with sunny citrus flavor.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/tangerine-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -604,8 +590,9 @@
     "propagationType": "Grafted",
     "description": "The giant ancestor of grapefruit. Red or white flesh.",
     "flavorProfile": "Pomelos have a mild, sweet citrus flavor with low bitterness and thick, easy-to-peel rind. Refreshing and impressive.",
-    "fruitImage": "/products/mandarin-fruit.png",
-    "plantImage": "/products/citrus-plant.png"
+    "fruitImage": "/products/pomelo-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -620,40 +607,9 @@
     "propagationType": "Grafted",
     "description": "A tropical apple-type fruit adapted to Belize.",
     "flavorProfile": "Maley apples have a crisp, mildly sweet flavor with a refreshing bite. Enjoy fresh or in chutneys.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "velvet-apple-yellow",
-    "name": "Velvet Apple Yellow",
-    "category": "Apple",
-    "price": 15,
-    "propagationType": "Grafted",
-    "description": "Velvety-skinned tropical fruit with creamy yellow flesh.",
-    "flavorProfile": "Yellow velvet apples are sweet, creamy, and mildly tropical — a unique dessert fruit.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "velvet-apple-red",
-    "name": "Velvet Apple Red",
-    "category": "Apple",
-    "price": 15,
-    "propagationType": "Grafted",
-    "description": "Red-skinned velvet apple with rich tropical flavor.",
-    "flavorProfile": "Red velvet apples have a sweeter, more aromatic flesh with a velvety skin and creamy texture.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/maley-apple-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -668,8 +624,9 @@
     "propagationType": "Grafted",
     "description": "A striking red-skinned custard apple.",
     "flavorProfile": "Red custard apples are sweet, custardy, and fragrant with a melt-in-the-mouth texture.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/red-custard-apple-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -684,8 +641,9 @@
     "propagationType": "Grafted",
     "description": "Large-fruited custard apple with pale gold skin.",
     "flavorProfile": "Yellow custard apples have a sweet, creamy pulp with tropical vanilla notes. Eat with a spoon.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/yellow-star-apple-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -700,8 +658,9 @@
     "propagationType": "Grafted",
     "description": "Crisp, rose-scented tropical fruit.",
     "flavorProfile": "Rose apples are crisp, watery-sweet, and perfumed with rose. Refreshing eaten chilled.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/rose-apple-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -716,8 +675,9 @@
     "propagationType": "Grafted",
     "description": "Star apple with green skin and sweet pulp.",
     "flavorProfile": "Green star apples have a sweet, milky pulp with a unique star pattern when sliced.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/green-star-apple-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -732,40 +692,9 @@
     "propagationType": "Grafted",
     "description": "The classic caimito with purple skin.",
     "flavorProfile": "Purple star apples are sweet and gelatinous with a star of seeds when cut crosswise. A tropical dessert fruit.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "gov-apple",
-    "name": "Gov Apple",
-    "category": "Apple",
-    "price": 15,
-    "propagationType": "Grafted",
-    "description": "A local favorite tropical apple-type fruit.",
-    "flavorProfile": "Gov apples are mildly sweet and crisp — a reliable backyard fruit for Belize gardens.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "wax-apple",
-    "name": "Wax Apple",
-    "category": "Apple",
-    "price": 15,
-    "propagationType": "Grafted",
-    "description": "Shiny bell-shaped fruit with a juicy crunch.",
-    "flavorProfile": "Wax apples are crisp, lightly sweet, and extremely juicy. Beautiful on the tree and refreshing to eat.",
-    "fruitImage": "/products/apple-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/purple-star-apple-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -780,8 +709,9 @@
     "propagationType": "Grafted",
     "description": "A fiberless favorite with gorgeous blush. Grafted for true-to-type fruit.",
     "flavorProfile": "Glenn mangoes have a sweet, tropical flavor with a mild tang and a hint of citrus. Their juicy, smooth flesh and minimal fiber make them perfect for fresh eating, smoothies, or fruit salads.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/glen-mango-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -796,8 +726,9 @@
     "propagationType": "Grafted",
     "description": "A rich, dark-blushed mango beloved in Belize.",
     "flavorProfile": "Black mangoes have a rich, sweet flavor with subtle tropical notes. Their smooth, creamy texture and slightly fibrous flesh make them perfect for fresh eating, smoothies, or desserts.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/balck-mango-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -812,8 +743,9 @@
     "propagationType": "Grafted",
     "description": "A fiberless Southeast Asian mango that thrives in Belize heat.",
     "flavorProfile": "Cambodiana mangoes have a sweet, slightly tangy flavor with tropical notes. Their smooth, juicy flesh is fiberless, making them ideal for fresh eating, smoothies, or fruit salads.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/cambodiana-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -826,26 +758,11 @@
     "category": "Mango",
     "price": 18,
     "propagationType": "Grafted",
-    "description": "A compact, fiberless mango — excellent for smaller yards.",
+    "description": "A compact, fiberless mango \u2014 excellent for smaller yards.",
     "flavorProfile": "Carrie mangoes have a sweet, rich flavor with subtle hints of peach and citrus. Their smooth, fiberless flesh and creamy texture make them perfect for fresh eating, smoothies, or desserts.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "3-4 ft",
-    "id": "early-gold-mango",
-    "name": "Early Gold Mango",
-    "category": "Mango",
-    "price": 18,
-    "propagationType": "Grafted",
-    "description": "An early-season gold mango that ripens ahead of the crowd.",
-    "flavorProfile": "Early Gold mangoes are sweet, aromatic, and golden-fleshed. Enjoy mango season first with this early bearer.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/carrie-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -858,16 +775,17 @@
     "category": "Mango",
     "price": 18,
     "propagationType": "Grafted",
-    "description": "The widely grown Tommy Atkins type — colorful, firm, and productive.",
+    "description": "The widely grown Tommy Atkins type \u2014 colorful, firm, and productive.",
     "flavorProfile": "Tommy mangoes have a mildly sweet flavor with a firm texture that holds up in salsas, salads, and shipping.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/tommy-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "3-4 ft",
     "id": "pahari-mango",
     "name": "Pahari Mango",
@@ -876,8 +794,9 @@
     "propagationType": "Grafted",
     "description": "A flavorful grafted mango selected for tropical home orchards.",
     "flavorProfile": "Pahari mangoes are richly sweet with a tropical perfume and smooth flesh.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/pahari-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -892,8 +811,9 @@
     "propagationType": "Grafted",
     "description": "A classic Florida mango with brilliant color and fine flavor.",
     "flavorProfile": "Haden mangoes are sweet and aromatic with a beautiful red blush. A heritage variety that still sets the standard.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/haden-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -908,14 +828,15 @@
     "propagationType": "Grafted",
     "description": "A compact Caribbean mango perfect for smaller Belize yards.",
     "flavorProfile": "Julie mangoes are intensely sweet, rich, and fiberless with a distinctive flattened shape. A West Indian legend.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/julie-dwarf-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "3-4 ft",
     "id": "palmer-mango",
     "name": "Palmer Mango",
@@ -924,8 +845,9 @@
     "propagationType": "Grafted",
     "description": "A late-season mango that extends your harvest.",
     "flavorProfile": "Palmer mangoes are sweet, fiberless, and large. They ripen later, stretching mango season well into the year.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/palmer-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -940,14 +862,15 @@
     "propagationType": "Grafted",
     "description": "Oversized golden fruit with show-stopping size.",
     "flavorProfile": "Golden Giant mangoes are sweet, juicy, and generous. One fruit can feed a family.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/golden-giant-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "3-4 ft",
     "id": "gab-julie-mango",
     "name": "Gab Julie Mango",
@@ -955,9 +878,10 @@
     "price": 18,
     "propagationType": "Grafted",
     "description": "A Julie-type selection with outstanding eating quality.",
-    "flavorProfile": "Gab Julie mangoes have the rich, sweet, fiberless flesh Julie lovers expect — a premium eating mango.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "flavorProfile": "Gab Julie mangoes have the rich, sweet, fiberless flesh Julie lovers expect \u2014 a premium eating mango.",
+    "fruitImage": "/products/gab-julie-product-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -970,10 +894,11 @@
     "category": "Mango",
     "price": 18,
     "propagationType": "Grafted",
-    "description": "A late, large, fiberless mango — one of the greats.",
+    "description": "A late, large, fiberless mango \u2014 one of the greats.",
     "flavorProfile": "Keith mangoes have a sweet, tangy flavor with tropical notes and a hint of citrus. Their smooth, juicy flesh is fiberless, making them perfect for fresh eating, smoothies, or salsas.",
-    "fruitImage": "/products/mango-fruit.png",
-    "plantImage": "/products/mango-plant.png"
+    "fruitImage": "/products/keith-keittproduct-image-fruit.png",
+    "plantImage": "/products/mango-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -982,20 +907,21 @@
     "inStock": true,
     "size": "2-3 ft",
     "id": "large-golden-plum",
-    "name": "Large Golden Plum",
+    "name": "Golden Plum",
     "category": "Plum",
     "price": 15,
     "propagationType": "Grafted",
     "description": "A golden tropical plum with sweet flesh.",
-    "flavorProfile": "Large Golden plums are sweet, juicy, and honeyed — excellent fresh or in preserves.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "flavorProfile": "Golden plums are sweet, juicy, and honeyed \u2014 excellent fresh or in preserves.",
+    "fruitImage": "/products/large-golden-plum-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "large-chinese-plum",
     "name": "Large Chinese Plum",
@@ -1004,14 +930,15 @@
     "propagationType": "Grafted",
     "description": "A premium large-fruited Chinese plum.",
     "flavorProfile": "Chinese plums are sweet-tart with a fragrant juice. Beautiful fruit and a generous crop.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/large-chinese-plum-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "chinese-cross-plum",
     "name": "Chinese Cross Plum",
@@ -1020,8 +947,9 @@
     "propagationType": "Grafted",
     "description": "A hybrid Chinese plum with excellent flavor.",
     "flavorProfile": "Chinese Cross plums balance sweet and tart with a floral aroma. A standout backyard plum.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/chinese-cross-plum-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1037,7 +965,8 @@
     "description": "Tart fruit perfect for sauces, pickles, and drinks.",
     "flavorProfile": "Sour plums have a lively tartness that shines in chutneys, drinks, and cooking.",
     "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1052,14 +981,15 @@
     "propagationType": "Grafted",
     "description": "A productive tropical plum for Belize yards.",
     "flavorProfile": "Governor plums are sweet-tart with a pleasant bite. Good fresh and excellent preserved.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/governor-plum-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "yellow-august-plum",
     "name": "Yellow August Plum",
@@ -1067,9 +997,10 @@
     "price": 22,
     "propagationType": "Grafted",
     "description": "A late-summer golden plum.",
-    "flavorProfile": "Yellow August plums are sweet, aromatic, and sunny — a seasonal treat.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "flavorProfile": "Yellow August plums are sweet, aromatic, and sunny \u2014 a seasonal treat.",
+    "fruitImage": "/products/yellow-august-plum-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1084,8 +1015,9 @@
     "propagationType": "Grafted",
     "description": "An early red plum that ripens in May.",
     "flavorProfile": "Red May plums are juicy and sweet-tart with a vivid red skin. One of the first stone fruits of the season.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/red-may-plum-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1098,26 +1030,11 @@
     "category": "Plum",
     "price": 18,
     "propagationType": "Grafted",
-    "description": "A compact golden plum for smaller gardens.",
-    "flavorProfile": "Dwarf golden plums offer the same sweet honeyed flesh on a more manageable tree.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "coco-plum",
-    "name": "Coco Plum",
-    "category": "Plum",
-    "price": 18,
-    "propagationType": "Grafted",
-    "description": "A coastal-native fruit, beautiful as an edible hedge.",
-    "flavorProfile": "Coco plums are mildly sweet with a cottony texture. A Belize native that loves heat and salt air.",
-    "fruitImage": "/products/plum-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "description": "Same golden plum fruit as the standard tree \u2014 on a compact form that produces sooner with a smaller footprint.",
+    "flavorProfile": "Same sweet, honeyed golden plum flesh as the standard tree. The dwarf form fruits quicker on a smaller tree \u2014 ideal for tighter yards.",
+    "fruitImage": "/products/large-golden-plum-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": true,
@@ -1129,11 +1046,12 @@
     "name": "Strawberry (Deleez)",
     "category": "Berry",
     "price": 20,
-    "propagationType": "Grafted",
-    "description": "A tropical strawberry selection for Belize conditions. Always in short supply — order while they last.",
-    "flavorProfile": "Deleez strawberries are sweet, fragrant, and juicy — a rare treat grown for Belize gardens.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "propagationType": "Seedling",
+    "description": "A tropical strawberry selection for Belize conditions. Always in short supply \u2014 order while they last.",
+    "flavorProfile": "Deleez strawberries are sweet, fragrant, and juicy \u2014 a rare treat grown for Belize gardens.",
+    "fruitImage": "/products/strawberry-deleez-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1145,27 +1063,12 @@
     "name": "Cranberry",
     "category": "Berry",
     "price": 15,
-    "propagationType": "Grafted",
+    "propagationType": "Air-Layered",
     "description": "A tart berry for juices and sauces.",
     "flavorProfile": "Cranberries are brightly tart and aromatic. Excellent in sauces, juices, and baking.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "sweet-mulberry",
-    "name": "Medium Sweet Mulberry",
-    "category": "Berry",
-    "price": 10,
-    "propagationType": "Grafted",
-    "description": "Fast-growing sweet mulberry for shade and fruit.",
-    "flavorProfile": "Sweet mulberries are honeyed, juicy, and abundant. Children love them fresh from the tree.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/cranberry-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1177,11 +1080,12 @@
     "name": "Large Mulberry Dwarf Tree",
     "category": "Berry",
     "price": 10,
-    "propagationType": "Grafted",
+    "propagationType": "Air-Layered",
     "description": "A compact mulberry with large sweet fruit.",
-    "flavorProfile": "Dwarf mulberries produce large, sweet berries on a smaller tree — perfect for yards.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "flavorProfile": "Dwarf mulberries produce large, sweet berries on a smaller tree \u2014 perfect for yards.",
+    "fruitImage": "/products/large-mulberry-dwarf-tree-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1193,11 +1097,12 @@
     "name": "Blackberry Tree",
     "category": "Berry",
     "price": 15,
-    "propagationType": "Grafted",
+    "propagationType": "Air-Layered",
     "description": "Tree-form blackberry adapted to the tropics.",
     "flavorProfile": "Tree blackberries are sweet-tart with a classic berry flavor. Easy picking from a small tree.",
     "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1206,14 +1111,15 @@
     "inStock": true,
     "size": "2-3 ft",
     "id": "barbados-berry",
-    "name": "Barbados Berry",
+    "name": "Barbados Berry/ Cherry",
     "category": "Berry",
     "price": 10,
-    "propagationType": "Grafted",
-    "description": "Acerola cherry — one of the highest natural vitamin C fruits.",
+    "propagationType": "Air-Layered",
+    "description": "Acerola cherry \u2014 one of the highest natural vitamin C fruits.",
     "flavorProfile": "Barbados berries are tart-sweet and intensely vitamin-rich. Outstanding in juices and vitamin shots.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/barbados-berry-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1225,11 +1131,12 @@
     "name": "Tropical Black Grape",
     "category": "Berry",
     "price": 15,
-    "propagationType": "Grafted",
+    "propagationType": "Air-Layered",
     "description": "A grape selected for tropical heat.",
     "flavorProfile": "Tropical black grapes are sweet, juicy, and dark-skinned. Enjoy fresh or as juice.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/tropical-black-grape-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1244,14 +1151,15 @@
     "propagationType": "Grafted",
     "description": "The reliable classic fig.",
     "flavorProfile": "Brown Turkey figs are sweet, jammy, and honeyed with a tender skin. Excellent fresh or dried.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/brow-turkey-fig-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
     "limitedSupply": false,
     "certified": true,
-    "inStock": true,
+    "inStock": false,
     "size": "2-3 ft",
     "id": "fig-florentina",
     "name": "Fig (Florentina)",
@@ -1260,8 +1168,9 @@
     "propagationType": "Grafted",
     "description": "A premium Italian-type fig.",
     "flavorProfile": "Florentina figs are richly sweet with a complex, wine-like flavor and lush red interior.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/fiorentina-fig-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1274,10 +1183,11 @@
     "category": "Fig",
     "price": 25,
     "propagationType": "Grafted",
-    "description": "The iconic dark fig of California — grown here for Belize.",
+    "description": "The iconic dark fig of California \u2014 grown here for Belize.",
     "flavorProfile": "Black Mission figs are deep, sweet, and berry-like with a dark purple skin and jammy flesh.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/black-mission-fig-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1293,7 +1203,8 @@
     "description": "A low-chill Mexican peach that can fruit in Belize.",
     "flavorProfile": "Mexican peaches are fragrant, sweet, and juicy with a classic peach perfume. A special tree.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1309,7 +1220,8 @@
     "description": "The traditional Polynesian health fruit, easy in Belize.",
     "flavorProfile": "Noni has a strong, savory-fruity flavor traditionally used in wellness drinks. The tree is hardy and productive.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1325,7 +1237,8 @@
     "description": "Jewel-like arils and ornamental flowers.",
     "flavorProfile": "Pomegranates are sweet-tart with crunchy, juicy arils. Beautiful on the tree and in the kitchen.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1339,9 +1252,10 @@
     "price": 15,
     "propagationType": "Grafted",
     "description": "The chocolate pudding fruit.",
-    "flavorProfile": "Ripe black sapote tastes like chocolate pudding — sweet, mild, and custardy. A conversation-piece dessert fruit.",
+    "flavorProfile": "Ripe black sapote tastes like chocolate pudding \u2014 sweet, mild, and custardy. A conversation-piece dessert fruit.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1357,7 +1271,8 @@
     "description": "A creamy, peach-like tropical fruit.",
     "flavorProfile": "White sapote is sweet, custardy, and peach-banana flavored with a melt-in-the-mouth texture.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1373,7 +1288,8 @@
     "description": "A large tropical apple-type fruit.",
     "flavorProfile": "Mommy apples are sweet, aromatic, and generous in size. A special grafted tree.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": true,
@@ -1388,8 +1304,9 @@
     "propagationType": "Grafted",
     "description": "A large pink-fleshed Cuban guava.",
     "flavorProfile": "Pink Cuban guavas are sweet, floral, and intensely aromatic with a tropical perfume.",
-    "fruitImage": "/products/guava-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/pink-cuban-guava-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1404,8 +1321,9 @@
     "propagationType": "Grafted",
     "description": "Crisp-fleshed guava with a milder, floral taste.",
     "flavorProfile": "Chinese guavas have a sweet, mild flavor with tropical and floral notes. Their crunchy texture and juicy flesh make them perfect for fresh eating, juicing, or adding to salads.",
-    "fruitImage": "/products/guava-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/chinese-guava-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1420,24 +1338,9 @@
     "propagationType": "Grafted",
     "description": "Small red fruit with strawberry-guava perfume.",
     "flavorProfile": "Strawberry guavas are sweet-tart with a distinct strawberry aroma. Perfect eaten out of hand.",
-    "fruitImage": "/products/guava-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "sour-guava",
-    "name": "Sour Guava",
-    "category": "Guava",
-    "price": 18,
-    "propagationType": "Grafted",
-    "description": "Tart guava for juices and cooking.",
-    "flavorProfile": "Sour guavas are brightly tart and aromatic — the backbone of traditional guava drinks.",
-    "fruitImage": "/products/guava-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/strawberry-guava-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1453,7 +1356,8 @@
     "description": "Golden-skinned Spanish type with sweet flesh.",
     "flavorProfile": "Yellow Spanish guavas are sweet, tropical, and fragrant. Excellent fresh and in paste.",
     "fruitImage": "/products/guava-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1468,8 +1372,9 @@
     "propagationType": "Seedling",
     "description": "Young green coconut for water and jelly.",
     "flavorProfile": "Green coconuts offer sweet, refreshing water and tender jelly. A Belize essential.",
-    "fruitImage": "/products/coconut-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/green-coconut-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1484,8 +1389,9 @@
     "propagationType": "Seedling",
     "description": "Golden-husked coconut with sweet water.",
     "flavorProfile": "Yellow coconuts are sweet and aromatic with excellent drinking water.",
-    "fruitImage": "/products/coconut-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/yellow-coconut-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1500,104 +1406,9 @@
     "propagationType": "Seedling",
     "description": "A striking orange-husked coconut.",
     "flavorProfile": "Orange coconuts have sweet water and an ornamental husk that lights up the garden.",
-    "fruitImage": "/products/coconut-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": false,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "breadnut",
-    "name": "Breadnut",
-    "category": "Nut",
-    "price": 10,
-    "propagationType": "Seedling",
-    "description": "Maya nut / ramon — traditional, nutritious, and hardy.",
-    "flavorProfile": "Breadnut seeds are nutty and chestnut-like when cooked. A heritage Belize tree.",
-    "fruitImage": "/products/coconut-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "macadamia",
-    "name": "Macadamia Nut",
-    "category": "Nut",
-    "price": 25,
-    "propagationType": "Grafted",
-    "description": "Grafted macadamia for true-to-type nuts.",
-    "flavorProfile": "Macadamias are buttery, rich, and crisp. One of the world's finest nuts — now grown in Belize.",
-    "fruitImage": "/products/coconut-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "pecan",
-    "name": "Pecan Nut",
-    "category": "Nut",
-    "price": 30,
-    "propagationType": "Grafted",
-    "description": "A premium grafted pecan for tropical trial plantings.",
-    "flavorProfile": "Pecans are sweet, buttery, and rich. A special nut tree for dedicated growers.",
-    "fruitImage": "/products/coconut-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "pistachio",
-    "name": "Pistachio Nut",
-    "category": "Nut",
-    "price": 30,
-    "propagationType": "Grafted",
-    "description": "A specialty nut tree for adventurous Belize gardeners.",
-    "flavorProfile": "Pistachios are savory-sweet with a distinctive flavor. Requires a warm, well-drained site.",
-    "fruitImage": "/products/coconut-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": false,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "nutmeg",
-    "name": "Nutmeg",
-    "category": "Spice",
-    "price": 18,
-    "propagationType": "Seedling",
-    "description": "The spice tree — nutmeg and mace from one fruit.",
-    "flavorProfile": "Fresh nutmeg is warm, sweet, and aromatic — far more vivid than the dried spice. A beautiful tropical tree.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
-    "certified": false,
-    "inStock": true,
-    "size": "1-2 ft",
-    "id": "black-pepper",
-    "name": "Black Pepper",
-    "category": "Spice",
-    "price": 15,
-    "propagationType": "Seedling",
-    "description": "The vine that changed the world. Grow your own peppercorns.",
-    "flavorProfile": "Homegrown black pepper is pungent, floral, and complex. Train the vine on a post or tree.",
-    "fruitImage": "/products/fig-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/orange-coconut-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1612,8 +1423,9 @@
     "propagationType": "Grafted",
     "description": "Red-fleshed dragon fruit. A stunning night-blooming cactus.",
     "flavorProfile": "Red pitaya is sweet, mildly tropical, and visually spectacular with magenta flesh.",
-    "fruitImage": "/products/dragonfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/pitaya-red-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1628,8 +1440,9 @@
     "propagationType": "Grafted",
     "description": "Often the sweetest dragon fruit.",
     "flavorProfile": "Yellow pitaya is exceptionally sweet with white flesh and a bright yellow skin.",
-    "fruitImage": "/products/dragonfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/pitaya-yellow-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1644,8 +1457,9 @@
     "propagationType": "Grafted",
     "description": "Classic white-fleshed dragon fruit.",
     "flavorProfile": "White pitaya is refreshing, mildly sweet, and packed with tiny crunchy seeds.",
-    "fruitImage": "/products/dragonfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/pitaya-white-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1660,8 +1474,9 @@
     "propagationType": "Seedling",
     "description": "The tropical passion fruit of the Caribbean.",
     "flavorProfile": "Yellow passion fruit is intensely aromatic, sweet-tart, and perfect for juices and desserts.",
-    "fruitImage": "/products/passion-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/yellow-passion-fruit-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1675,9 +1490,10 @@
     "price": 15,
     "propagationType": "Seedling",
     "description": "The classic purple passion fruit.",
-    "flavorProfile": "Purple passion fruit is fragrant, tangy, and concentrated — a little fruit with huge flavor.",
-    "fruitImage": "/products/passion-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "flavorProfile": "Purple passion fruit is fragrant, tangy, and concentrated \u2014 a little fruit with huge flavor.",
+    "fruitImage": "/products/purple-passion-fruit-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1692,8 +1508,9 @@
     "propagationType": "Seedling",
     "description": "The sweet, orange-skinned cousin of passion fruit.",
     "flavorProfile": "Granadilla has a sweet, tangy flavor with tropical notes. Its juicy, gelatinous pulp is filled with crunchy seeds, offering a refreshing taste that's perfect for fresh eating or adding to fruit salads.",
-    "fruitImage": "/products/passion-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "fruitImage": "/products/granadilla-product-image-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1709,7 +1526,8 @@
     "description": "Sweet-sour pods for drinks, sauces, and candy.",
     "flavorProfile": "Tamarind is tangy, sweet, and caramel-like. Essential in Belize drinks and sauces.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1725,7 +1543,8 @@
     "description": "Caribbean guanabana with classic flavor.",
     "flavorProfile": "Caribbean soursop is sweet-tart with creamy white pulp and tropical citrus notes. Outstanding in juices.",
     "fruitImage": "/products/soursop-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1739,9 +1558,10 @@
     "price": 15,
     "propagationType": "Grafted",
     "description": "A local Belize selection.",
-    "flavorProfile": "Belizean soursop is fragrant, sweet, and creamy — selected for local flavor and performance.",
+    "flavorProfile": "Belizean soursop is fragrant, sweet, and creamy \u2014 selected for local flavor and performance.",
     "fruitImage": "/products/soursop-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1755,9 +1575,10 @@
     "price": 20,
     "propagationType": "Grafted",
     "description": "An oversized Brazilian type.",
-    "flavorProfile": "Brazil Giant soursop produces very large fruit with sweet, abundant pulp — a juice machine.",
+    "flavorProfile": "Brazil Giant soursop produces very large fruit with sweet, abundant pulp \u2014 a juice machine.",
     "fruitImage": "/products/soursop-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1773,7 +1594,8 @@
     "description": "A Central American selection.",
     "flavorProfile": "Salvadorian soursop is sweet, aromatic, and creamy with excellent juice quality.",
     "fruitImage": "/products/soursop-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1787,9 +1609,10 @@
     "price": 15,
     "propagationType": "Grafted",
     "description": "Red-skinned sugar apple.",
-    "flavorProfile": "Red sweetsop is very sweet, custardy, and fragrant — a dessert fruit eaten with a spoon.",
+    "flavorProfile": "Red sweetsop is very sweet, custardy, and fragrant \u2014 a dessert fruit eaten with a spoon.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1805,7 +1628,8 @@
     "description": "The classic sugar apple.",
     "flavorProfile": "Green sweetsop is sweet, creamy, and segmented. One of the tropics' great dessert fruits.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1821,7 +1645,8 @@
     "description": "Grown for the cashew apple and the nut.",
     "flavorProfile": "Yellow cashew apples are juicy, sweet-tart, and tropical. The nut is the famous cashew.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1837,7 +1662,8 @@
     "description": "Red cashew apple with a vivid color.",
     "flavorProfile": "Red cashew apples are aromatic and tangy-sweet. A beautiful dual-purpose tree.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1851,9 +1677,10 @@
     "price": 12,
     "propagationType": "Seedling",
     "description": "Belize's beloved nance.",
-    "flavorProfile": "Red craboo is sweet-tart and uniquely tropical — a Belize childhood flavor.",
+    "flavorProfile": "Red craboo is sweet-tart and uniquely tropical \u2014 a Belize childhood flavor.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1869,7 +1696,8 @@
     "description": "Golden nance fruit.",
     "flavorProfile": "Yellow craboo is fragrant, sweet-tart, and excellent in wines and desserts.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1883,9 +1711,10 @@
     "price": 12,
     "propagationType": "Seedling",
     "description": "Green-fruited nance.",
-    "flavorProfile": "Green craboo has a brighter tartness — wonderful in drinks and preserves.",
+    "flavorProfile": "Green craboo has a brighter tartness \u2014 wonderful in drinks and preserves.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1898,10 +1727,11 @@
     "category": "Starfruit",
     "price": 15,
     "propagationType": "Grafted",
-    "description": "The classic carambola — slice it into stars.",
+    "description": "The classic carambola \u2014 slice it into stars.",
     "flavorProfile": "Starfruit is crisp, juicy, and lightly sweet-tart. Slice crosswise for perfect stars.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1915,9 +1745,10 @@
     "price": 20,
     "propagationType": "Grafted",
     "description": "A sweeter carambola selection.",
-    "flavorProfile": "Sweet starfruit is milder, juicier, and less tart — the best type for fresh eating.",
+    "flavorProfile": "Sweet starfruit is milder, juicier, and less tart \u2014 the best type for fresh eating.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1933,7 +1764,8 @@
     "description": "A staple tree of the tropics. Air-layered for faster fruiting.",
     "flavorProfile": "Breadfruit is starchy, mildly sweet, and potato-like when roasted. A generous food tree.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1949,7 +1781,8 @@
     "description": "The world's largest tree fruit.",
     "flavorProfile": "Jackfruit bulbs are sweet, tropical, and banana-pineapple flavored when ripe. Unripe fruit cooks like a savory meat substitute.",
     "fruitImage": "/products/jackfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1965,7 +1798,8 @@
     "description": "Air-layered lychee for true-to-type fruit. Limited tropical trial plantings.",
     "flavorProfile": "Lychees are floral, sweet, and juicy with a rose-grape perfume. A luxury fruit.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -1981,7 +1815,8 @@
     "description": "The salmon-fleshed mamey sapote.",
     "flavorProfile": "Mamey is sweet, creamy, and pumpkin-almond flavored. One of the great tropical dessert fruits.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": true,
@@ -1994,10 +1829,11 @@
     "category": "Tropical",
     "price": 30,
     "propagationType": "Grafted",
-    "description": "The queen of fruits. Always in short supply at the nursery — a rare tree that sells quickly.",
+    "description": "The queen of fruits. Always in short supply at the nursery \u2014 a rare tree that sells quickly.",
     "flavorProfile": "Mangosteen is delicately sweet with a floral, lychee-like flavor and snow-white segments. A rare treasure in Belize.",
     "fruitImage": "/products/mangosteen-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   },
   {
     "featured": false,
@@ -2013,6 +1849,7 @@
     "description": "A sour-leaning sapodilla type.",
     "flavorProfile": "Sacpra has a tangy, brown-sugar flavor with a granular, pear-like texture. Distinctive and local.",
     "fruitImage": "/products/starfruit-fruit.png",
-    "plantImage": "/products/tropical-plant.png"
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
   }
 ]

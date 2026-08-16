@@ -3,6 +3,7 @@
 import { useStore } from "@/context/store-context";
 import { getCart, getCartUpdatedAt, getProduct } from "@/lib/store";
 import { CART_HOLD_MS } from "@/lib/constants";
+import { isInStock } from "@/lib/product-badges";
 import type { CartItem, Product } from "@/types";
 
 export function useCart() {
@@ -21,6 +22,8 @@ export function useCart() {
   const expiresAt = updatedAt ? new Date(updatedAt).getTime() + CART_HOLD_MS : null;
 
   function add(productId: string, quantity = 1) {
+    const product = getProduct(productId);
+    if (!product || !isInStock(product)) return;
     const next = [...cart];
     const existing = next.find((i) => i.productId === productId);
     if (existing) existing.quantity += quantity;

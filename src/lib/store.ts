@@ -7,6 +7,7 @@ import {
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
   CART_HOLD_MS,
+  CATALOG_SEED_VERSION,
   STORAGE_KEYS,
 } from "@/lib/constants";
 import { getItem, setItem } from "@/lib/storage";
@@ -97,23 +98,39 @@ export async function hydrateStore() {
         })
       );
     }
-    const stored = getItem<Product[]>(STORAGE_KEYS.products, []);
-    if (stored.length) {
-      const byId = new Map(products.map((p) => [p.id, p]));
-      setItem(
-        STORAGE_KEYS.products,
-        stored.map((item) => {
-          const seed = byId.get(item.id);
-          if (!seed) return item;
+    const catalogVersion = getItem<string>(STORAGE_KEYS.catalogSeed, "");
+
+    if (catalogVersion !== CATALOG_SEED_VERSION) {
+      setItem(STORAGE_KEYS.products, products);
+      setItem(STORAGE_KEYS.catalogSeed, CATALOG_SEED_VERSION);
+      const cart = getStoredCart();
+      const validIds = new Set(products.map((p) => p.id));
+      setItem(STORAGE_KEYS.cart, {
+        items: cart.items.filter((item) => validIds.has(item.productId)),
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      const stored = getItem<Product[]>(STORAGE_KEYS.products, []);
+      if (stored.length) {
+        const merged = products.map((seed) => {
+          const item = stored.find((s) => s.id === seed.id);
+          if (!item) return seed;
           return {
             ...item,
+            name: seed.name,
+            category: seed.category,
             fruitImage: seed.fruitImage,
             plantImage: seed.plantImage,
             featured: seed.featured,
             limitedSupply: seed.limitedSupply,
+            veryRare: seed.veryRare,
+            inStock: seed.inStock,
+            description: seed.description,
+            flavorProfile: seed.flavorProfile,
           };
-        })
-      );
+        });
+        setItem(STORAGE_KEYS.products, merged);
+      }
     }
     getStoredCart();
     const storedShipping = getItem<ShippingSettings>(STORAGE_KEYS.shipping, shipping);
@@ -138,6 +155,7 @@ export async function hydrateStore() {
   }
 
   setItem(STORAGE_KEYS.products, products);
+  setItem(STORAGE_KEYS.catalogSeed, CATALOG_SEED_VERSION);
   setItem(STORAGE_KEYS.shipping, shipping);
   setItem(STORAGE_KEYS.couriers, couriers);
   setItem(STORAGE_KEYS.idsRates, idsRates);

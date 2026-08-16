@@ -3,16 +3,16 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Apple, Flame, Minus, Plus, Ruler, ShoppingBag, Sprout, TreeDeciduous } from "lucide-react";
+import { Apple, Ban, Minus, Plus, Ruler, ShoppingBag, Sprout, TreeDeciduous } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
-import { ProductCarousel } from "@/components/product/product-carousel";
+import { ProductBadges } from "@/components/product/product-badges";
 import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
 import { categoryIcon } from "@/lib/icons";
-import { SHORT_SUPPLY_IDS } from "@/lib/constants";
+import { isInStock } from "@/lib/product-badges";
 import { formatBZD } from "@/lib/utils";
 
 export default function ProductPage() {
@@ -25,10 +25,14 @@ export default function ProductPage() {
   const [view, setView] = useState<"fruit" | "plant">("fruit");
 
   const related = useMemo(
-    () => products.filter((p) => p.category === product?.category && p.id !== product?.id),
+    () =>
+      products.filter(
+        (p) => p.category === product?.category && p.id !== product?.id && isInStock(p)
+      ),
     [products, product]
   );
   const CategoryIcon = product ? categoryIcon(product.category) : Sprout;
+  const available = product ? isInStock(product) : false;
 
   if (!product) {
     return (
@@ -82,19 +86,22 @@ export default function ProductPage() {
               {product.size}
             </Badge>
             {product.certified && <Badge>Certified</Badge>}
-            {product.limitedSupply && (
-              <Badge className="bg-citrus text-ink">
-                <Flame className="h-3 w-3" />
-                {(SHORT_SUPPLY_IDS as readonly string[]).includes(product.id)
-                  ? "Always short supply"
-                  : "Limited supply"}
-              </Badge>
-            )}
           </div>
-          {(SHORT_SUPPLY_IDS as readonly string[]).includes(product.id) && (
-            <p className="mt-4 flex items-start gap-2 rounded-2xl border border-citrus/40 bg-citrus/10 px-4 py-3 text-sm text-ink/80">
-              <Flame className="mt-0.5 h-4 w-4 shrink-0 text-citrus" />
-              This variety is always in short supply at the nursery. Order soon — we will contact you if stock runs out after you place an order.
+          <ProductBadges product={product} className="mt-4" />
+          {!available && (
+            <div className="mt-4 flex items-start gap-3 rounded-2xl border-2 border-red-300 bg-red-50 px-5 py-4 text-red-900">
+              <Ban className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+              <div>
+                <p className="font-semibold">Currently out of stock</p>
+                <p className="mt-1 text-sm text-red-800/90">
+                  This variety is not available at the nursery right now. Check back soon or message us on WhatsApp for alternatives.
+                </p>
+              </div>
+            </div>
+          )}
+          {available && product.veryRare && (
+            <p className="mt-4 rounded-2xl border border-forest/20 bg-forest/5 px-4 py-3 text-sm text-ink/80">
+              This is a very rare nursery variety with limited availability. Message us on WhatsApp if you would like to be notified when stock returns.
             </p>
           )}
           <p className="mt-6 leading-relaxed text-ink/70">{product.description}</p>
@@ -112,11 +119,11 @@ export default function ProductPage() {
                 <Plus className="h-4 w-4" />
               </button>
             </div>
-            <Button size="lg" onClick={() => add(product.id, qty)}>
+            <Button size="lg" disabled={!available} onClick={() => add(product.id, qty)}>
               <ShoppingBag className="h-4 w-4" />
-              Add to Cart
+              {available ? "Add to Cart" : "Out of Stock"}
             </Button>
-            <Button size="lg" variant="outline" onClick={() => { add(product.id, qty); router.push("/cart"); }}>
+            <Button size="lg" variant="outline" disabled={!available} onClick={() => { add(product.id, qty); router.push("/cart"); }}>
               Buy now
             </Button>
           </div>

@@ -13,6 +13,7 @@ export interface Product {
   flavorProfile: string;
   featured: boolean;
   limitedSupply?: boolean;
+  veryRare?: boolean;
   certified?: boolean;
   inStock?: boolean;
 }
