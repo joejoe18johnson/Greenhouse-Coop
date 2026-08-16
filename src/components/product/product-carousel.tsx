@@ -46,6 +46,21 @@ export function ProductCarousel({
     };
   }, [update, products]);
 
+  // Vertical wheel/trackpad scroll should move the page — not shift carousel content.
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      e.preventDefault();
+      window.scrollBy({ top: e.deltaY, left: 0, behavior: "auto" });
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [products]);
+
   function scrollByPage(dir: -1 | 1) {
     const el = scroller.current;
     if (!el) return;
@@ -71,12 +86,12 @@ export function ProductCarousel({
       <div className="relative">
         <div
           ref={scroller}
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex items-start snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 [scrollbar-width:none] [touch-action:pan-y] [&::-webkit-scrollbar]:hidden"
         >
           {products.map((product, i) => (
             <div
               key={product.id}
-              className="w-[min(100%,20rem)] shrink-0 snap-start sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+              className="h-auto w-[min(100%,20rem)] shrink-0 snap-start sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
             >
               <ProductCard product={product} index={Math.min(i, 3)} />
             </div>

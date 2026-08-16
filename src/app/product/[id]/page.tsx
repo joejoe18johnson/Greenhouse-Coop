@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
+import { ProductCarousel } from "@/components/product/product-carousel";
 import { ProductBadges } from "@/components/product/product-badges";
 import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
