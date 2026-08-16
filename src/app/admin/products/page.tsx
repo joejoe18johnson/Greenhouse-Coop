@@ -70,7 +70,7 @@ export default function AdminProductsPage() {
           <Select className="mt-1" value={form.propagationType} onChange={(e) => setForm({ ...form, propagationType: e.target.value as PropagationType })}>
             <option>Grafted</option>
             <option>Air-Layered</option>
-            <option>Seedling</option>
+            <option>Selective Breeding</option>
           </Select>
         </div>
         <div>

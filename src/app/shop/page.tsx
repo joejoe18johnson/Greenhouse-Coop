@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useProducts } from "@/hooks/use-products";
 import { CATEGORIES } from "@/lib/constants";
 import { PROP_ICONS, categoryIcon } from "@/lib/icons";
-
-const PROP_TYPES = ["Grafted", "Air-Layered", "Seedling"] as const;
+import { PROPAGATION_TYPES } from "@/lib/propagation";
 
 export default function ShopPage() {
   const products = useProducts();
@@ -43,7 +42,7 @@ export default function ShopPage() {
   const propOptions = useMemo(() => {
     return [
       { value: "All", label: "All types", count: products.length, icon: LayoutGrid },
-      ...PROP_TYPES.map((type) => ({
+      ...PROPAGATION_TYPES.map((type) => ({
         value: type,
         label: type,
         count: products.filter((p) => p.propagationType === type).length,
@@ -69,7 +68,7 @@ export default function ShopPage() {
           <p className="text-xs text-leaf">Shop</p>
           <h1 className="mt-2 font-display text-5xl text-forest-dark">Fruit trees</h1>
           <p className="mt-3 max-w-xl text-ink/65">
-            Fruit is shown first. Hover or tap a card to see the tree at its current nursery size.
+            Browse grafted, air-layered, and selectively bred trees for Belize gardens.
           </p>
         </div>
         <DownloadCatalogButton variant="outline" />

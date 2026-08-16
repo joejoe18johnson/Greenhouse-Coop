@@ -35,7 +35,7 @@ export const FAQS = [
     id: "size",
     question: "What size are the trees?",
     answer:
-      "Most grafted citrus and avocado trees ship around 2–3 ft. Mangoes are often 3–4 ft. Hover or tap a product image to see the current nursery tree, then check the listed size on the card.",
+      "Most grafted citrus and avocado trees ship around 2–3 ft. Mangoes are often 3–4 ft. Check the listed size on each product card.",
   },
   {
     id: "boxes",

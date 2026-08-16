@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { hoverImagePath } from "@/lib/product-images";
+import { HOVER_TREE_IMAGES_ENABLED, hoverImagePath } from "@/lib/product-images";
 import { cn } from "@/lib/utils";
 
 export function FruitPlantSwap({
@@ -27,18 +27,36 @@ export function FruitPlantSwap({
   const [isTouch, setIsTouch] = useState(false);
   const hoverImage = hoverImagePath(fruitImage);
   const [treeImage, setTreeImage] = useState(hoverImage);
+  const swapEnabled = HOVER_TREE_IMAGES_ENABLED;
 
   useEffect(() => {
+    if (!swapEnabled) return;
     setIsTouch(window.matchMedia("(hover: none)").matches);
-  }, []);
+  }, [swapEnabled]);
 
   useEffect(() => {
-    if (forceView) setShowPlant(forceView === "plant");
-  }, [forceView]);
+    if (!swapEnabled || !forceView) return;
+    setShowPlant(forceView === "plant");
+  }, [forceView, swapEnabled]);
 
   useEffect(() => {
     setTreeImage(hoverImage);
   }, [hoverImage, plantImage]);
+
+  if (!swapEnabled) {
+    return (
+      <div className={cn("relative isolate", className)}>
+        <Image
+          src={fruitImage}
+          alt={`${alt} fruit`}
+          fill
+          sizes={sizes}
+          priority={priority}
+          className="object-contain drop-shadow-[0_24px_30px_rgba(45,106,79,0.28)]"
+        />
+      </div>
+    );
+  }
 
   return (
     <div

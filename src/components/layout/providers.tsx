@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { StoreProvider } from "@/context/store-context";
@@ -30,7 +31,9 @@ function PageShell({ children }: { children: React.ReactNode }) {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <StoreProvider>
-      <PageShell>{children}</PageShell>
+      <TooltipProvider>
+        <PageShell>{children}</PageShell>
+      </TooltipProvider>
     </StoreProvider>
   );
 }

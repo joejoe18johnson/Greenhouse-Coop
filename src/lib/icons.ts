@@ -62,7 +62,7 @@ export function categoryIcon(category: string): LucideIcon {
 export const PROP_ICONS: Record<string, LucideIcon> = {
   Grafted: Sprout,
   "Air-Layered": Leaf,
-  Seedling: Flower2,
+  "Selective Breeding": Flower2,
 };
 
 export const FAQ_ICONS: Record<string, LucideIcon> = {

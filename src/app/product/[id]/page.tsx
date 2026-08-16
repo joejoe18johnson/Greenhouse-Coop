@@ -9,12 +9,13 @@ import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
 import { ProductCarousel } from "@/components/product/product-carousel";
+import { PropagationBadge } from "@/components/product/propagation-badge";
 import { ProductBadges } from "@/components/product/product-badges";
 import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
 import { categoryIcon } from "@/lib/icons";
 import { isInStock } from "@/lib/product-badges";
-import { formatBZD } from "@/lib/utils";
+import { HOVER_TREE_IMAGES_ENABLED } from "@/lib/product-images";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +25,7 @@ export default function ProductPage() {
   const router = useRouter();
   const [qty, setQty] = useState(1);
   const [view, setView] = useState<"fruit" | "plant">("fruit");
+  const showTreeToggle = HOVER_TREE_IMAGES_ENABLED;
 
   const related = useMemo(
     () =>
@@ -61,16 +63,18 @@ export default function ProductPage() {
               forceView={view}
             />
           </div>
-          <div className="mt-4 flex justify-center gap-2">
-            <Button size="sm" variant={view === "fruit" ? "default" : "outline"} onClick={() => setView("fruit")}>
-              <Apple className="h-4 w-4" />
-              Fruit
-            </Button>
-            <Button size="sm" variant={view === "plant" ? "default" : "outline"} onClick={() => setView("plant")}>
-              <TreeDeciduous className="h-4 w-4" />
-              Tree size
-            </Button>
-          </div>
+          {showTreeToggle && (
+            <div className="mt-4 flex justify-center gap-2">
+              <Button size="sm" variant={view === "fruit" ? "default" : "outline"} onClick={() => setView("fruit")}>
+                <Apple className="h-4 w-4" />
+                Fruit
+              </Button>
+              <Button size="sm" variant={view === "plant" ? "default" : "outline"} onClick={() => setView("plant")}>
+                <TreeDeciduous className="h-4 w-4" />
+                Tree size
+              </Button>
+            </div>
+          )}
         </div>
 
         <div>
@@ -81,7 +85,7 @@ export default function ProductPage() {
           <h1 className="mt-2 font-display text-5xl text-forest-dark">{product.name}</h1>
           <p className="mt-4 text-3xl font-semibold text-forest">{formatBZD(product.price)}</p>
           <div className="mt-5 flex flex-wrap gap-2">
-            <Badge>{product.propagationType}</Badge>
+            <PropagationBadge type={product.propagationType} />
             <Badge className="inline-flex items-center gap-1 bg-cream-dark text-ink/70">
               <Ruler className="h-3 w-3" />
               {product.size}

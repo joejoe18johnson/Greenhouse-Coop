@@ -4,9 +4,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Eye, Ruler, ShoppingBag } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
+import { PropagationBadge } from "@/components/product/propagation-badge";
+import { Button } from "@/components/ui/button";
 import { ProductBadges } from "@/components/product/product-badges";
 import { useCart } from "@/hooks/use-cart";
 import { categoryIcon } from "@/lib/icons";
@@ -51,7 +51,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
 
       <div className="px-5 pb-5 pt-2">
         <div className="mb-3 flex flex-wrap gap-2">
-          <Badge>{product.propagationType}</Badge>
+          <PropagationBadge type={product.propagationType} />
         </div>
         <h3 className="font-display text-2xl text-forest-dark">{product.name}</h3>
         <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink/55">
@@ -64,7 +64,6 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {product.size}
           </span>
         </p>
-        <p className="mt-1 text-[11px] text-ink/40">Hover or tap to see tree size</p>
         <p className="mt-3 font-semibold text-forest">{formatBZD(product.price)}</p>
 
         <Accordion type="single" collapsible className="mt-2">

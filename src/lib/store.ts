@@ -12,6 +12,7 @@ import {
 } from "@/lib/constants";
 import { getItem, setItem } from "@/lib/storage";
 import { generateId, generateInvoiceNumber, generateReference, hashPassword } from "@/lib/utils";
+import { normalizePropagationType } from "@/lib/propagation";
 import { computeOrderTotal } from "@/lib/shipping";
 import { ensureDemoData } from "@/lib/demo";
 import type {
@@ -127,6 +128,7 @@ export async function hydrateStore() {
             inStock: seed.inStock,
             description: seed.description,
             flavorProfile: seed.flavorProfile,
+            propagationType: seed.propagationType,
           };
         });
         setItem(STORAGE_KEYS.products, merged);
@@ -169,7 +171,11 @@ export async function hydrateStore() {
 
 export function getProducts(): Product[] {
   const stored = getItem<Product[]>(STORAGE_KEYS.products, []);
-  return stored.length ? stored : products;
+  const list = stored.length ? stored : products;
+  return list.map((p) => ({
+    ...p,
+    propagationType: normalizePropagationType(p.propagationType),
+  }));
 }
 
 export function saveProducts(next: Product[]) {

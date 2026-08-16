@@ -6,6 +6,7 @@ import { ArrowRight, CalendarDays, CircleHelp, Download, Leaf, MapPin, Sparkles,
 import { Button } from "@/components/ui/button";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { OrderProcess } from "@/components/home/order-process";
+import { PropagationBenefits } from "@/components/home/propagation-benefits";
 import { ProductCarousel } from "@/components/product/product-carousel";
 import { useProducts } from "@/hooks/use-products";
 import { FAST_SELLER_IDS } from "@/lib/constants";
@@ -58,7 +59,7 @@ export default function HomePage() {
               transition={{ delay: 0.16 }}
               className="mt-6 max-w-xl text-lg text-cream/80"
             >
-              Grafted, Air-Layered & Seedling Trees Grown for Belize Conditions
+              Grafted, Air-Layered & Selectively Bred Trees for Belize Conditions
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -78,6 +79,8 @@ export default function HomePage() {
       </section>
 
       <OrderProcess />
+
+      <PropagationBenefits />
 
       <section className="mx-auto max-w-7xl px-6 pb-24 pt-16">
         <div className="mb-12 flex items-end justify-between gap-6">
