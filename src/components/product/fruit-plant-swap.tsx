@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { hoverImagePath } from "@/lib/product-images";
 import { cn } from "@/lib/utils";
 
 export function FruitPlantSwap({
@@ -24,6 +25,8 @@ export function FruitPlantSwap({
 }) {
   const [showPlant, setShowPlant] = useState(false);
   const [isTouch, setIsTouch] = useState(false);
+  const hoverImage = hoverImagePath(fruitImage);
+  const [treeImage, setTreeImage] = useState(hoverImage);
 
   useEffect(() => {
     setIsTouch(window.matchMedia("(hover: none)").matches);
@@ -32,6 +35,10 @@ export function FruitPlantSwap({
   useEffect(() => {
     if (forceView) setShowPlant(forceView === "plant");
   }, [forceView]);
+
+  useEffect(() => {
+    setTreeImage(hoverImage);
+  }, [hoverImage, plantImage]);
 
   return (
     <div
@@ -50,12 +57,15 @@ export function FruitPlantSwap({
           className="relative h-full w-full"
         >
           <Image
-            src={showPlant ? plantImage : fruitImage}
+            src={showPlant ? treeImage : fruitImage}
             alt={showPlant ? `${alt} tree size` : `${alt} fruit`}
             fill
             sizes={sizes}
             priority={priority}
             className="object-contain drop-shadow-[0_24px_30px_rgba(45,106,79,0.28)]"
+            onError={() => {
+              setTreeImage((current) => (current !== plantImage ? plantImage : current));
+            }}
           />
         </motion.div>
       </AnimatePresence>
