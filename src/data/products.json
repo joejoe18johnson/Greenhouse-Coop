@@ -1311,23 +1311,6 @@
   {
     "featured": false,
     "limitedSupply": false,
-    "certified": true,
-    "inStock": true,
-    "size": "2-3 ft",
-    "id": "yellow-spanish-guava",
-    "name": "Yellow Spanish Guava",
-    "category": "Guava",
-    "price": 18,
-    "propagationType": "Grafted",
-    "description": "Golden-skinned Spanish type with sweet flesh.",
-    "flavorProfile": "Yellow Spanish guavas are sweet, tropical, and fragrant. Excellent fresh and in paste.",
-    "fruitImage": "/products/guava-fruit.png",
-    "plantImage": "/products/tropical-plant.png",
-    "veryRare": false
-  },
-  {
-    "featured": false,
-    "limitedSupply": false,
     "certified": false,
     "inStock": true,
     "size": "2-3 ft",

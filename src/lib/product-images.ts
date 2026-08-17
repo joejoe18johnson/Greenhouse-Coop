@@ -33,7 +33,6 @@ const HOVER_GUAVA_IDS = new Set([
   "pink-cuban-guava",
   "chinese-guava",
   "strawberry-guava",
-  "yellow-spanish-guava",
 ]);
 
 /** Mandarins, tangerines, grapefruits, and kumquat share one hover image */
