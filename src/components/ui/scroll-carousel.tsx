@@ -166,7 +166,7 @@ export function ScrollCarousel({
 
       {hasControls && mobileControls && (
         <div className="mt-5 sm:hidden">
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-2">
             <Button
               type="button"
               variant="outline"
@@ -179,7 +179,7 @@ export function ScrollCarousel({
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <div className="flex min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex min-w-0 flex-1 items-center justify-center gap-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {Array.from({ length: pages }).map((_, i) => (
                 <button
                   key={i}
@@ -187,7 +187,7 @@ export function ScrollCarousel({
                   aria-label={`Go to slide ${i + 1}`}
                   aria-current={i === page ? "true" : undefined}
                   onClick={() => goTo(i)}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
+                  className="flex h-9 w-7 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
                 >
                   <span
                     className={cn(

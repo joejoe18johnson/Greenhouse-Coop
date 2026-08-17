@@ -14,23 +14,69 @@ import {
   Warehouse,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useAdminCounts } from "@/hooks/use-admin-counts";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 
-const links: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/admin", label: "Overview", icon: LayoutDashboard },
-  { href: "/admin/orders", label: "Orders", icon: ClipboardList },
-  { href: "/admin/payments", label: "Payments", icon: Banknote },
-  { href: "/admin/products", label: "Products", icon: Sprout },
+const links: { href: string; label: string; icon: LucideIcon; countKey?: "overview" | "orders" | "payments" | "products" }[] = [
+  { href: "/admin", label: "Overview", icon: LayoutDashboard, countKey: "overview" },
+  { href: "/admin/orders", label: "Orders", icon: ClipboardList, countKey: "orders" },
+  { href: "/admin/payments", label: "Payments", icon: Banknote, countKey: "payments" },
+  { href: "/admin/products", label: "Products", icon: Sprout, countKey: "products" },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/shipping", label: "Shipping", icon: Truck },
   { href: "/admin/couriers", label: "Couriers", icon: Warehouse },
 ];
 
+function NavBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+
+  return (
+    <span className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full bg-citrus px-1.5 py-0.5 text-[10px] font-semibold leading-none text-forest-dark">
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
+function AdminNavLink({
+  link,
+  active,
+  count,
+  compact = false,
+}: {
+  link: (typeof links)[number];
+  active: boolean;
+  count: number;
+  compact?: boolean;
+}) {
+  return (
+    <Link
+      href={link.href}
+      className={cn(
+        compact
+          ? "inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2.5 text-xs font-medium whitespace-nowrap"
+          : "inline-flex items-center gap-3 rounded-full px-4 py-3 text-sm",
+        compact
+          ? active
+            ? "bg-forest text-cream"
+            : "bg-forest/10 text-forest"
+          : active
+            ? "bg-white/10 text-cream"
+            : "text-cream/70 hover:bg-white/10 hover:text-cream"
+      )}
+    >
+      <link.icon className={compact ? "h-3.5 w-3.5" : "h-4 w-4"} />
+      {link.label}
+      <NavBadge count={count} />
+    </Link>
+  );
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, ready, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const counts = useAdminCounts();
 
   useEffect(() => {
     if (!ready) return;
@@ -39,6 +85,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!ready || !user || user.role !== "admin") {
     return <div className="px-6 py-24 text-center text-ink/50">Checking admin access…</div>;
+  }
+
+  function badgeCount(link: (typeof links)[number]) {
+    if (!link.countKey) return 0;
+    return counts[link.countKey];
   }
 
   return (
@@ -50,21 +101,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
           <nav className="mt-12 flex flex-col gap-2">
             {links.map((link) => (
-              <Link
+              <AdminNavLink
                 key={link.href}
-                href={link.href}
-                className={cn(
-                  "inline-flex items-center gap-3 rounded-full px-4 py-3 text-sm text-cream/70 hover:bg-white/10 hover:text-cream",
-                  pathname === link.href && "bg-white/10 text-cream"
-                )}
-              >
-                <link.icon className="h-4 w-4" />
-                {link.label}
-              </Link>
+                link={link}
+                active={pathname === link.href}
+                count={badgeCount(link)}
+              />
             ))}
             <button
               className="mt-10 inline-flex items-center gap-3 rounded-full px-4 py-3 text-left text-sm text-cream/50 hover:bg-white/10 hover:text-cream"
-              onClick={() => { logout(); router.push("/"); }}
+              onClick={() => {
+                logout();
+                router.push("/");
+              }}
             >
               <LogOut className="h-4 w-4" />
               Sign out
@@ -90,17 +139,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
           <nav className="mb-6 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] print:hidden md:hidden [&::-webkit-scrollbar]:hidden">
             {links.map((link) => (
-              <Link
+              <AdminNavLink
                 key={link.href}
-                href={link.href}
-                className={cn(
-                  "inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2.5 text-xs font-medium whitespace-nowrap",
-                  pathname === link.href ? "bg-forest text-cream" : "bg-forest/10 text-forest"
-                )}
-              >
-                <link.icon className="h-3.5 w-3.5" />
-                {link.label}
-              </Link>
+                link={link}
+                active={pathname === link.href}
+                count={badgeCount(link)}
+                compact
+              />
             ))}
           </nav>
           {children}

@@ -2,17 +2,20 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, MessageSquare, Printer } from "lucide-react";
+import { ArrowLeft, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
+import { DownloadInvoiceButton } from "@/components/invoice/download-invoice-button";
 import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { OrderStatusBanner } from "@/components/orders/order-status-banner";
 import { useAuth } from "@/hooks/use-auth";
 import { getBankDetails, getOrders } from "@/lib/store";
+import { customerStatusHeadline } from "@/lib/order-status-messages";
 import { formatBZD } from "@/lib/utils";
-import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import { whatsappPaymentLink } from "@/data/faq";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
+import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -35,6 +38,8 @@ export default function OrderDetailPage() {
   const courierEstimate =
     order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
 
+  const invoiceId = `order-invoice-${order.id}`;
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
       <Button variant="ghost" className="print:hidden" asChild>
@@ -53,14 +58,16 @@ export default function OrderDetailPage() {
           </p>
         </div>
         {invoiceReady && (
-          <Button variant="outline" onClick={() => window.print()}>
-            <Printer className="h-4 w-4" />
-            Print invoice
-          </Button>
+          <DownloadInvoiceButton
+            targetId={invoiceId}
+            filename={`${order.invoiceNumber}.pdf`}
+          />
         )}
       </div>
 
-      {awaitingPay && (
+      {order.status === "Payment Review" && <OrderStatusBanner status={order.status} />}
+
+      {awaitingPay && order.status === "Payment Pending" && (
         <div className="mt-8 rounded-[28px] bg-citrus/10 p-5 text-sm print:hidden">
           <p className="font-semibold text-forest">Next step: send proof on WhatsApp</p>
           <p className="mt-2">Your order is placed. Transfer <strong>{formatBZD(order.total)}</strong> to Greenhouse Co-Op, then send the screenshot here with reference <strong className="keep-case">{order.reference}</strong>.</p>
@@ -83,6 +90,8 @@ export default function OrderDetailPage() {
         </div>
       )}
 
+      {!awaitingPay && <OrderStatusBanner status={order.status} />}
+
       {order.shipping.method === "courier" && courierEstimate > 0 && !awaitingPay && (
         <p className="mt-6 rounded-2xl bg-leaf/10 px-4 py-3 text-sm text-forest print:hidden">
           Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "courier"} when you collect. {COURIER_ESTIMATE_NOTICE}
@@ -100,7 +109,7 @@ export default function OrderDetailPage() {
       <ol className="mt-8 space-y-3 print:hidden">
         {order.timeline.map((event, i) => (
           <li key={i} className="rounded-2xl bg-white/80 p-4">
-            <p className="font-medium text-forest">{event.status}</p>
+            <p className="font-medium text-forest">{customerStatusHeadline(event.status)}</p>
             <p className="text-xs text-ink/50">{new Date(event.at).toLocaleString()}</p>
             {event.note && <p className="text-sm text-ink/65">{event.note}</p>}
           </li>
@@ -109,7 +118,7 @@ export default function OrderDetailPage() {
 
       <div className="mt-8">
         {invoiceReady ? (
-          <OrderInvoice order={order} customer={user} bank={bank} />
+          <OrderInvoice id={invoiceId} order={order} customer={user} bank={bank} />
         ) : (
           <p className="rounded-[24px] bg-white/80 p-6 text-sm text-ink/60 print:hidden">
             An invoice is created automatically when Greenhouse Co-Op confirms your payment.

@@ -1,5 +1,8 @@
-import { forwardRef } from "react";
+"use client";
+
+import { forwardRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import { Eye, EyeOff, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
@@ -26,6 +29,33 @@ export function IconInput({
     <div className="relative">
       <Icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-forest/45" />
       <Input className={cn("pl-11", className)} {...props} />
+    </div>
+  );
+}
+
+export function PasswordInput({
+  icon: Icon = Lock,
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & { icon?: LucideIcon }) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className="relative">
+      <Icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-forest/45" />
+      <Input
+        className={cn("pl-11 pr-11", className)}
+        type={visible ? "text" : "password"}
+        {...props}
+      />
+      <button
+        type="button"
+        aria-label={visible ? "Hide password" : "Show password"}
+        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-forest/45 transition hover:bg-forest/5 hover:text-forest"
+        onClick={() => setVisible((current) => !current)}
+      >
+        {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
     </div>
   );
 }

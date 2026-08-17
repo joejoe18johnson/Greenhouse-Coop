@@ -14,7 +14,8 @@ import { getItem, setItem } from "@/lib/storage";
 import { generateId, generateInvoiceNumber, generateReference, hashPassword } from "@/lib/utils";
 import { normalizePropagationType } from "@/lib/propagation";
 import { computeOrderTotal } from "@/lib/shipping";
-import { ensureDemoData } from "@/lib/demo";
+import { ensureAdminUser } from "@/lib/demo";
+import { customerTimelineNote } from "@/lib/order-status-messages";
 import type {
   BankDetails,
   CartItem,
@@ -149,7 +150,7 @@ export async function hydrateStore() {
     if (storedOrders.length) {
       setItem(STORAGE_KEYS.orders, normalizeOrders(storedOrders));
     }
-    await ensureDemoData({ seedAdmin, products });
+    await ensureAdminUser(seedAdmin);
     return;
   }
 
@@ -163,7 +164,7 @@ export async function hydrateStore() {
   setItem(STORAGE_KEYS.orders, [] as Order[]);
   setItem(STORAGE_KEYS.cart, { items: [], updatedAt: new Date().toISOString() } as StoredCart);
   setItem(STORAGE_KEYS.hydrated, true);
-  await ensureDemoData({ seedAdmin, products });
+  await ensureAdminUser(seedAdmin);
 }
 
 export function getProducts(): Product[] {
@@ -313,7 +314,7 @@ export function createOrder(input: Omit<Order, "id" | "createdAt" | "updatedAt" 
     createdAt: now,
     updatedAt: now,
     timeline: [
-      { status: input.status, at: now, note: "Order placed" },
+      { status: input.status, at: now, note: customerTimelineNote(input.status) },
     ],
   };
   const orders = getOrders();
@@ -339,7 +340,7 @@ export function updateOrderStatus(id: string, status: OrderStatus, note?: string
         status === "Paid"
           ? { ...order.payment, reviewedAt: now, reviewedBy: "admin" }
           : order.payment,
-      timeline: [...order.timeline, { status, at: now, note }],
+      timeline: [...order.timeline, { status, at: now, note: customerTimelineNote(status, note) }],
     };
   });
   saveOrders(next);

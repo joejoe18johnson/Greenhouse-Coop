@@ -9,9 +9,31 @@ import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import ws from "ws";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
+
+/** Load .env.local / .env for npm scripts (Next.js does not auto-load these for node scripts). */
+function loadEnvFile(filename) {
+  try {
+    const content = readFileSync(join(root, filename), "utf8");
+    for (const line of content.split("\n")) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eq = trimmed.indexOf("=");
+      if (eq === -1) continue;
+      const key = trimmed.slice(0, eq).trim();
+      const value = trimmed.slice(eq + 1).trim();
+      if (process.env[key] === undefined) process.env[key] = value;
+    }
+  } catch {
+    // file optional
+  }
+}
+
+loadEnvFile(".env.local");
+loadEnvFile(".env");
 
 function loadJson(relativePath) {
   return JSON.parse(readFileSync(join(root, relativePath), "utf8"));
@@ -21,12 +43,15 @@ const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !serviceKey) {
-  console.error("Missing SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY");
+  console.error(
+    "Missing Supabase credentials. Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to .env.local (see .env.example)."
+  );
   process.exit(1);
 }
 
 const supabase = createClient(url, serviceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
+  realtime: { transport: ws },
 });
 
 const products = loadJson("src/data/products.json");

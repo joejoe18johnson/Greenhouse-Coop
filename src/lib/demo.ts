@@ -2,7 +2,6 @@ import {
   ADMIN_EMAIL,
   DEMO_CUSTOMER_EMAIL,
   DEMO_CUSTOMER_PASSWORD,
-  DEMO_SEED_VERSION,
   PICKUP_LOCATION,
   STORAGE_KEYS,
 } from "@/lib/constants";
@@ -325,32 +324,9 @@ export function seedDemoOrders(products: Product[]): Order[] {
   return [pending, review, paid, processing, shipped, completed];
 }
 
-export async function ensureDemoData(options: {
-  seedAdmin: () => Promise<User>;
-  products: Product[];
-}) {
+export async function ensureAdminUser(seedAdmin: () => Promise<User>) {
   const users = getItem<User[]>(STORAGE_KEYS.users, []);
-  const orders = getItem<Order[]>(STORAGE_KEYS.orders, []);
-  const version = getItem<string>(STORAGE_KEYS.demoSeed, "");
-
-  const demoUsers = [await seedDemoCustomer(), await seedDemoMaya()];
-  let nextUsers = [...users];
-  for (const demo of demoUsers) {
-    if (!nextUsers.some((u) => u.id === demo.id || u.email === demo.email)) {
-      nextUsers.push(demo);
-    } else {
-      nextUsers = nextUsers.map((u) => (u.id === demo.id || u.email === demo.email ? { ...u, ...demo } : u));
-    }
-  }
-  if (!nextUsers.some((u) => u.email === ADMIN_EMAIL)) {
-    nextUsers.unshift(await options.seedAdmin());
-  }
-  setItem(STORAGE_KEYS.users, nextUsers);
-
-  if (version !== DEMO_SEED_VERSION) {
-    const demoOrders = seedDemoOrders(options.products);
-    const kept = orders.filter((o) => !o.id.startsWith("ord_demo_"));
-    setItem(STORAGE_KEYS.orders, [...demoOrders, ...kept]);
-    setItem(STORAGE_KEYS.demoSeed, DEMO_SEED_VERSION);
+  if (!users.some((user) => user.email === ADMIN_EMAIL)) {
+    setItem(STORAGE_KEYS.users, [await seedAdmin(), ...users]);
   }
 }

@@ -1,4 +1,5 @@
 import { isSupabaseEnabled } from "@/lib/supabase/config";
+import { notifyStoreUpdate } from "@/lib/store-events";
 import * as local from "@/lib/store-local";
 import * as remote from "@/lib/store-supabase";
 
@@ -127,8 +128,9 @@ export function updateUser(user: Parameters<typeof local.updateUser>[0]) {
 }
 
 export function createOrder(input: Parameters<typeof local.createOrder>[0]) {
-  if (isRemoteBackend()) return remote.createOrder(input);
-  return local.createOrder(input);
+  const order = isRemoteBackend() ? remote.createOrder(input) : local.createOrder(input);
+  notifyStoreUpdate();
+  return order;
 }
 
 export function updateOrderStatus(
@@ -136,13 +138,17 @@ export function updateOrderStatus(
   status: Parameters<typeof local.updateOrderStatus>[1],
   note?: string
 ) {
-  if (isRemoteBackend()) return remote.updateOrderStatus(id, status, note);
-  return local.updateOrderStatus(id, status, note);
+  const order = isRemoteBackend()
+    ? remote.updateOrderStatus(id, status, note)
+    : local.updateOrderStatus(id, status, note);
+  notifyStoreUpdate();
+  return order;
 }
 
 export function updateOrder(order: Parameters<typeof local.updateOrder>[0]) {
-  if (isRemoteBackend()) return remote.updateOrder(order);
-  return local.updateOrder(order);
+  if (isRemoteBackend()) remote.updateOrder(order);
+  else local.updateOrder(order);
+  notifyStoreUpdate();
 }
 
 export async function syncAuthSession() {

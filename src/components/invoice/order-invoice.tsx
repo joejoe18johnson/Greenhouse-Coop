@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { BRAND } from "@/lib/constants";
 import { bankAccounts } from "@/lib/bank";
 import { fulfillmentLabel } from "@/lib/shipping";
@@ -22,25 +21,31 @@ export function OrderInvoice({
   order,
   customer,
   bank,
+  id,
 }: {
   order: Order;
   customer?: User | null;
   bank: BankDetails;
+  id?: string;
 }) {
   const accounts = bankAccounts(bank);
   const issued = order.invoiceIssuedAt || order.createdAt;
   const confirmed = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
 
   return (
-    <article className="invoice-sheet overflow-hidden rounded-[28px] border border-forest/10 bg-white text-ink shadow-card print:rounded-none print:border-0 print:shadow-none">
+    <article
+      id={id}
+      className="invoice-sheet overflow-hidden rounded-[28px] border border-forest/10 bg-white text-ink shadow-card print:rounded-none print:border-0 print:shadow-none"
+    >
       <div className="flex flex-wrap items-start justify-between gap-6 border-b border-forest/10 px-8 py-6">
         <div className="flex items-center gap-4">
-          <Image
+          <img
             src="/logos/logo-icon.png"
             alt=""
             width={56}
             height={56}
             className="h-14 w-14 object-contain"
+            crossOrigin="anonymous"
           />
           <div>
             <p className="text-2xl font-semibold tracking-tight text-forest-dark">{BRAND.name}</p>

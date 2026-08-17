@@ -1,3 +1,4 @@
+import { customerTimelineNote } from "@/lib/order-status-messages";
 import productsSeed from "@/data/products.json";
 import shippingSeed from "@/data/shipping.json";
 import couriersSeed from "@/data/couriers.json";
@@ -348,7 +349,7 @@ export function createOrder(
     invoiceNumber: generateInvoiceNumber(),
     createdAt: now,
     updatedAt: now,
-    timeline: [{ status: input.status, at: now, note: "Order placed" }],
+    timeline: [{ status: input.status, at: now, note: customerTimelineNote(input.status) }],
   };
 
   const orders = getOrders();
@@ -376,7 +377,7 @@ export function updateOrderStatus(id: string, status: OrderStatus, note?: string
       invoiceIssuedAt: issuedStatuses.includes(status) ? order.invoiceIssuedAt ?? now : order.invoiceIssuedAt,
       payment:
         status === "Paid" ? { ...order.payment, reviewedAt: now, reviewedBy: "admin" } : order.payment,
-      timeline: [...order.timeline, { status, at: now, note }],
+      timeline: [...order.timeline, { status, at: now, note: customerTimelineNote(status, note) }],
     };
   });
 

@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, Mail, MapPin, MessageSquare, Phone, Printer, UserRound } from "lucide-react";
+import { ArrowLeft, Mail, MapPin, MessageSquare, Phone, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { DownloadInvoiceButton } from "@/components/invoice/download-invoice-button";
 import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { ORDER_STATUSES } from "@/lib/constants";
 import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
@@ -33,6 +34,8 @@ export default function AdminOrderDetailPage() {
   const courierEstimate =
     order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
 
+  const invoiceId = `order-invoice-${order.id}`;
+
   return (
     <div className="min-w-0">
       <Button variant="ghost" className="print:hidden" asChild>
@@ -51,30 +54,30 @@ export default function AdminOrderDetailPage() {
         </div>
         <div className="flex flex-wrap gap-2">
           {order.status === "Payment Pending" || order.status === "Payment Review" ? (
-            <Button onClick={() => { updateOrderStatus(order.id, "Paid", "Payment confirmed. Invoice issued."); refresh(); }}>
+            <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
               Confirm payment
             </Button>
           ) : null}
           {order.status === "Paid" && (
-            <Button onClick={() => { updateOrderStatus(order.id, "Processing", "Order confirmed for fulfillment."); refresh(); }}>
+            <Button onClick={() => { updateOrderStatus(order.id, "Processing"); refresh(); }}>
               Fulfill order
             </Button>
           )}
           {order.status === "Processing" && (
-            <Button onClick={() => { updateOrderStatus(order.id, "Shipped", "Order sent."); refresh(); }}>
+            <Button onClick={() => { updateOrderStatus(order.id, "Shipped"); refresh(); }}>
               Mark as sent
             </Button>
           )}
           {order.status === "Shipped" && (
-            <Button onClick={() => { updateOrderStatus(order.id, "Completed", "Order completed."); refresh(); }}>
+            <Button onClick={() => { updateOrderStatus(order.id, "Completed"); refresh(); }}>
               Complete
             </Button>
           )}
           {invoiceReady && (
-            <Button variant="outline" onClick={() => window.print()}>
-              <Printer className="h-4 w-4" />
-              Print invoice
-            </Button>
+            <DownloadInvoiceButton
+              targetId={invoiceId}
+              filename={`${order.invoiceNumber}.pdf`}
+            />
           )}
         </div>
       </div>
@@ -85,7 +88,7 @@ export default function AdminOrderDetailPage() {
             key={status}
             size="sm"
             variant={order.status === status ? "default" : "outline"}
-            onClick={() => { updateOrderStatus(order.id, status as OrderStatus, `Status set to ${status}`); refresh(); }}
+            onClick={() => { updateOrderStatus(order.id, status as OrderStatus); refresh(); }}
             className="shrink-0"
           >
             {status}
@@ -177,12 +180,16 @@ export default function AdminOrderDetailPage() {
             {customer?.phone ? <> · <span className="keep-case">{customer.phone}</span></> : ""}.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Button onClick={() => { updateOrderStatus(order.id, "Paid", "Payment confirmed. Invoice issued."); refresh(); }}>
+            <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
               Confirm payment
             </Button>
             <Button variant="outline" onClick={() => {
               updateOrder({ ...order, status: "Payment Pending", payment: { ...order.payment, rejectionReason: reason } });
-              updateOrderStatus(order.id, "Payment Pending", reason || "Payment rejected");
+              updateOrderStatus(
+                order.id,
+                "Payment Pending",
+                reason || "We could not verify your payment. Please contact us or resubmit proof on WhatsApp."
+              );
               refresh();
             }}>Reject</Button>
           </div>
@@ -206,7 +213,7 @@ export default function AdminOrderDetailPage() {
       {invoiceReady && (
         <div className="mt-8">
           <h2 className="mb-4 font-semibold text-forest print:hidden">Invoice</h2>
-          <OrderInvoice order={order} customer={customer} bank={bank} />
+          <OrderInvoice id={invoiceId} order={order} customer={customer} bank={bank} />
         </div>
       )}
     </div>

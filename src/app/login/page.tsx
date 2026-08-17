@@ -3,17 +3,11 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Lock, LogIn, Mail } from "lucide-react";
+import { LogIn, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IconInput } from "@/components/ui/input";
+import { IconInput, PasswordInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
-import {
-  ADMIN_EMAIL,
-  ADMIN_PASSWORD,
-  DEMO_CUSTOMER_EMAIL,
-  DEMO_CUSTOMER_PASSWORD,
-} from "@/lib/constants";
 import { safeNextPath } from "@/lib/utils";
 
 function LoginForm() {
@@ -50,24 +44,20 @@ function LoginForm() {
       {next === "/cart" && (
         <p className="mt-3 text-sm text-forest">Your cart is saved. After you sign in, we will take you back to it.</p>
       )}
-      <form onSubmit={onSubmit} className="mt-8 space-y-4 rounded-[28px] bg-white/80 p-6">
+      <form onSubmit={onSubmit} className="mt-8 space-y-5 rounded-[28px] bg-white/80 p-6">
         <div>
           <Label>Email</Label>
-          <IconInput className="mt-1" icon={Mail} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <IconInput className="mt-1.5" icon={Mail} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div>
           <Label>Password</Label>
-          <IconInput className="mt-1" icon={Lock} type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <PasswordInput className="mt-1.5" required value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <Button className="w-full" type="submit">
           <LogIn className="h-4 w-4" />
           Sign in
         </Button>
-        <div className="space-y-1 text-center text-xs text-ink/45 keep-case break-all">
-          <p>Admin: <button type="button" className="text-forest underline" onClick={() => { setEmail(ADMIN_EMAIL); setPassword(ADMIN_PASSWORD); }}>{ADMIN_EMAIL}</button> / {ADMIN_PASSWORD}</p>
-          <p>Customer: <button type="button" className="text-forest underline" onClick={() => { setEmail(DEMO_CUSTOMER_EMAIL); setPassword(DEMO_CUSTOMER_PASSWORD); }}>{DEMO_CUSTOMER_EMAIL}</button> / {DEMO_CUSTOMER_PASSWORD}</p>
-        </div>
       </form>
     </>
   );
