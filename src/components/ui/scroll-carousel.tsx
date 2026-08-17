@@ -18,7 +18,7 @@ function readGap(el: HTMLElement) {
 }
 
 const TRACK_CLASS =
-  "flex items-start overflow-x-auto overflow-y-visible overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] snap-x snap-mandatory [&::-webkit-scrollbar]:hidden";
+  "flex items-start overflow-x-auto overflow-y-visible overscroll-x-contain [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] snap-x snap-mandatory scroll-smooth [scroll-behavior:smooth] [&::-webkit-scrollbar]:hidden";
 
 export function ScrollCarousel({
   children,
@@ -70,11 +70,13 @@ export function ScrollCarousel({
     if (!el) return;
     update();
     el.addEventListener("scroll", update, { passive: true });
+    el.addEventListener("scrollend", update);
     const ro = new ResizeObserver(update);
     ro.observe(el);
     Array.from(el.children).forEach((child) => ro.observe(child));
     return () => {
       el.removeEventListener("scroll", update);
+      el.removeEventListener("scrollend", update);
       ro.disconnect();
     };
   }, [update, children]);
@@ -106,7 +108,8 @@ export function ScrollCarousel({
   function scrollByPage(dir: -1 | 1) {
     const el = scroller.current;
     if (!el) return;
-    el.scrollBy({ left: dir * scrollStep(), behavior: "smooth" });
+    const target = el.scrollLeft + dir * scrollStep();
+    el.scrollTo({ left: target, behavior: "smooth" });
   }
 
   function goTo(index: number) {
@@ -127,7 +130,7 @@ export function ScrollCarousel({
           )}
         >
           {items.map((child, i) => (
-            <div key={i} className={cn("h-auto shrink-0", itemClassName)}>
+            <div key={i} className={cn("h-auto shrink-0 snap-always", itemClassName)}>
               {child}
             </div>
           ))}
@@ -162,54 +165,59 @@ export function ScrollCarousel({
       </div>
 
       {hasControls && mobileControls && (
-        <div className="mt-5 flex items-center justify-center gap-3 sm:hidden">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label={prevLabel}
-            disabled={!canPrev}
-            onClick={() => scrollByPage(-1)}
-            className="h-10 w-10 shrink-0"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
+        <div className="mt-5 sm:hidden">
+          <div className="flex items-center justify-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label={prevLabel}
+              disabled={!canPrev}
+              onClick={() => scrollByPage(-1)}
+              className="h-10 w-10 shrink-0 rounded-full"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
 
-          <div className="flex min-w-0 max-w-[10rem] items-center justify-center gap-0.5 overflow-x-auto px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {Array.from({ length: pages }).map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Go to slide ${i + 1}`}
-                aria-current={i === page ? "true" : undefined}
-                onClick={() => goTo(i)}
-                className="flex h-9 w-8 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
-              >
-                <span
-                  className={cn(
-                    "block rounded-full transition-all duration-200",
-                    i === page ? "h-2 w-5 bg-forest" : "h-2 w-2 bg-forest/25"
-                  )}
-                />
-              </button>
-            ))}
+            <div className="flex min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {Array.from({ length: pages }).map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Go to slide ${i + 1}`}
+                  aria-current={i === page ? "true" : undefined}
+                  onClick={() => goTo(i)}
+                  className="flex h-8 w-7 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
+                >
+                  <span
+                    className={cn(
+                      "block rounded-full transition-[width,background-color,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                      i === page ? "h-2 w-6 bg-forest opacity-100" : "h-2 w-2 bg-forest/30 opacity-80"
+                    )}
+                  />
+                </button>
+              ))}
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label={nextLabel}
+              disabled={!canNext}
+              onClick={() => scrollByPage(1)}
+              className="h-10 w-10 shrink-0 rounded-full"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
 
-          <span className="min-w-[2.5rem] shrink-0 text-center text-xs font-medium tabular-nums text-ink/45">
-            {page + 1}/{pages}
-          </span>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label={nextLabel}
-            disabled={!canNext}
-            onClick={() => scrollByPage(1)}
-            className="h-10 w-10 shrink-0"
+          <p
+            className="mt-2 text-center text-[11px] font-medium tabular-nums tracking-wide text-ink/45 transition-opacity duration-300"
+            aria-live="polite"
           >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+            {page + 1} of {pages}
+          </p>
         </div>
       )}
     </div>
