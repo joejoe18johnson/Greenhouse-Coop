@@ -38,8 +38,8 @@ export default function AdminHomePage() {
   ];
 
   return (
-    <div>
-      <h1 className="font-display text-4xl font-semibold text-forest-dark">Dashboard</h1>
+    <div className="min-w-0">
+      <h1 className="page-title font-semibold">Dashboard</h1>
       <p className="mt-2 text-sm text-ink/55">Orders, payments, customers, and fulfillment in one place.</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -75,17 +75,19 @@ export default function AdminHomePage() {
           </div>
           <div className="mt-4 space-y-2 text-sm">
             {pendingPay.slice(0, 6).map((o) => (
-              <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center justify-between rounded-xl p-3 hover:bg-cream">
-                <span>
-                  <span className="font-medium text-forest keep-case">{o.reference}</span>
-                  <span className="mt-0.5 block text-xs text-ink/50">
-                    {o.shipping.firstName} {o.shipping.lastName} · <span className="keep-case">{o.shipping.phone}</span>
+              <Link key={o.id} href={`/admin/orders/${o.id}`} className="block rounded-xl p-3 hover:bg-cream">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="min-w-0">
+                    <span className="font-medium text-forest keep-case">{o.reference}</span>
+                    <span className="mt-0.5 block text-xs text-ink/50">
+                      {o.shipping.firstName} {o.shipping.lastName} · <span className="keep-case">{o.shipping.phone}</span>
+                    </span>
                   </span>
-                </span>
-                <span className="text-right">
-                  <StatusBadge status={o.status} />
-                  <span className="mt-1 block">{formatBZD(o.total)}</span>
-                </span>
+                  <span className="flex items-center justify-between gap-3 sm:flex-col sm:items-end sm:text-right">
+                    <StatusBadge status={o.status} />
+                    <span>{formatBZD(o.total)}</span>
+                  </span>
+                </div>
               </Link>
             ))}
             {pendingPay.length === 0 && <p className="text-ink/50">No payments waiting.</p>}
@@ -101,14 +103,16 @@ export default function AdminHomePage() {
           </div>
           <div className="mt-4 space-y-2 text-sm">
             {[...toFulfill, ...sent.filter((o) => o.status === "Shipped")].slice(0, 6).map((o) => (
-              <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center justify-between rounded-xl p-3 hover:bg-cream">
-                <span>
-                  <span className="font-medium text-forest keep-case">{o.reference}</span>
-                  <span className="mt-0.5 block text-xs text-ink/50">
-                    {o.shipping.firstName} {o.shipping.lastName} · {o.shipping.town}
+              <Link key={o.id} href={`/admin/orders/${o.id}`} className="block rounded-xl p-3 hover:bg-cream">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="min-w-0">
+                    <span className="font-medium text-forest keep-case">{o.reference}</span>
+                    <span className="mt-0.5 block text-xs text-ink/50">
+                      {o.shipping.firstName} {o.shipping.lastName} · {o.shipping.town}
+                    </span>
                   </span>
-                </span>
-                <StatusBadge status={o.status} />
+                  <StatusBadge status={o.status} />
+                </div>
               </Link>
             ))}
             {toFulfill.length === 0 && sent.filter((o) => o.status === "Shipped").length === 0 && (
@@ -123,8 +127,23 @@ export default function AdminHomePage() {
           <h2 className="font-semibold text-forest">Recent orders</h2>
           <Link href="/admin/orders" className="text-sm text-forest">View all</Link>
         </div>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-left text-sm">
+        <div className="mt-4 space-y-3 md:hidden">
+          {orders.slice(0, 8).map((o) => (
+            <Link key={o.id} href={`/admin/orders/${o.id}`} className="block rounded-xl border border-forest/5 p-3">
+              <div className="flex items-start justify-between gap-2">
+                <span className="font-medium text-forest keep-case">{o.reference}</span>
+                <StatusBadge status={o.status} />
+              </div>
+              <p className="mt-2 text-sm">{o.shipping.firstName} {o.shipping.lastName}</p>
+              <div className="mt-2 flex items-center justify-between text-sm">
+                <span className="capitalize text-ink/50">{o.shipping.method}</span>
+                <span className="font-medium">{formatBZD(o.total)}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+        <div className="mt-4 hidden overflow-x-auto md:block">
+          <table className="w-full min-w-[560px] text-left text-sm">
             <thead className="text-xs text-ink/45">
               <tr>
                 <th className="pb-2 pr-3">Reference</th>

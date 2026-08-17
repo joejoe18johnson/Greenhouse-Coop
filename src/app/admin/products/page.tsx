@@ -49,7 +49,7 @@ export default function AdminProductsPage() {
 
   return (
     <div>
-      <h1 className="font-display text-4xl text-forest-dark">Products</h1>
+      <h1 className="page-title font-semibold">Products</h1>
       <form onSubmit={save} className="mt-6 grid gap-3 rounded-[24px] bg-white p-6 md:grid-cols-2">
         <div className="md:col-span-2">
           <Label>Name</Label>
@@ -102,8 +102,33 @@ export default function AdminProductsPage() {
         </div>
       </form>
 
-      <div className="mt-8 overflow-x-auto rounded-[24px] bg-white">
-        <table className="w-full text-left text-sm">
+      <div className="mt-8 md:hidden">
+        <div className="space-y-3">
+          {products.map((p) => (
+            <div key={p.id} className="rounded-[24px] bg-white p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium text-forest">{p.name}</p>
+                  <p className="text-sm text-ink/50">{p.category}</p>
+                </div>
+                <p className="shrink-0 font-semibold text-forest">{formatBZD(p.price)}</p>
+              </div>
+              <p className="mt-2 text-xs text-ink/55">
+                {p.inStock === false ? "Out of stock" : "In stock"}
+                {p.veryRare ? " · Rare" : ""}
+                {p.limitedSupply ? " · Limited" : ""}
+              </p>
+              <div className="mt-3 flex gap-4 text-sm">
+                <button className="text-forest" onClick={() => { setForm(p); setEditing(true); }}>Edit</button>
+                <button className="text-red-600" onClick={() => { deleteProduct(p.id); refresh(); }}>Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-8 hidden overflow-x-auto rounded-[24px] bg-white md:block">
+        <table className="w-full min-w-[520px] text-left text-sm">
           <thead className="text-xs text-ink/45">
             <tr>
               <th className="p-4">Name</th>

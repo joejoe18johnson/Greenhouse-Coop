@@ -7,8 +7,8 @@ export default function AdminCustomersPage() {
   const users = getUsers().filter((u) => u.role === "customer");
   const orders = getOrders();
   return (
-    <div>
-      <h1 className="font-display text-4xl text-forest-dark">Customers</h1>
+    <div className="min-w-0">
+      <h1 className="page-title">Customers</h1>
       <div className="mt-6 space-y-3">
         {users.map((u) => {
           const theirs = orders.filter((o) => o.userId === u.id);

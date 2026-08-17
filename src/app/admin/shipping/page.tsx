@@ -11,8 +11,8 @@ export default function AdminShippingPage() {
   const [saved, setSaved] = useState(false);
 
   return (
-    <div>
-      <h1 className="font-display text-4xl text-forest-dark">Shipping settings</h1>
+    <div className="min-w-0">
+      <h1 className="page-title">Shipping settings</h1>
       <div className="mt-6 space-y-6 rounded-[24px] bg-white p-6">
         <div>
           <Label>Local delivery fee (BZD)</Label>
@@ -29,7 +29,7 @@ export default function AdminShippingPage() {
         <div className="space-y-3">
           <h2 className="font-semibold text-forest">Box pricing</h2>
           {settings.boxes.map((box, i) => (
-            <div key={box.id} className="grid gap-2 md:grid-cols-4">
+            <div key={box.id} className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
               <Input value={box.name} onChange={(e) => {
                 const boxes = [...settings.boxes];
                 boxes[i] = { ...box, name: e.target.value };

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, Mail, MapPin, Phone, Printer, UserRound } from "lucide-react";
+import { ArrowLeft, Mail, MapPin, MessageSquare, Phone, Printer, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -34,16 +34,16 @@ export default function AdminOrderDetailPage() {
     order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
 
   return (
-    <div>
+    <div className="min-w-0">
       <Button variant="ghost" className="print:hidden" asChild>
         <Link href="/admin/orders">
           <ArrowLeft className="h-4 w-4" />
           Orders
         </Link>
       </Button>
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-4 print:hidden">
-        <div>
-          <h1 className="font-display text-4xl font-semibold text-forest-dark keep-case">{order.reference}</h1>
+      <div className="mt-4 flex flex-col gap-4 print:hidden sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="page-title font-semibold keep-case">{order.reference}</h1>
           <p className="mt-1 flex flex-wrap items-center gap-2 text-ink/50">
             <StatusBadge status={order.status} />
             <span className="keep-case">{order.invoiceNumber}</span> · {new Date(order.createdAt).toLocaleString()}
@@ -144,6 +144,15 @@ export default function AdminOrderDetailPage() {
           )}
           {order.shipping.method !== "pickup" && (
             <p className="mt-2">Box: {order.boxRecommendation.label}</p>
+          )}
+          {order.customerNotes && (
+            <div className="mt-4 rounded-xl bg-leaf/10 px-4 py-3">
+              <p className="flex items-center gap-2 text-xs font-semibold text-forest">
+                <MessageSquare className="h-3.5 w-3.5" />
+                Customer notes
+              </p>
+              <p className="mt-2 whitespace-pre-wrap text-ink/75">{order.customerNotes}</p>
+            </div>
           )}
           <ul className="mt-4 space-y-1">
             {order.items.map((i) => (

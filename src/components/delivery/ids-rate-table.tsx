@@ -7,25 +7,45 @@ export function IdsRateTable({ rates }: { rates: IdsRates }) {
   const south = rates.zones.south;
 
   return (
-    <div className="mt-4 overflow-x-auto">
-      <table className="w-full min-w-[28rem] text-left text-sm">
-        <thead>
-          <tr className="border-b border-forest/10 text-xs text-ink/45">
-            <th className="pb-2 pr-3 font-semibold">Package</th>
-            <th className="pb-2 pr-3 font-semibold">{central.label}</th>
-            <th className="pb-2 font-semibold">{south.label}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {IDS_PACKAGE_TIERS.filter((tier) => tier !== "envelope").map((tier) => (
-            <tr key={tier} className="border-b border-forest/5">
-              <td className="py-2 pr-3 text-ink/70">{idsPackageLabel(tier, rates)}</td>
-              <td className="py-2 pr-3 tabular-nums text-forest">{formatBZD(central.packages[tier])}</td>
-              <td className="py-2 tabular-nums text-forest">{formatBZD(south.packages[tier])}</td>
+    <div className="mt-4">
+      <div className="space-y-3 md:hidden">
+        {IDS_PACKAGE_TIERS.filter((tier) => tier !== "envelope").map((tier) => (
+          <div key={tier} className="rounded-xl border border-forest/10 p-3 text-sm">
+            <p className="font-medium text-forest">{idsPackageLabel(tier, rates)}</p>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <p className="text-ink/45">{central.label}</p>
+                <p className="tabular-nums text-forest">{formatBZD(central.packages[tier])}</p>
+              </div>
+              <div>
+                <p className="text-ink/45">{south.label}</p>
+                <p className="tabular-nums text-forest">{formatBZD(south.packages[tier])}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full min-w-[24rem] text-left text-sm">
+          <thead>
+            <tr className="border-b border-forest/10 text-xs text-ink/45">
+              <th className="pb-2 pr-3 font-semibold">Package</th>
+              <th className="pb-2 pr-3 font-semibold">{central.label}</th>
+              <th className="pb-2 font-semibold">{south.label}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {IDS_PACKAGE_TIERS.filter((tier) => tier !== "envelope").map((tier) => (
+              <tr key={tier} className="border-b border-forest/5">
+                <td className="py-2 pr-3 text-ink/70">{idsPackageLabel(tier, rates)}</td>
+                <td className="py-2 pr-3 tabular-nums text-forest">{formatBZD(central.packages[tier])}</td>
+                <td className="py-2 tabular-nums text-forest">{formatBZD(south.packages[tier])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <p className="mt-3 text-xs text-ink/45">
         {rates.gstNote}. Cayo, Belize, Orange Walk, and Corozal use {central.label} rates. Stann Creek and Toledo use {south.label} rates.
       </p>

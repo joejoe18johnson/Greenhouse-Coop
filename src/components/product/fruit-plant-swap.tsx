@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { HOVER_TREE_IMAGES_ENABLED, hoverImagePath, legacyHoverImagePath } from "@/lib/product-images";
@@ -29,6 +29,7 @@ export function FruitPlantSwap({
 }) {
   const [showPlant, setShowPlant] = useState(false);
   const [isTouch, setIsTouch] = useState(false);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
   const hoverImage = hoverImagePath(productId, { category, fruitImage });
   const legacyHover = legacyHoverImagePath(fruitImage);
   const [treeImage, setTreeImage] = useState(hoverImage);
@@ -74,10 +75,23 @@ export function FruitPlantSwap({
 
   return (
     <div
-      className={cn("relative isolate cursor-pointer select-none", className)}
+      className={cn("relative isolate cursor-pointer select-none [touch-action:manipulation]", className)}
       onMouseEnter={() => !forceView && !isTouch && setShowPlant(true)}
       onMouseLeave={() => !forceView && !isTouch && setShowPlant(false)}
-      onClick={() => !forceView && isTouch && setShowPlant((v) => !v)}
+      onTouchStart={(e) => {
+        if (forceView || !isTouch) return;
+        const t = e.touches[0];
+        touchStart.current = { x: t.clientX, y: t.clientY };
+      }}
+      onTouchEnd={(e) => {
+        if (forceView || !isTouch || !touchStart.current) return;
+        const t = e.changedTouches[0];
+        const dx = Math.abs(t.clientX - touchStart.current.x);
+        const dy = Math.abs(t.clientY - touchStart.current.y);
+        touchStart.current = null;
+        if (dx > 12 || dy > 12) return;
+        setShowPlant((v) => !v);
+      }}
     >
       <AnimatePresence mode="wait">
         <motion.div

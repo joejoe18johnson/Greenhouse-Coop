@@ -42,7 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen bg-forest-deep text-cream">
+    <div className="min-h-screen overflow-x-hidden bg-forest-deep text-cream">
       <div className="mx-auto flex max-w-7xl gap-0 md:gap-8">
         <aside className="hidden w-64 shrink-0 px-2 py-10 print:hidden md:block">
           <Link href="/" className="block px-4 text-base font-semibold tracking-tight">
@@ -71,15 +71,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
           </nav>
         </aside>
-        <div className="min-h-screen flex-1 bg-cream p-4 text-ink print:m-0 print:bg-white print:p-0 md:my-6 md:rounded-[32px] md:p-8 print:md:my-0 print:md:rounded-none">
-          <div className="mb-6 flex flex-wrap gap-3 print:hidden md:hidden">
+        <div className="min-h-screen min-w-0 flex-1 overflow-x-hidden bg-cream p-4 text-ink print:m-0 print:bg-white print:p-0 md:my-6 md:rounded-[32px] md:p-8 print:md:my-0 print:md:rounded-none">
+          <div className="mb-4 flex items-center justify-between gap-3 print:hidden md:hidden">
+            <Link href="/admin" className="min-w-0 truncate text-sm font-semibold text-forest">
+              GreenHouse Admin
+            </Link>
+            <button
+              type="button"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-forest px-3.5 py-2 text-xs font-medium text-cream"
+              onClick={() => {
+                logout();
+                router.push("/");
+              }}
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              Sign out
+            </button>
+          </div>
+          <nav className="mb-6 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] print:hidden md:hidden [&::-webkit-scrollbar]:hidden">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} className="inline-flex items-center gap-2 rounded-full bg-forest/10 px-3.5 py-2 text-xs text-forest">
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "inline-flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2.5 text-xs font-medium whitespace-nowrap",
+                  pathname === link.href ? "bg-forest text-cream" : "bg-forest/10 text-forest"
+                )}
+              >
                 <link.icon className="h-3.5 w-3.5" />
                 {link.label}
               </Link>
             ))}
-          </div>
+          </nav>
           {children}
         </div>
       </div>

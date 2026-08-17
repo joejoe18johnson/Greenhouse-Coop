@@ -178,6 +178,8 @@ export interface Order {
   status: OrderStatus;
   shipping: ShippingInfo;
   payment: PaymentInfo;
+  /** Substitutions, delivery instructions, or other requests from the customer at checkout. */
+  customerNotes?: string;
   createdAt: string;
   updatedAt: string;
   timeline: OrderEvent[];

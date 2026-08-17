@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Printer } from "lucide-react";
+import { ArrowLeft, MessageSquare, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { OrderInvoice } from "@/components/invoice/order-invoice";
@@ -87,6 +87,15 @@ export default function OrderDetailPage() {
         <p className="mt-6 rounded-2xl bg-leaf/10 px-4 py-3 text-sm text-forest print:hidden">
           Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "courier"} when you collect. {COURIER_ESTIMATE_NOTICE}
         </p>
+      )}
+      {order.customerNotes && (
+        <div className="mt-6 rounded-2xl bg-white/80 p-5 print:hidden">
+          <p className="flex items-center gap-2 text-sm font-semibold text-forest">
+            <MessageSquare className="h-4 w-4" />
+            Your order notes
+          </p>
+          <p className="mt-2 whitespace-pre-wrap text-sm text-ink/70">{order.customerNotes}</p>
+        </div>
       )}
       <ol className="mt-8 space-y-3 print:hidden">
         {order.timeline.map((event, i) => (

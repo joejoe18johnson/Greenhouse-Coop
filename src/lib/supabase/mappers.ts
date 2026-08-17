@@ -68,6 +68,7 @@ export interface OrderRow {
   shipping: Order["shipping"];
   payment: Order["payment"];
   timeline: Order["timeline"];
+  customer_notes?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -168,6 +169,7 @@ export function orderFromRow(row: OrderRow): Order {
     status: row.status,
     shipping: row.shipping,
     payment: row.payment,
+    customerNotes: row.customer_notes?.trim() || undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     timeline: row.timeline,
@@ -192,6 +194,7 @@ export function orderToRow(order: Order): Omit<OrderRow, "created_at" | "updated
     shipping: order.shipping,
     payment: order.payment,
     timeline: order.timeline,
+    customer_notes: order.customerNotes?.trim() || null,
   };
 }
 

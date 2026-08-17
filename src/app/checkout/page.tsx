@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Building2, CircleCheck, Landmark, Store, Truck } from "lucide-react";
+import { Building2, CircleCheck, Landmark, MessageSquare, Store, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,6 +38,7 @@ export default function CheckoutPage() {
   const [village, setVillage] = useState(user?.addresses[0]?.village || "");
   const [fullAddress, setFullAddress] = useState(user?.addresses[0]?.fullAddress || "");
   const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
+  const [customerNotes, setCustomerNotes] = useState("");
   const [error, setError] = useState("");
   const [placed, setPlaced] = useState<string>();
 
@@ -129,6 +130,7 @@ export default function CheckoutPage() {
         method: "bank-transfer",
         proofChannel: "whatsapp",
       },
+      customerNotes: customerNotes.trim() || undefined,
     });
     clear();
     setPlaced(order.reference);
@@ -258,6 +260,28 @@ export default function CheckoutPage() {
                 )}
               </>
             )}
+          </section>
+
+          <section className="rounded-[28px] bg-white/80 p-6">
+            <h2 className="flex items-center gap-2 font-display text-2xl text-forest">
+              <MessageSquare className="h-6 w-6" />
+              Order notes
+            </h2>
+            <p className="mt-2 text-sm text-ink/60">
+              Optional — request substitutions, note delivery instructions, or ask us anything about your order.
+            </p>
+            <Label htmlFor="customer-notes" className="sr-only">
+              Order notes
+            </Label>
+            <Textarea
+              id="customer-notes"
+              className="mt-4 min-h-[120px] rounded-2xl"
+              placeholder="e.g. If mangosteen is unavailable, substitute Julie mango. Leave plants in shade at courier office."
+              value={customerNotes}
+              onChange={(e) => setCustomerNotes(e.target.value)}
+              maxLength={1000}
+            />
+            <p className="mt-2 text-xs text-ink/45">{customerNotes.length}/1000 characters</p>
           </section>
 
           <section className="rounded-[28px] bg-white/80 p-6">

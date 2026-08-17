@@ -41,12 +41,12 @@ export default function AdminCouriersPage() {
   const idsIndex = couriers.findIndex((c) => c.id === "ids");
 
   return (
-    <div>
-      <h1 className="font-display text-4xl text-forest-dark">Courier settings</h1>
+    <div className="min-w-0">
+      <h1 className="page-title">Courier settings</h1>
       <p className="mt-2 max-w-2xl text-sm text-ink/55">{COURIER_ESTIMATE_NOTICE}</p>
 
       <section className="mt-8 rounded-[24px] bg-white p-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="font-semibold text-forest">IDS (Inter District Shipping)</h2>
           {ids && idsIndex >= 0 && (
             <Checkbox
@@ -69,10 +69,10 @@ export default function AdminCouriersPage() {
               <p className="text-xs font-semibold text-ink/40">{idsRates.zones[zoneId].label}</p>
               <div className="mt-3 space-y-2">
                 {IDS_PACKAGE_TIERS.map((tier) => (
-                  <label key={tier} className="flex items-center justify-between gap-3 text-sm">
+                  <label key={tier} className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
                     <span className="text-ink/70">{idsPackageLabel(tier, idsRates)}</span>
                     <Input
-                      className="w-28"
+                      className="w-full sm:w-28"
                       type="number"
                       step="0.01"
                       value={idsRates.zones[zoneId].packages[tier]}

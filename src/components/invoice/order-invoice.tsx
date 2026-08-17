@@ -87,6 +87,13 @@ export function OrderInvoice({
         </div>
       </div>
 
+      {order.customerNotes && (
+        <div className="border-t border-forest/10 px-8 py-5">
+          <p className="text-[11px] font-semibold text-ink/40">Customer notes</p>
+          <p className="mt-2 whitespace-pre-wrap text-sm text-ink/70">{order.customerNotes}</p>
+        </div>
+      )}
+
       <div className="px-8">
         <table className="w-full overflow-hidden rounded-xl text-left text-sm">
           <thead className="bg-forest text-cream">

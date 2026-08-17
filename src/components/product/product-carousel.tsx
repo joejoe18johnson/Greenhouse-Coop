@@ -24,13 +24,13 @@ export function ProductCarousel({
     const el = scroller.current;
     if (!el) return;
     const max = Math.max(0, el.scrollWidth - el.clientWidth);
-    setCanPrev(el.scrollLeft > 12);
-    setCanNext(el.scrollLeft < max - 12);
+    setCanPrev(el.scrollLeft > 8);
+    setCanNext(el.scrollLeft < max - 8);
     const first = el.firstElementChild as HTMLElement | null;
     const step = first ? first.offsetWidth + 24 : el.clientWidth;
     const total = step > 0 ? Math.max(1, Math.ceil(max / step) + 1) : 1;
     setPages(total);
-    setPage(Math.min(total - 1, Math.max(0, Math.round(el.scrollLeft / step))));
+    setPage(step > 0 ? Math.min(total - 1, Math.max(0, Math.round(el.scrollLeft / step))) : 0);
   }, []);
 
   useEffect(() => {
@@ -40,16 +40,19 @@ export function ProductCarousel({
     el.addEventListener("scroll", update, { passive: true });
     const ro = new ResizeObserver(update);
     ro.observe(el);
+    Array.from(el.children).forEach((child) => ro.observe(child));
     return () => {
       el.removeEventListener("scroll", update);
       ro.disconnect();
     };
   }, [update, products]);
 
-  // Vertical wheel/trackpad scroll should move the page — not shift carousel content.
+  // Desktop only: let vertical wheel scroll the page, not the carousel strip.
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    if (!finePointer) return;
 
     const onWheel = (e: WheelEvent) => {
       if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
@@ -61,37 +64,40 @@ export function ProductCarousel({
     return () => el.removeEventListener("wheel", onWheel);
   }, [products]);
 
+  function scrollStep() {
+    const el = scroller.current;
+    if (!el) return 0;
+    const first = el.firstElementChild as HTMLElement | null;
+    return first ? first.offsetWidth + 24 : el.clientWidth * 0.9;
+  }
+
   function scrollByPage(dir: -1 | 1) {
     const el = scroller.current;
     if (!el) return;
-    const first = el.firstElementChild as HTMLElement | null;
-    const amount = first ? first.offsetWidth + 24 : el.clientWidth * 0.85;
-    el.scrollBy({ left: dir * amount, behavior: "smooth" });
+    el.scrollBy({ left: dir * scrollStep(), behavior: "smooth" });
   }
 
   function goTo(index: number) {
     const el = scroller.current;
     if (!el) return;
-    const first = el.firstElementChild as HTMLElement | null;
-    const step = first ? first.offsetWidth + 24 : el.clientWidth;
-    el.scrollTo({ left: index * step, behavior: "smooth" });
+    el.scrollTo({ left: index * scrollStep(), behavior: "smooth" });
   }
 
   if (products.length === 0) return null;
 
-  const showControls = canPrev || canNext || pages > 1;
+  const showControls = products.length > 1;
 
   return (
-    <div className={cn(className)}>
-      <div className="relative">
+    <div className={cn("min-w-0", className)}>
+      <div className="relative min-w-0">
         <div
           ref={scroller}
-          className="flex items-start snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex items-start snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [touch-action:pan-x] [&::-webkit-scrollbar]:hidden"
         >
           {products.map((product, i) => (
             <div
               key={product.id}
-              className="h-auto w-[min(100%,20rem)] shrink-0 snap-start sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+              className="h-auto w-[min(100%,18.5rem)] shrink-0 snap-start sm:w-[min(calc(50%-0.75rem),20rem)] lg:w-[min(calc(33.333%-1rem),20rem)]"
             >
               <ProductCard product={product} index={Math.min(i, 3)} />
             </div>
@@ -127,7 +133,7 @@ export function ProductCarousel({
       </div>
 
       {showControls && (
-        <div className="mt-6 flex items-center justify-center gap-3">
+        <div className="mt-6 flex items-center justify-center gap-2">
           <Button
             type="button"
             variant="outline"
@@ -139,18 +145,23 @@ export function ProductCarousel({
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {Array.from({ length: pages }).map((_, i) => (
               <button
                 key={i}
                 type="button"
                 aria-label={`Go to page ${i + 1}`}
+                aria-current={i === page ? "true" : undefined}
                 onClick={() => goTo(i)}
-                className={cn(
-                  "min-h-[44px] min-w-[44px] rounded-full transition-all",
-                  i === page ? "w-8 bg-forest" : "w-2.5 bg-forest/25 hover:bg-forest/50"
-                )}
-              />
+                className="grid h-11 w-11 place-items-center"
+              >
+                <span
+                  className={cn(
+                    "block rounded-full transition-all",
+                    i === page ? "h-2 w-7 bg-forest" : "h-2 w-2 bg-forest/30"
+                  )}
+                />
+              </button>
             ))}
           </div>
           <Button
