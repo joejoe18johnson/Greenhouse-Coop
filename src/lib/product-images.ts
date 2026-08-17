@@ -73,10 +73,6 @@ export function hoverImagePath(
   }
 
   const category = options?.category;
-  if (category === "Guava") {
-    return `/products/hover-images/guava-hover-image.png`;
-  }
-
   if (category && HOVER_CATEGORY_FILES[category]) {
     return `/products/hover-images/${HOVER_CATEGORY_FILES[category]}`;
   }
