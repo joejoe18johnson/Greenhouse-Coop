@@ -16,6 +16,35 @@ export function isInStock(product: Product) {
   return product.inStock !== false;
 }
 
+export type StockStatus = "in-stock" | "out-of-stock" | "limited" | "very-rare";
+
+export const STOCK_STATUS_OPTIONS: { value: StockStatus; label: string }[] = [
+  { value: "in-stock", label: "In stock" },
+  { value: "out-of-stock", label: "Out of stock" },
+  { value: "limited", label: "Limited availability" },
+  { value: "very-rare", label: "Very rare" },
+];
+
+export function getStockStatus(product: Product): StockStatus {
+  if (product.inStock === false) return "out-of-stock";
+  if (product.veryRare) return "very-rare";
+  if (product.limitedSupply) return "limited";
+  return "in-stock";
+}
+
+export function applyStockStatus(product: Product, status: StockStatus): Product {
+  switch (status) {
+    case "out-of-stock":
+      return { ...product, inStock: false };
+    case "limited":
+      return { ...product, inStock: true, limitedSupply: true, veryRare: false };
+    case "very-rare":
+      return { ...product, inStock: true, veryRare: true, limitedSupply: false };
+    default:
+      return { ...product, inStock: true, limitedSupply: false, veryRare: false };
+  }
+}
+
 export function productBadges(product: Product): ProductBadge[] {
   const badges: ProductBadge[] = [];
 

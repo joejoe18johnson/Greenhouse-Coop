@@ -8,6 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CATEGORIES } from "@/lib/constants";
+import {
+  applyStockStatus,
+  getStockStatus,
+  STOCK_STATUS_OPTIONS,
+  type StockStatus,
+} from "@/lib/product-badges";
 import { deleteProduct, getProducts, upsertProduct } from "@/lib/store";
 import { formatBZD, slugify } from "@/lib/utils";
 import type { Product, PropagationType } from "@/types";
@@ -32,24 +38,44 @@ const empty: Product = {
 export default function AdminProductsPage() {
   const [products, setProducts] = useState(getProducts());
   const [form, setForm] = useState<Product>(empty);
+  const [formStockStatus, setFormStockStatus] = useState<StockStatus>("in-stock");
   const [editing, setEditing] = useState(false);
 
   function refresh() {
     setProducts(getProducts());
   }
 
+  function setStockStatus(product: Product, status: StockStatus) {
+    upsertProduct(applyStockStatus(product, status));
+    refresh();
+  }
+
+  function startEdit(product: Product) {
+    setForm(product);
+    setFormStockStatus(getStockStatus(product));
+    setEditing(true);
+  }
+
+  function resetForm() {
+    setForm(empty);
+    setFormStockStatus("in-stock");
+    setEditing(false);
+  }
+
   function save(e: React.FormEvent) {
     e.preventDefault();
     const id = form.id || slugify(form.name);
-    upsertProduct({ ...form, id });
-    setForm(empty);
-    setEditing(false);
+    upsertProduct(applyStockStatus({ ...form, id }, formStockStatus));
+    resetForm();
     refresh();
   }
 
   return (
     <div>
       <h1 className="page-title font-semibold">Products</h1>
+      <p className="mt-2 text-sm text-ink/55">
+        Update stock status inline or when editing a product. Changes apply on the shop immediately.
+      </p>
       <form onSubmit={save} className="mt-6 grid gap-3 rounded-[24px] bg-white p-6 md:grid-cols-2">
         <div className="md:col-span-2">
           <Label>Name</Label>
@@ -78,6 +104,20 @@ export default function AdminProductsPage() {
           <Input className="mt-1" value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} />
         </div>
         <div>
+          <Label>Stock status</Label>
+          <Select
+            className="mt-1"
+            value={formStockStatus}
+            onChange={(e) => setFormStockStatus(e.target.value as StockStatus)}
+          >
+            {STOCK_STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
+        </div>
+        <div>
           <Label>Fruit image path</Label>
           <Input className="mt-1" value={form.fruitImage} onChange={(e) => setForm({ ...form, fruitImage: e.target.value })} />
         </div>
@@ -94,11 +134,13 @@ export default function AdminProductsPage() {
           <Textarea className="mt-1" value={form.flavorProfile} onChange={(e) => setForm({ ...form, flavorProfile: e.target.value })} />
         </div>
         <Checkbox checked={form.featured} onChange={(checked) => setForm({ ...form, featured: checked })} label="Featured" />
-        <Checkbox checked={!!form.limitedSupply} onChange={(checked) => setForm({ ...form, limitedSupply: checked })} label="Limited availability" />
-        <Checkbox checked={!!form.veryRare} onChange={(checked) => setForm({ ...form, veryRare: checked })} label="Very rare item" />
-        <Checkbox checked={form.inStock !== false} onChange={(checked) => setForm({ ...form, inStock: checked })} label="In stock" />
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 flex flex-wrap gap-3">
           <Button type="submit">{editing ? "Update product" : "Add product"}</Button>
+          {editing && (
+            <Button type="button" variant="outline" onClick={resetForm}>
+              Cancel
+            </Button>
+          )}
         </div>
       </form>
 
@@ -113,13 +155,22 @@ export default function AdminProductsPage() {
                 </div>
                 <p className="shrink-0 font-semibold text-forest">{formatBZD(p.price)}</p>
               </div>
-              <p className="mt-2 text-xs text-ink/55">
-                {p.inStock === false ? "Out of stock" : "In stock"}
-                {p.veryRare ? " · Rare" : ""}
-                {p.limitedSupply ? " · Limited" : ""}
-              </p>
+              <div className="mt-3">
+                <Label className="text-xs text-ink/45">Stock status</Label>
+                <Select
+                  className="mt-1 h-10 text-xs"
+                  value={getStockStatus(p)}
+                  onChange={(e) => setStockStatus(p, e.target.value as StockStatus)}
+                >
+                  {STOCK_STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Select>
+              </div>
               <div className="mt-3 flex gap-4 text-sm">
-                <button className="text-forest" onClick={() => { setForm(p); setEditing(true); }}>Edit</button>
+                <button className="text-forest" onClick={() => startEdit(p)}>Edit</button>
                 <button className="text-red-600" onClick={() => { deleteProduct(p.id); refresh(); }}>Delete</button>
               </div>
             </div>
@@ -128,13 +179,13 @@ export default function AdminProductsPage() {
       </div>
 
       <div className="mt-8 hidden overflow-x-auto rounded-[24px] bg-white md:block">
-        <table className="w-full min-w-[520px] text-left text-sm">
+        <table className="w-full min-w-[640px] text-left text-sm">
           <thead className="text-xs text-ink/45">
             <tr>
               <th className="p-4">Name</th>
               <th className="p-4">Category</th>
               <th className="p-4">Price</th>
-              <th className="p-4">Stock</th>
+              <th className="p-4">Stock status</th>
               <th className="p-4"></th>
             </tr>
           </thead>
@@ -144,13 +195,21 @@ export default function AdminProductsPage() {
                 <td className="p-4">{p.name}</td>
                 <td className="p-4">{p.category}</td>
                 <td className="p-4">{formatBZD(p.price)}</td>
-                <td className="p-4 text-xs text-ink/55">
-                  {p.inStock === false ? "Out of stock" : "In stock"}
-                  {p.veryRare ? " · Rare" : ""}
-                  {p.limitedSupply ? " · Limited" : ""}
+                <td className="p-4">
+                  <Select
+                    className="h-10 min-w-[11rem] text-xs"
+                    value={getStockStatus(p)}
+                    onChange={(e) => setStockStatus(p, e.target.value as StockStatus)}
+                  >
+                    {STOCK_STATUS_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </Select>
                 </td>
                 <td className="p-4 text-right">
-                  <button className="mr-3 text-forest" onClick={() => { setForm(p); setEditing(true); }}>Edit</button>
+                  <button className="mr-3 text-forest" onClick={() => startEdit(p)}>Edit</button>
                   <button className="text-red-600" onClick={() => { deleteProduct(p.id); refresh(); }}>Delete</button>
                 </td>
               </tr>
