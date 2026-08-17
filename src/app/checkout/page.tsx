@@ -357,12 +357,12 @@ export default function CheckoutPage() {
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-forest/10 bg-cream/95 p-4 backdrop-blur-lg safe-bottom lg:hidden">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-          <div>
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 pr-1">
+          <div className="min-w-0">
             <p className="text-xs text-ink/50">Total due now</p>
             <p className="text-xl font-semibold text-forest">{formatBZD(total)}</p>
           </div>
-          <Button size="lg" className="shrink-0" onClick={placeOrder}>
+          <Button size="lg" className="min-w-[9.5rem] shrink-0" onClick={placeOrder}>
             <CircleCheck className="h-4 w-4" />
             Place order
           </Button>
