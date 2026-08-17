@@ -146,7 +146,7 @@ export default function ProductPage() {
       </div>
 
       {related.length > 0 && (
-        <section className="mt-24">
+        <section className="mt-24 min-w-0">
           <h2 className="font-display text-3xl text-forest-dark">More in {product.category}</h2>
           <ProductCarousel className="mt-8" products={related} />
         </section>

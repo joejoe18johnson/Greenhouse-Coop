@@ -10,6 +10,7 @@ import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useProducts } from "@/hooks/use-products";
 import { CATEGORIES } from "@/lib/constants";
 import { categoryIcon } from "@/lib/icons";
+import { ScrollStrip } from "@/components/ui/scroll-carousel";
 import { slugify } from "@/lib/utils";
 
 export default function CatalogPage() {
@@ -81,15 +82,15 @@ export default function CatalogPage() {
       </div>
 
       {grouped.length > 0 && (
-        <div className="sticky top-24 z-20 -mx-6 mt-8 overflow-x-auto bg-cream/90 px-6 py-3 backdrop-blur">
-          <div className="flex gap-2">
+        <div className="sticky top-24 z-20 mt-8 bg-cream/90 py-3 backdrop-blur">
+          <ScrollStrip bleed>
             {grouped.map((group) => {
               const Icon = categoryIcon(group.category);
               return (
                 <a
                   key={group.category}
                   href={`#${slugify(group.category)}`}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-forest/15 bg-white/80 px-3 py-1.5 text-xs font-medium text-forest hover:border-forest/40 hover:bg-forest hover:text-cream"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-forest/15 bg-white/80 px-3 py-2 text-xs font-medium text-forest hover:border-forest/40 hover:bg-forest hover:text-cream"
                 >
                   <Icon className="h-3.5 w-3.5" />
                   {group.category}
@@ -97,7 +98,7 @@ export default function CatalogPage() {
                 </a>
               );
             })}
-          </div>
+          </ScrollStrip>
         </div>
       )}
 

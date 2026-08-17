@@ -8,6 +8,7 @@ import { DownloadCatalogButton } from "@/components/catalog/download-catalog-but
 import { OrderProcess } from "@/components/home/order-process";
 import { PropagationBenefits } from "@/components/home/propagation-benefits";
 import { SellingFast } from "@/components/home/selling-fast";
+import { ScrollCarousel } from "@/components/ui/scroll-carousel";
 import almanac from "@/data/almanac.json";
 import shipping from "@/data/shipping.json";
 import { CHAT_FAQS } from "@/data/faq";
@@ -80,8 +81,32 @@ export default function HomePage() {
       <section className="bg-forest-dark py-24 text-cream">
         <div className="mx-auto max-w-7xl px-6">
           <p className="text-xs text-lime-bright">Why choose Greenhouse Co-Op</p>
-          <h2 className="mt-3 max-w-2xl font-display text-4xl">A modern nursery for Belize gardens.</h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <h2 className="mt-3 max-w-2xl font-display text-3xl sm:text-4xl">A modern nursery for Belize gardens.</h2>
+          <div className="mt-12 lg:hidden">
+            <ScrollCarousel
+              bleed
+              prevLabel="Previous reason"
+              nextLabel="Next reason"
+              trackClassName="px-[max(1rem,calc((100%-min(85vw,18rem))/2))] sm:px-0"
+              itemClassName="w-[min(85vw,18rem)] snap-center sm:w-[min(48vw,18rem)] sm:snap-start"
+            >
+              {reasons.map((reason, i) => (
+                <motion.div
+                  key={reason.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="h-full rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur"
+                >
+                  <reason.icon className="mb-4 h-6 w-6 text-lime-bright" />
+                  <h3 className="text-lg font-semibold">{reason.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-cream/70">{reason.text}</p>
+                </motion.div>
+              ))}
+            </ScrollCarousel>
+          </div>
+          <div className="mt-12 hidden gap-6 lg:grid lg:grid-cols-4">
             {reasons.map((reason, i) => (
               <motion.div
                 key={reason.title}
@@ -140,7 +165,31 @@ export default function HomePage() {
             <Link href="/faq">View all FAQs <ArrowRight className="h-4 w-4" /></Link>
           </Button>
         </div>
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="mt-8 md:hidden">
+          <ScrollCarousel
+            bleed
+            prevLabel="Previous question"
+            nextLabel="Next question"
+            trackClassName="px-[max(1rem,calc((100%-min(85vw,18rem))/2))] sm:px-0"
+            itemClassName="w-[min(85vw,18rem)] snap-center"
+          >
+            {CHAT_FAQS.map((faq) => {
+              const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
+              return (
+                <Link
+                  key={faq.id}
+                  href="/faq"
+                  className="block h-full rounded-[28px] bg-white/80 p-6 transition active:scale-[0.99]"
+                >
+                  <Icon className="mb-3 h-5 w-5 text-leaf" />
+                  <h3 className="font-semibold text-forest">{faq.question}</h3>
+                  <p className="mt-3 line-clamp-4 text-sm leading-relaxed text-ink/65">{faq.answer}</p>
+                </Link>
+              );
+            })}
+          </ScrollCarousel>
+        </div>
+        <div className="mt-8 hidden gap-4 md:grid md:grid-cols-3">
           {CHAT_FAQS.map((faq) => {
             const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
             return (

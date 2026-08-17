@@ -21,7 +21,13 @@ export function FilterPills({
           {label}
         </p>
       )}
-      <div className="flex flex-wrap gap-2">
+      <div
+        className={cn(
+          "flex gap-2 pb-1",
+          "flex-nowrap overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          "md:flex-wrap md:overflow-visible"
+        )}
+      >
         {options.map((option) => {
           const active = value === option.value;
           return (
@@ -30,7 +36,7 @@ export function FilterPills({
               type="button"
               onClick={() => onChange(option.value)}
               className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200",
+                "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200",
                 active
                   ? "border-forest bg-forest text-cream shadow-md"
                   : "border-forest/15 bg-white/80 text-forest hover:border-forest/40 hover:bg-forest/5"
