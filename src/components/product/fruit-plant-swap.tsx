@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { HOVER_TREE_IMAGES_ENABLED, hoverImagePath } from "@/lib/product-images";
+import { HOVER_TREE_IMAGES_ENABLED, hoverImagePath, legacyHoverImagePath } from "@/lib/product-images";
 import { cn } from "@/lib/utils";
 
 export function FruitPlantSwap({
+  productId,
+  category,
   fruitImage,
   plantImage,
   alt,
@@ -15,6 +17,8 @@ export function FruitPlantSwap({
   priority = false,
   forceView,
 }: {
+  productId: string;
+  category?: string;
   fruitImage: string;
   plantImage: string;
   alt: string;
@@ -25,7 +29,8 @@ export function FruitPlantSwap({
 }) {
   const [showPlant, setShowPlant] = useState(false);
   const [isTouch, setIsTouch] = useState(false);
-  const hoverImage = hoverImagePath(fruitImage);
+  const hoverImage = hoverImagePath(productId, { category, fruitImage });
+  const legacyHover = legacyHoverImagePath(fruitImage);
   const [treeImage, setTreeImage] = useState(hoverImage);
   const swapEnabled = HOVER_TREE_IMAGES_ENABLED;
 
@@ -42,6 +47,15 @@ export function FruitPlantSwap({
   useEffect(() => {
     setTreeImage(hoverImage);
   }, [hoverImage, plantImage]);
+
+  const handleTreeImageError = () => {
+    setTreeImage((current) => {
+      if (current === plantImage) return current;
+      if (current === hoverImage && legacyHover !== hoverImage) return legacyHover;
+      if (current === legacyHover || current === hoverImage) return plantImage;
+      return plantImage;
+    });
+  };
 
   if (!swapEnabled) {
     return (
@@ -81,9 +95,7 @@ export function FruitPlantSwap({
             sizes={sizes}
             priority={priority}
             className="object-contain drop-shadow-[0_24px_30px_rgba(45,106,79,0.28)]"
-            onError={() => {
-              setTreeImage((current) => (current !== plantImage ? plantImage : current));
-            }}
+            onError={handleTreeImageError}
           />
         </motion.div>
       </AnimatePresence>

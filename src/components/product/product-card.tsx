@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Eye, Ruler, ShoppingBag } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
+import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { PropagationBadge } from "@/components/product/propagation-badge";
 import { Button } from "@/components/ui/button";
 import { ProductBadges } from "@/components/product/product-badges";
@@ -12,6 +12,7 @@ import { useCart } from "@/hooks/use-cart";
 import { categoryIcon } from "@/lib/icons";
 import { isInStock } from "@/lib/product-badges";
 import { cn, formatBZD } from "@/lib/utils";
+import { HOVER_TREE_IMAGES_ENABLED } from "@/lib/product-images";
 import type { Product } from "@/types";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
@@ -41,6 +42,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           className={cn("h-full w-full", !available && "opacity-60 saturate-50")}
         >
           <FruitPlantSwap
+            productId={product.id}
+            category={product.category}
             fruitImage={product.fruitImage}
             plantImage={product.plantImage}
             alt={product.name}
@@ -48,6 +51,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           />
         </motion.div>
       </div>
+      {HOVER_TREE_IMAGES_ENABLED && (
+        <TreeImageReferenceNotice className="px-5 pb-1" />
+      )}
 
       <div className="px-5 pb-5 pt-2">
         <div className="mb-3 flex flex-wrap gap-2">
@@ -64,6 +70,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {product.size}
           </span>
         </p>
+        {HOVER_TREE_IMAGES_ENABLED && (
+          <p className="mt-1 text-[11px] text-ink/40">Hover or tap to see tree size</p>
+        )}
         <p className="mt-3 font-semibold text-forest">{formatBZD(product.price)}</p>
 
         <Accordion type="single" collapsible className="mt-2">

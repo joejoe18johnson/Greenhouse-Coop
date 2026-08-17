@@ -7,7 +7,7 @@ import { Apple, Ban, Minus, Plus, Ruler, ShoppingBag, Sprout, TreeDeciduous } fr
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
-import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
+import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { ProductCarousel } from "@/components/product/product-carousel";
 import { PropagationBadge } from "@/components/product/propagation-badge";
 import { ProductBadges } from "@/components/product/product-badges";
@@ -16,6 +16,7 @@ import { useProducts } from "@/hooks/use-products";
 import { categoryIcon } from "@/lib/icons";
 import { isInStock } from "@/lib/product-badges";
 import { HOVER_TREE_IMAGES_ENABLED } from "@/lib/product-images";
+import { formatBZD } from "@/lib/utils";
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -54,6 +55,8 @@ export default function ProductPage() {
         <div>
           <div className="relative mx-auto h-[420px] w-full max-w-md md:h-[520px]">
             <FruitPlantSwap
+              productId={product.id}
+              category={product.category}
               fruitImage={product.fruitImage}
               plantImage={product.plantImage}
               alt={product.name}
@@ -64,16 +67,19 @@ export default function ProductPage() {
             />
           </div>
           {showTreeToggle && (
-            <div className="mt-4 flex justify-center gap-2">
-              <Button size="sm" variant={view === "fruit" ? "default" : "outline"} onClick={() => setView("fruit")}>
-                <Apple className="h-4 w-4" />
-                Fruit
-              </Button>
-              <Button size="sm" variant={view === "plant" ? "default" : "outline"} onClick={() => setView("plant")}>
-                <TreeDeciduous className="h-4 w-4" />
-                Tree size
-              </Button>
-            </div>
+            <>
+              <div className="mt-4 flex justify-center gap-2">
+                <Button size="sm" variant={view === "fruit" ? "default" : "outline"} onClick={() => setView("fruit")}>
+                  <Apple className="h-4 w-4" />
+                  Fruit
+                </Button>
+                <Button size="sm" variant={view === "plant" ? "default" : "outline"} onClick={() => setView("plant")}>
+                  <TreeDeciduous className="h-4 w-4" />
+                  Tree size
+                </Button>
+              </div>
+              <TreeImageReferenceNotice className="mt-3" />
+            </>
           )}
         </div>
 
