@@ -64,7 +64,7 @@ function LoginForm() {
           <LogIn className="h-4 w-4" />
           Sign in
         </Button>
-        <div className="space-y-1 text-center text-xs text-ink/45 keep-case">
+        <div className="space-y-1 text-center text-xs text-ink/45 keep-case break-all">
           <p>Admin: <button type="button" className="text-forest underline" onClick={() => { setEmail(ADMIN_EMAIL); setPassword(ADMIN_PASSWORD); }}>{ADMIN_EMAIL}</button> / {ADMIN_PASSWORD}</p>
           <p>Customer: <button type="button" className="text-forest underline" onClick={() => { setEmail(DEMO_CUSTOMER_EMAIL); setPassword(DEMO_CUSTOMER_PASSWORD); }}>{DEMO_CUSTOMER_EMAIL}</button> / {DEMO_CUSTOMER_PASSWORD}</p>
         </div>

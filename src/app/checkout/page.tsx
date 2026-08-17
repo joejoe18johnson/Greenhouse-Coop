@@ -74,9 +74,9 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-lg px-6 py-24 text-center">
         <h1 className="font-display text-4xl text-forest-dark">Create an account to checkout</h1>
         <p className="mt-4 text-ink/65">Orders require an account so we can track payment, delivery, and invoices.</p>
-        <div className="mt-8 flex justify-center gap-3">
-          <Button asChild><Link href="/register?next=/cart">Create account</Link></Button>
-          <Button variant="outline" asChild><Link href="/login?next=/cart">Sign in</Link></Button>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <Button asChild className="w-full sm:w-auto"><Link href="/register?next=/cart">Create account</Link></Button>
+          <Button variant="outline" asChild className="w-full sm:w-auto"><Link href="/login?next=/cart">Sign in</Link></Button>
         </div>
       </div>
     );

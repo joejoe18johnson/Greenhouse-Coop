@@ -54,7 +54,7 @@ export default function ProductPage() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <div>
-          <div className="relative mx-auto h-[420px] w-full max-w-md md:h-[520px]">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-md max-h-[min(420px,78vw)] sm:max-h-[520px] md:aspect-auto md:h-[520px]">
             <FruitPlantSwap
               productId={product.id}
               category={product.category}

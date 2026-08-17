@@ -54,7 +54,7 @@ export default function AdminHomePage() {
 
       <div className="mt-8">
         <h2 className="font-semibold text-forest">Pipeline</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+        <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4 xl:grid-cols-7">
           {ORDER_STATUSES.map((status) => {
             const count = orders.filter((o) => o.status === status).length;
             return (

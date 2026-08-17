@@ -14,19 +14,10 @@ export function WhatsAppWidget() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
 
-  if (pathname.startsWith("/admin")) return null;
-
-  const aboveStickyBar = pathname === "/checkout";
+  if (pathname.startsWith("/admin") || pathname === "/checkout") return null;
 
   return (
-    <div
-      className={cn(
-        "fixed right-[max(1.25rem,env(safe-area-inset-right))] z-50 flex flex-col items-end gap-3 print:hidden",
-        aboveStickyBar
-          ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom))] lg:bottom-[max(1.25rem,env(safe-area-inset-bottom))]"
-          : "bottom-[max(1.25rem,env(safe-area-inset-bottom))]"
-      )}
-    >
+    <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))] z-50 flex flex-col items-end gap-3 print:hidden">
       <AnimatePresence>
         {open && (
           <motion.div

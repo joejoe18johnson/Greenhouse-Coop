@@ -13,7 +13,7 @@ export function Footer() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="mt-24 border-t border-forest/10 bg-forest-deep text-cream print:hidden">
+    <footer className="mt-16 border-t border-forest/10 bg-forest-deep text-cream md:mt-24 print:hidden">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-4">
         <div className="md:col-span-1">
           <Image

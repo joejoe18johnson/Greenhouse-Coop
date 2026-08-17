@@ -58,7 +58,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <div className="mb-3 flex flex-wrap gap-2">
           <PropagationBadge type={product.propagationType} />
         </div>
-        <h3 className="font-display text-2xl text-forest-dark">{product.name}</h3>
+        <h3 className="line-clamp-2 font-display text-xl text-forest-dark sm:text-2xl">{product.name}</h3>
         <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink/55">
           <span className="inline-flex items-center gap-1">
             <CategoryIcon className="h-3.5 w-3.5 text-leaf" />
@@ -76,7 +76,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
 
         <Accordion type="single" collapsible className="mt-2">
           <AccordionItem value="flavor" className="border-none">
-            <AccordionTrigger className="py-2 text-xs">
+            <AccordionTrigger className="min-h-11 py-3 text-sm">
               Flavor Profile
             </AccordionTrigger>
             <AccordionContent>{product.flavorProfile}</AccordionContent>

@@ -49,7 +49,7 @@ export default function CatalogPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="inline-flex items-center gap-2 text-xs text-leaf">
@@ -82,7 +82,7 @@ export default function CatalogPage() {
       </div>
 
       {grouped.length > 0 && (
-        <div className="sticky top-24 z-20 mt-8 bg-cream/90 py-3 backdrop-blur">
+        <div className="sticky-below-header sticky z-20 mt-8 bg-cream/90 py-3 backdrop-blur">
           <ScrollStrip bleed>
             {grouped.map((group) => {
               const Icon = categoryIcon(group.category);
@@ -106,7 +106,7 @@ export default function CatalogPage() {
         {grouped.map((group) => {
           const Icon = categoryIcon(group.category);
           return (
-            <section key={group.category} id={slugify(group.category)} className="scroll-mt-36">
+            <section key={group.category} id={slugify(group.category)} className="scroll-anchor-offset">
               <div className="mb-5 flex items-center gap-3">
                 <span className="grid h-10 w-10 place-items-center rounded-full bg-forest/10 text-forest">
                   <Icon className="h-5 w-5" />

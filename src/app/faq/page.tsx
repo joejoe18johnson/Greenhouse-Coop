@@ -9,7 +9,7 @@ import { FAQ_ICONS } from "@/lib/icons";
 
 export default function FaqPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <p className="text-xs text-leaf">Help</p>
       <h1 className="page-title mt-2">Frequently asked questions</h1>
       <p className="mt-4 text-ink/65">

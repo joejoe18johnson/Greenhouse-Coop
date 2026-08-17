@@ -22,6 +22,7 @@
     --input: 44 20% 82%;
     --ring: 152 40% 30%;
     --radius: 0.9rem;
+    --site-header-offset: calc(env(safe-area-inset-top, 0px) + 4.75rem);
   }
 
   * {
@@ -97,6 +98,22 @@
 
   .safe-bottom {
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  }
+
+  .sticky-below-header {
+    top: var(--site-header-offset);
+  }
+
+  .scroll-anchor-offset {
+    scroll-margin-top: calc(var(--site-header-offset) + 3.5rem);
+  }
+
+  .section-heading {
+    @apply min-w-0 font-display text-2xl sm:text-3xl;
+  }
+
+  .fab-clearance {
+    @apply pb-20 md:pb-0;
   }
 
   .arch-frame {

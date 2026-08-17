@@ -90,8 +90,8 @@ export function NavSearch({
                     <span className="relative h-10 w-10 shrink-0">
                       <Image src={product.fruitImage} alt="" fill className="object-contain" />
                     </span>
-                    <span>
-                      <span className="block text-sm font-medium text-forest">{product.name}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-forest">{product.name}</span>
                       <span className="text-xs text-ink/50">{product.category}</span>
                     </span>
                   </Link>

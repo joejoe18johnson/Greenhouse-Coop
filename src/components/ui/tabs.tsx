@@ -12,7 +12,7 @@ export function TabsList({
   return (
     <TabsPrimitive.List
       className={cn(
-        "inline-flex h-11 items-center gap-1 rounded-full bg-forest/5 p-1 text-ink/60",
+        "inline-flex h-11 max-w-full items-center gap-1 overflow-x-auto rounded-full bg-forest/5 p-1 text-ink/60 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className
       )}
       {...props}

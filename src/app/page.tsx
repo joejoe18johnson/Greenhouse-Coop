@@ -25,13 +25,13 @@ export default function HomePage() {
   return (
     <div>
       <section className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-[36px] px-4">
-        <div className="relative min-h-[78vh] overflow-hidden rounded-[36px]">
+        <div className="relative min-h-[60vh] overflow-hidden rounded-[36px] sm:min-h-[70vh] md:min-h-[78vh]">
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url(/images/hero-orchard.jpg)" }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-forest-deep/85 via-forest-dark/70 to-transparent" />
-          <div className="relative z-10 flex min-h-[78vh] max-w-3xl flex-col justify-center px-8 py-20 md:px-16">
+          <div className="relative z-10 flex min-h-[60vh] max-w-3xl flex-col justify-center px-6 py-14 sm:min-h-[70vh] sm:px-8 sm:py-20 md:min-h-[78vh] md:px-16">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}

@@ -79,13 +79,14 @@ export default function AdminOrderDetailPage() {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-2 print:hidden">
+      <div className="mt-6 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:flex-wrap md:overflow-visible [&::-webkit-scrollbar]:hidden print:hidden">
         {ORDER_STATUSES.map((status) => (
           <Button
             key={status}
             size="sm"
             variant={order.status === status ? "default" : "outline"}
             onClick={() => { updateOrderStatus(order.id, status as OrderStatus, `Status set to ${status}`); refresh(); }}
+            className="shrink-0"
           >
             {status}
           </Button>

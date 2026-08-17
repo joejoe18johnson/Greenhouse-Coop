@@ -17,7 +17,7 @@ export default function CartPage() {
   const holdUntil = expiresAt ? new Date(expiresAt) : null;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-12 pb-24 sm:px-6 sm:pb-12">
       <h1 className="page-title inline-flex items-center gap-3">
         <ShoppingBag className="h-8 w-8 shrink-0 text-forest sm:h-10 sm:w-10" />
         Cart

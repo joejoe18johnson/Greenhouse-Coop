@@ -119,7 +119,7 @@ export function ScrollCarousel({
   }
 
   return (
-    <div className={cn("min-w-0", bleed && "-mx-4 sm:mx-0", className)}>
+    <div className={cn("min-w-0", bleed && "-mx-2 sm:mx-0", className)}>
       <div className="relative min-w-0">
         <div
           ref={scroller}
@@ -187,7 +187,7 @@ export function ScrollCarousel({
                   aria-label={`Go to slide ${i + 1}`}
                   aria-current={i === page ? "true" : undefined}
                   onClick={() => goTo(i)}
-                  className="flex h-8 w-7 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
                 >
                   <span
                     className={cn(

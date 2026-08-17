@@ -36,7 +36,7 @@ export function FilterPills({
               type="button"
               onClick={() => onChange(option.value)}
               className={cn(
-                "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200",
+                "inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition-all duration-200 min-h-11",
                 active
                   ? "border-forest bg-forest text-cream shadow-md"
                   : "border-forest/15 bg-white/80 text-forest hover:border-forest/40 hover:bg-forest/5"

@@ -24,7 +24,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
         initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="min-h-[70vh]"
+        className="min-h-[70vh] fab-clearance"
       >
         {children}
       </motion.main>
