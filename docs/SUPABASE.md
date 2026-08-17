@@ -48,7 +48,7 @@ This loads products, shipping, couriers, IDS rates, bank details, and creates th
 
 Default admin login:
 
-- Email: `admin@greenhousecoop.com`
+- Email: `admin@greenhousebz.com`
 - Password: `admin123`
 
 ## Database schema

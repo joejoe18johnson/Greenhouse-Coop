@@ -73,7 +73,7 @@ async function seedSettings() {
 }
 
 async function seedAdmin() {
-  const email = process.env.ADMIN_EMAIL ?? "admin@greenhousecoop.com";
+  const email = process.env.ADMIN_EMAIL ?? "admin@greenhousebz.com";
   const password = process.env.ADMIN_PASSWORD ?? "admin123";
 
   const { data: existingUsers } = await supabase.auth.admin.listUsers();

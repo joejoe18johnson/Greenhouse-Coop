@@ -8,6 +8,12 @@ import { Button } from "@/components/ui/button";
 import { IconInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+  DEMO_CUSTOMER_EMAIL,
+  DEMO_CUSTOMER_PASSWORD,
+} from "@/lib/constants";
 import { safeNextPath } from "@/lib/utils";
 
 function LoginForm() {
@@ -59,8 +65,8 @@ function LoginForm() {
           Sign in
         </Button>
         <div className="space-y-1 text-center text-xs text-ink/45 keep-case">
-          <p>Admin: <button type="button" className="text-forest underline" onClick={() => { setEmail("admin@greenhousecoop.com"); setPassword("admin123"); }}>admin@greenhousecoop.com</button> / admin123</p>
-          <p>Customer: <button type="button" className="text-forest underline" onClick={() => { setEmail("customer@greenhousecoop.com"); setPassword("customer123"); }}>customer@greenhousecoop.com</button> / customer123</p>
+          <p>Admin: <button type="button" className="text-forest underline" onClick={() => { setEmail(ADMIN_EMAIL); setPassword(ADMIN_PASSWORD); }}>{ADMIN_EMAIL}</button> / {ADMIN_PASSWORD}</p>
+          <p>Customer: <button type="button" className="text-forest underline" onClick={() => { setEmail(DEMO_CUSTOMER_EMAIL); setPassword(DEMO_CUSTOMER_PASSWORD); }}>{DEMO_CUSTOMER_EMAIL}</button> / {DEMO_CUSTOMER_PASSWORD}</p>
         </div>
       </form>
     </>

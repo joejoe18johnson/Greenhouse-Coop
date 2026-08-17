@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
 import { Providers } from "@/components/layout/providers";
+import { BRAND } from "@/lib/constants";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -9,6 +10,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(BRAND.url),
   title: {
     default: "Greenhouse Co-Op | Premium Fruit Trees for Belize",
     template: "%s | Greenhouse Co-Op",

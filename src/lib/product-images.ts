@@ -14,6 +14,7 @@ const HOVER_PRODUCT_FILES: Record<string, string> = {
   "mangosteen": "mangosteen-hover-image.png",
   "sweetsop-red": "sweet-sop-hover-image.png",
   "sweetsop-green": "sweet-sop-hover-image.png",
+  papaya: "papaya-hover-image.png",
 };
 
 /** Shared hover files keyed by category */
@@ -76,4 +77,24 @@ export function hoverImagePath(
 export function legacyHoverImagePath(fruitImage: string): string {
   const fileName = fruitImage.split("/").pop() ?? "";
   return `/products/hover-images/hover-${fileName}`;
+}
+
+const MAIN_PLANT_BY_CATEGORY: Record<string, string> = {
+  Avocado: "/products/avocado-plant.png",
+  Mango: "/products/mango-plant.png",
+  Orange: "/products/citrus-plant.png",
+  Lime: "/products/citrus-plant.png",
+  Lemon: "/products/citrus-plant.png",
+  "Specialty Citrus": "/products/citrus-plant.png",
+};
+
+/** Main tree-size photo for catalog/print — never hover-image assets. */
+export function mainPlantImage(product: {
+  plantImage: string;
+  category: string;
+}): string {
+  if (product.plantImage && !product.plantImage.includes("/hover-images/")) {
+    return product.plantImage;
+  }
+  return MAIN_PLANT_BY_CATEGORY[product.category] ?? "/products/tropical-plant.png";
 }

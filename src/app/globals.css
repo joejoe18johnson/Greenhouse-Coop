@@ -105,6 +105,11 @@
 }
 
 @media print {
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
   body {
     background: white !important;
     background-image: none !important;
@@ -112,5 +117,34 @@
 
   .print-hidden {
     display: none !important;
+  }
+
+  .catalog-document {
+    max-width: none !important;
+  }
+
+  .catalog-cover {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .catalog-section {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .catalog-section-head {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .catalog-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .catalog-footer {
+    break-before: page;
+    page-break-before: always;
   }
 }

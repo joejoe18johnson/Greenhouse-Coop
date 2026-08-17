@@ -9,6 +9,7 @@ const ICONS: Record<PropagationType, typeof Sprout> = {
   Grafted: Sprout,
   "Air-Layered": Leaf,
   "Selective Breeding": Flower2,
+  Seedling: Sprout,
 };
 
 export function PropagationBenefits() {

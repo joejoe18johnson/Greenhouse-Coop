@@ -125,7 +125,7 @@
     "inStock": false,
     "size": "2-3 ft",
     "id": "chutle-long-avocado",
-    "name": "Chulete",
+    "name": "Chutle Long",
     "category": "Avocado",
     "price": 25,
     "propagationType": "Grafted",
@@ -302,7 +302,7 @@
     "description": "A juice orange with a blush of color and late-season fruit.",
     "flavorProfile": "Valencia Red oranges are juicy and balanced, with a sweet-tart flavor that makes exceptional juice.",
     "fruitImage": "/products/valencia-red-orange-product-image-fruit.png",
-    "plantImage": "/products/hover-images/hover-valencia-red-orange-product-image-fruit.png",
+    "plantImage": "/products/citrus-plant.png",
     "veryRare": false
   },
   {
@@ -1747,6 +1747,23 @@
     "description": "The queen of fruits. Always in short supply at the nursery \u2014 a rare tree that sells quickly.",
     "flavorProfile": "Mangosteen is delicately sweet with a floral, lychee-like flavor and snow-white segments. A rare treasure in Belize.",
     "fruitImage": "/products/mangosteen-fruit.png",
+    "plantImage": "/products/tropical-plant.png",
+    "veryRare": false
+  },
+  {
+    "featured": false,
+    "limitedSupply": false,
+    "certified": false,
+    "inStock": true,
+    "size": "2-3 ft",
+    "id": "papaya",
+    "name": "Papaya",
+    "category": "Tropical",
+    "price": 15,
+    "propagationType": "Seedling",
+    "description": "Nursery papaya seedling — a fast-growing tropical fruit for Belize gardens.",
+    "flavorProfile": "Ripe papaya is soft, sweet, and musky with a bright orange flesh. Enjoy fresh, in smoothies, or with lime.",
+    "fruitImage": "/products/papaya-product-image-fruit.png",
     "plantImage": "/products/tropical-plant.png",
     "veryRare": false
   }

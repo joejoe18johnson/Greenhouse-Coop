@@ -2,7 +2,9 @@ export const BRAND = {
   name: "Greenhouse Co-Op",
   short: "GreenHouse",
   tagline: "Premium Fruit Trees for Belize Gardens",
-  email: "hello@greenhousecoop.com",
+  website: "greenhousebz.com",
+  url: "https://greenhousebz.com",
+  email: "hello@greenhousebz.com",
   phone: "+501 624-0588",
   whatsapp: "+5016240588",
   location: "Belmopan, Cayo, Belize",
@@ -35,9 +37,9 @@ export const FAST_SELLER_IDS = [
 
 export const SHORT_SUPPLY_IDS = ["mangosteen", "strawberry-deleez"] as const;
 
-export const ADMIN_EMAIL = "admin@greenhousecoop.com";
+export const ADMIN_EMAIL = "admin@greenhousebz.com";
 export const ADMIN_PASSWORD = "admin123";
-export const DEMO_CUSTOMER_EMAIL = "customer@greenhousecoop.com";
+export const DEMO_CUSTOMER_EMAIL = "customer@greenhousebz.com";
 export const DEMO_CUSTOMER_PASSWORD = "customer123";
 export const DEMO_SEED_VERSION = "v4";
 export const CATALOG_SEED_VERSION = "v11";

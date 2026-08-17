@@ -10,6 +10,12 @@ import { usePathname } from "next/navigation";
 
 function PageShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isCatalogDownload = pathname === "/catalog/download";
+
+  if (isCatalogDownload) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <Header />

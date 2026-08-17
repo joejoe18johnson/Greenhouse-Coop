@@ -13,6 +13,25 @@ import { useCart } from "@/hooks/use-cart";
 import { NAV_LINKS } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
+function isNavActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function navLinkClass(active: boolean, mobile = false) {
+  return cn(
+    "relative inline-flex items-center transition",
+    mobile ? "gap-3 text-lg font-medium" : "gap-1.5 pb-1 text-sm font-medium",
+    active
+      ? cn(
+          "font-semibold text-forest",
+          "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-forest",
+          mobile && "after:-bottom-0.5"
+        )
+      : cn("text-ink/70 hover:text-forest", mobile && "text-forest/80")
+  );
+}
+
 export function Header() {
   const pathname = usePathname();
   const { count } = useCart();
@@ -41,19 +60,15 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "inline-flex items-center gap-1.5 text-sm font-medium text-ink/70 transition hover:text-forest",
-                pathname === link.href && "text-forest"
-              )}
-            >
-              <link.icon className="h-3.5 w-3.5" />
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isNavActive(pathname, link.href);
+            return (
+              <Link key={link.href} href={link.href} className={navLinkClass(active)}>
+                <link.icon className="h-3.5 w-3.5" />
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -87,17 +102,20 @@ export function Header() {
           </Link>
           <NavSearch className="mb-6" onNavigate={() => setOpen(false)} />
           <div className="flex flex-col gap-4">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="inline-flex items-center gap-3 text-lg font-medium text-forest"
-              >
-                <link.icon className="h-5 w-5" />
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const active = isNavActive(pathname, link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className={navLinkClass(active, true)}
+                >
+                  <link.icon className="h-5 w-5" />
+                  {link.label}
+                </Link>
+              );
+            })}
             <Link href={user ? "/dashboard" : "/login"} onClick={() => setOpen(false)} className="inline-flex items-center gap-3 text-lg font-medium">
               <UserRound className="h-5 w-5" />
               {user ? "Dashboard" : "Sign in"}

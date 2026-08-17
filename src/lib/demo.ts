@@ -56,7 +56,7 @@ export async function seedDemoMaya(): Promise<User> {
     id: "user_demo_maya",
     firstName: "Maya",
     lastName: "Castillo",
-    email: "maya@greenhousecoop.com",
+    email: "maya@greenhousebz.com",
     phone: "615-4410",
     passwordHash,
     addresses: [
@@ -214,7 +214,7 @@ export function seedDemoOrders(products: Product[]): Order[] {
     shipping: {
       firstName: "Maya",
       lastName: "Castillo",
-      email: "maya@greenhousecoop.com",
+      email: "maya@greenhousebz.com",
       phone: "615-4410",
       district: "Belize",
       town: "Belize City",
@@ -297,7 +297,7 @@ export function seedDemoOrders(products: Product[]): Order[] {
     shipping: {
       firstName: "Maya",
       lastName: "Castillo",
-      email: "maya@greenhousecoop.com",
+      email: "maya@greenhousebz.com",
       phone: "615-4410",
       district: "Cayo",
       town: "Belmopan",

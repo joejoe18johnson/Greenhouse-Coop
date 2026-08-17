@@ -27,12 +27,12 @@ Quick start:
 
 Admin
 
-- Email: `admin@greenhousecoop.com`
+- Email: `admin@greenhousebz.com`
 - Password: `admin123`
 
 Customer
 
-- Email: `customer@greenhousecoop.com`
+- Email: `customer@greenhousebz.com`
 - Password: `customer123`
 
 Open `/admin` after signing in as admin. Demo orders cover payment pending through sent and completed. Confirming payment issues a branded invoice.

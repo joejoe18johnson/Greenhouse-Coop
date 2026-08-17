@@ -97,6 +97,7 @@ export default function AdminProductsPage() {
             <option>Grafted</option>
             <option>Air-Layered</option>
             <option>Selective Breeding</option>
+            <option>Seedling</option>
           </Select>
         </div>
         <div>

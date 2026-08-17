@@ -50,10 +50,19 @@ export const PROPAGATION_INFO: Record<PropagationType, PropagationInfo> = {
       { title: "Faster growth", text: "Crops mature quicker, saving time and resources." },
     ],
   },
+  Seedling: {
+    label: "Seedling",
+    title: "Seedling",
+    summary: "Young nursery-grown plants raised from seed and ready to establish in your garden.",
+    benefits: [
+      { title: "Affordable start", text: "A practical way to grow tropical fruit trees at a lower entry price." },
+      { title: "Strong roots", text: "Seedlings adapt to local soil once planted and watered well." },
+      { title: "Seasonal supply", text: "Availability follows nursery seedling batches through the year." },
+    ],
+  },
 };
 
 export function normalizePropagationType(value: string): PropagationType {
-  if (value === "Seedling") return "Selective Breeding";
   if (value in PROPAGATION_INFO) return value as PropagationType;
   return "Grafted";
 }

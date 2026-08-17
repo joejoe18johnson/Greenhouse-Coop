@@ -1,4 +1,4 @@
-export type PropagationType = "Grafted" | "Air-Layered" | "Selective Breeding";
+export type PropagationType = "Grafted" | "Air-Layered" | "Selective Breeding" | "Seedling";
 
 export interface Product {
   id: string;

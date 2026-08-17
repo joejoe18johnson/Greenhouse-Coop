@@ -63,6 +63,7 @@ export const PROP_ICONS: Record<string, LucideIcon> = {
   Grafted: Sprout,
   "Air-Layered": Leaf,
   "Selective Breeding": Flower2,
+  Seedling: Sprout,
 };
 
 export const FAQ_ICONS: Record<string, LucideIcon> = {
