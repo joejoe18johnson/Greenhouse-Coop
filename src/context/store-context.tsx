@@ -5,9 +5,12 @@ import {
   getCart,
   getSession,
   hydrateStore,
+  isUsingSupabase,
   saveCart,
   setSession as persistSession,
+  syncAuthSession,
 } from "@/lib/store";
+import { createClient } from "@/lib/supabase/client";
 import type { CartItem, Session } from "@/types";
 
 interface StoreContextValue {
@@ -26,27 +29,41 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [session, setSessionState] = useState<Session | null>(null);
   const [cart, setCartState] = useState<CartItem[]>([]);
 
-  useEffect(() => {
-    hydrateStore().then(() => {
-      setSessionState(getSession());
-      setCartState(getCart());
-      setReady(true);
-    });
+  const refresh = useCallback(() => {
+    setSessionState(getSession());
+    setCartState(getCart());
   }, []);
 
-  const setSession = useCallback((next: Session | null) => {
-    persistSession(next);
-    setSessionState(next);
-  }, []);
+  useEffect(() => {
+    hydrateStore().then(() => {
+      refresh();
+      setReady(true);
+    });
+  }, [refresh]);
+
+  useEffect(() => {
+    if (!isUsingSupabase()) return;
+
+    const supabase = createClient();
+    const { data: subscription } = supabase.auth.onAuthStateChange(async () => {
+      await syncAuthSession();
+      refresh();
+    });
+
+    return () => subscription.subscription.unsubscribe();
+  }, [refresh]);
+
+  const setSession = useCallback(
+    (next: Session | null) => {
+      persistSession(next);
+      setSessionState(next);
+    },
+    []
+  );
 
   const setCart = useCallback((next: CartItem[]) => {
     saveCart(next);
     setCartState(next);
-  }, []);
-
-  const refresh = useCallback(() => {
-    setSessionState(getSession());
-    setCartState(getCart());
   }, []);
 
   const value = useMemo(

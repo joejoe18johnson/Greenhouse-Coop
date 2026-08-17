@@ -34,7 +34,7 @@ export interface User {
   lastName: string;
   email: string;
   phone: string;
-  passwordHash: string;
+  passwordHash?: string;
   addresses: Address[];
   createdAt: string;
   role: "customer" | "admin";

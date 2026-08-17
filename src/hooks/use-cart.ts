@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore } from "@/context/store-context";
-import { getCart, getCartUpdatedAt, getProduct } from "@/lib/store";
+import { getCartUpdatedAt, getProduct } from "@/lib/store";
 import { CART_HOLD_MS } from "@/lib/constants";
 import { isInStock } from "@/lib/product-badges";
 import type { CartItem, Product } from "@/types";

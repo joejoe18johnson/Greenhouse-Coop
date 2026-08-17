@@ -1,15 +1,27 @@
 # Greenhouse Co-Op
 
-Premium fruit-tree nursery website for Belize. Version 1 runs entirely in the browser with local JSON and LocalStorage — no database, no Stripe, no Supabase.
+Premium fruit-tree nursery website for Belize.
 
-## Run
+## Run locally (LocalStorage mode)
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). No database required — data persists in the browser.
+
+## Supabase backend (optional)
+
+To use Postgres + Supabase Auth instead of LocalStorage, see **[docs/SUPABASE.md](docs/SUPABASE.md)**.
+
+Quick start:
+
+1. Create a Supabase project
+2. Copy `.env.example` → `.env.local` and add your keys
+3. Run the SQL migration in `supabase/migrations/`
+4. `npm run seed:supabase`
+5. Restart `npm run dev`
 
 ## Demo accounts
 
