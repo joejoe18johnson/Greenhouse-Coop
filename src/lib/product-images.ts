@@ -2,17 +2,48 @@
 export const HOVER_TREE_IMAGES_ENABLED = true;
 
 export const HOVER_IMAGE_REFERENCE_NOTICE =
-  "Photos are for visual reference only. Actual nursery stock may differ in size and shape.";
+  "All product photos are for visual reference only. Actual nursery stock may differ in size.";
+
+const HOVER_GENERIC = "generic-hover.png";
+
+/** Product-specific hover files (exceptions to shared/category rules) */
+const HOVER_PRODUCT_FILES: Record<string, string> = {
+  "pink-eurica-lemon": "pink-eureka-lemon-hover-image.png",
+  "strawberry-deleez": "strawberry-hover-image.png",
+  "peach-mexican": "peaches-hover-image.png",
+  "mangosteen": "mangosteen-hover-image.png",
+  "sweetsop-red": "sweet-sop-hover-image.png",
+  "sweetsop-green": "sweet-sop-hover-image.png",
+};
+
+/** Shared hover files keyed by category */
+const HOVER_CATEGORY_FILES: Record<string, string> = {
+  Avocado: "avocados-hover-image.png",
+  Coconut: "coconuts-hover-image.png",
+  Mango: "mangoes-hover-image.png",
+  Lemon: "lemons-hover-image.png",
+  "Dragon Fruit": "dragon-fruit-hover-image.png",
+  Soursop: "soursop-hover-image.png",
+  Guava: "guava-hover-image.png",
+};
+
+/** Mandarins, tangerines, grapefruits, and kumquat share one hover image */
+const HOVER_MT_IDS = new Set([
+  "king-mandarin",
+  "dancy-mandarin",
+  "jamaican-mandarin",
+  "tangerine",
+  "red-grapefruit",
+  "white-grapefruit",
+  "kumquat",
+]);
+
+/** Categories with dedicated per-product hover files: {id}-hover-image.png */
+const HOVER_PER_PRODUCT_CATEGORIES = new Set(["Lime", "Orange"]);
 
 /** Filename slug overrides when hover file name differs from product id */
 const HOVER_ID_ALIASES: Record<string, string> = {
   "pink-eurica-lemon": "pink-eureka-lemon",
-  "tahiti-lime": "tahiti-lime",
-};
-
-/** Shared hover files keyed by category or custom slug */
-const HOVER_SHARED_FILES: Record<string, string> = {
-  Avocado: "avocados-hover-image.png",
 };
 
 /** Hover/tree image in public/products/hover-images/ */
@@ -20,12 +51,25 @@ export function hoverImagePath(
   productId: string,
   options?: { category?: string; fruitImage?: string }
 ): string {
-  if (options?.category && HOVER_SHARED_FILES[options.category]) {
-    return `/products/hover-images/${HOVER_SHARED_FILES[options.category]}`;
+  if (HOVER_PRODUCT_FILES[productId]) {
+    return `/products/hover-images/${HOVER_PRODUCT_FILES[productId]}`;
   }
 
-  const slug = HOVER_ID_ALIASES[productId] ?? productId;
-  return `/products/hover-images/${slug}-hover-image.png`;
+  if (HOVER_MT_IDS.has(productId)) {
+    return `/products/hover-images/mt-hover-image.png`;
+  }
+
+  const category = options?.category;
+  if (category && HOVER_CATEGORY_FILES[category]) {
+    return `/products/hover-images/${HOVER_CATEGORY_FILES[category]}`;
+  }
+
+  if (category && HOVER_PER_PRODUCT_CATEGORIES.has(category)) {
+    const slug = HOVER_ID_ALIASES[productId] ?? productId;
+    return `/products/hover-images/${slug}-hover-image.png`;
+  }
+
+  return `/products/hover-images/${HOVER_GENERIC}`;
 }
 
 /** Legacy naming: hover-{fruitImageFileName} — used as fallback in FruitPlantSwap */

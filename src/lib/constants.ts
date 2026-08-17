@@ -40,7 +40,7 @@ export const ADMIN_PASSWORD = "admin123";
 export const DEMO_CUSTOMER_EMAIL = "customer@greenhousecoop.com";
 export const DEMO_CUSTOMER_PASSWORD = "customer123";
 export const DEMO_SEED_VERSION = "v4";
-export const CATALOG_SEED_VERSION = "v9";
+export const CATALOG_SEED_VERSION = "v11";
 
 export const STORAGE_KEYS = {
   products: "products",

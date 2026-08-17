@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Eye, Ruler, ShoppingBag } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
 import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { PropagationBadge } from "@/components/product/propagation-badge";
 import { Button } from "@/components/ui/button";
@@ -51,9 +52,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           />
         </motion.div>
       </div>
-      {HOVER_TREE_IMAGES_ENABLED && (
-        <TreeImageReferenceNotice className="px-5 pb-1" />
-      )}
+      <TreeImageReferenceNotice className="px-5 pb-1" />
 
       <div className="px-5 pb-5 pt-2">
         <div className="mb-3 flex flex-wrap gap-2">

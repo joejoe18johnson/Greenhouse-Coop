@@ -7,6 +7,7 @@ import { Apple, Ban, Minus, Plus, Ruler, ShoppingBag, Sprout, TreeDeciduous } fr
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
+import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
 import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { ProductCarousel } from "@/components/product/product-carousel";
 import { PropagationBadge } from "@/components/product/propagation-badge";
@@ -67,20 +68,18 @@ export default function ProductPage() {
             />
           </div>
           {showTreeToggle && (
-            <>
-              <div className="mt-4 flex justify-center gap-2">
-                <Button size="sm" variant={view === "fruit" ? "default" : "outline"} onClick={() => setView("fruit")}>
-                  <Apple className="h-4 w-4" />
-                  Fruit
-                </Button>
-                <Button size="sm" variant={view === "plant" ? "default" : "outline"} onClick={() => setView("plant")}>
-                  <TreeDeciduous className="h-4 w-4" />
-                  Tree size
-                </Button>
-              </div>
-              <TreeImageReferenceNotice className="mt-3" />
-            </>
+            <div className="mt-4 flex justify-center gap-2">
+              <Button size="sm" variant={view === "fruit" ? "default" : "outline"} onClick={() => setView("fruit")}>
+                <Apple className="h-4 w-4" />
+                Fruit
+              </Button>
+              <Button size="sm" variant={view === "plant" ? "default" : "outline"} onClick={() => setView("plant")}>
+                <TreeDeciduous className="h-4 w-4" />
+                Tree size
+              </Button>
+            </div>
           )}
+          <TreeImageReferenceNotice className="mt-3" />
         </div>
 
         <div>
