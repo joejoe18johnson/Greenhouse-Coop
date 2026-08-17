@@ -28,11 +28,11 @@ export function generateReference() {
   for (let i = 0; i < 6; i++) {
     code += alphabet[Math.floor(Math.random() * alphabet.length)];
   }
-  if (![...code].some((c) => letters.includes(c))) {
+  if (!code.split("").some((c) => letters.includes(c))) {
     const i = Math.floor(Math.random() * 6);
     code = code.slice(0, i) + letters[Math.floor(Math.random() * letters.length)] + code.slice(i + 1);
   }
-  if (![...code].some((c) => numbers.includes(c))) {
+  if (!code.split("").some((c) => numbers.includes(c))) {
     const i = Math.floor(Math.random() * 6);
     code = code.slice(0, i) + numbers[Math.floor(Math.random() * numbers.length)] + code.slice(i + 1);
   }

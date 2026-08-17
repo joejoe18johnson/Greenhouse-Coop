@@ -114,8 +114,10 @@ export function deleteProduct(id: string) {
   return local.deleteProduct(id);
 }
 
-export function createUser(input: Parameters<typeof local.createUser>[0]) {
-  if (isRemoteBackend()) return remote.createUser(input);
+export function createUser(input: Parameters<typeof local.createUser>[0]): ReturnType<typeof local.createUser> {
+  if (isRemoteBackend()) {
+    throw new Error("Use Supabase Auth to create users.");
+  }
   return local.createUser(input);
 }
 

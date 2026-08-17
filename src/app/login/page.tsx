@@ -28,7 +28,7 @@ export default function LoginPage() {
         router.push(next);
         return;
       }
-      router.push(user.role === "admin" ? "/admin" : "/dashboard");
+      router.push(user?.role === "admin" ? "/admin" : "/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign in.");
     }
