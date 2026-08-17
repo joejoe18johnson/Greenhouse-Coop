@@ -55,7 +55,7 @@ export default function CatalogPage() {
             <BookOpen className="h-3.5 w-3.5" />
             Catalog
           </p>
-          <h1 className="mt-2 font-display text-5xl font-semibold text-forest-dark">Variety guide</h1>
+          <h1 className="page-title mt-2 font-semibold">Variety guide</h1>
           <p className="mt-3 max-w-xl text-ink/65">
             Browse every tree in the catalog by type. This is a variety guide — not live inventory. Download the PDF if you want a copy to keep or share offline.
           </p>

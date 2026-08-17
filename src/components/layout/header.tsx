@@ -23,7 +23,7 @@ export function Header() {
   if (isAdminArea) return null;
 
   return (
-    <header className="sticky top-0 z-40 px-4 pt-4 print:hidden">
+    <header className="sticky top-0 z-40 px-4 pt-[max(1rem,env(safe-area-inset-top))] print:hidden">
       <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full glass px-4 py-2 md:px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image

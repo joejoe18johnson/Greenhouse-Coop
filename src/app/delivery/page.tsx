@@ -17,7 +17,7 @@ export default function DeliveryPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <p className="text-xs text-leaf">Delivery</p>
-      <h1 className="mt-2 font-display text-5xl text-forest-dark">How trees arrive</h1>
+      <h1 className="page-title mt-2">How trees arrive</h1>
       <section className="mt-10 rounded-[28px] bg-white/80 p-8">
         <div className="flex items-center gap-3">
           <IconBubble icon={Store} />

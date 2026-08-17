@@ -136,10 +136,10 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="font-display text-5xl text-forest-dark">Checkout</h1>
+    <div className="mx-auto max-w-6xl px-4 py-12 pb-28 sm:px-6 lg:pb-12">
+      <h1 className="page-title">Checkout</h1>
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
-        <div className="space-y-8">
+        <div className="order-2 space-y-8 lg:order-1">
           <section className="rounded-[28px] bg-white/80 p-6">
             <h2 className="flex items-center gap-2 font-display text-2xl text-forest">
               <Truck className="h-6 w-6" />
@@ -270,7 +270,7 @@ export default function CheckoutPage() {
                 <div key={account.accountNumber} className="rounded-2xl bg-cream p-4">
                   <p><strong>{account.bankName}</strong></p>
                   <p className="mt-1">{account.accountName}</p>
-                  <p className="mt-1 font-mono text-sm">{account.accountNumber}</p>
+                  <p className="mt-1 break-all font-mono text-sm">{account.accountNumber}</p>
                 </div>
               ))}
             </div>
@@ -286,13 +286,14 @@ export default function CheckoutPage() {
           </section>
           <InventoryNotice />
           {error && <p className="text-sm text-red-600">{error}</p>}
-          <Button size="lg" onClick={placeOrder}>
+          <Button size="lg" className="hidden w-full lg:inline-flex" onClick={placeOrder}>
             <CircleCheck className="h-4 w-4" />
             Place order
           </Button>
-          <p className="text-sm text-ink/50">You will send payment proof on WhatsApp after this order is placed.</p>
+          <p className="hidden text-sm text-ink/50 lg:block">You will send payment proof on WhatsApp after this order is placed.</p>
         </div>
 
+        <div className="order-1 lg:order-2">
         <OrderReceipt
           items={items.map((i) => ({
             id: i.product.id,
@@ -328,6 +329,20 @@ export default function CheckoutPage() {
               : undefined
           }
         />
+        </div>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-forest/10 bg-cream/95 p-4 backdrop-blur-lg safe-bottom lg:hidden">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
+          <div>
+            <p className="text-xs text-ink/50">Total due now</p>
+            <p className="text-xl font-semibold text-forest">{formatBZD(total)}</p>
+          </div>
+          <Button size="lg" className="shrink-0" onClick={placeOrder}>
+            <CircleCheck className="h-4 w-4" />
+            Place order
+          </Button>
+        </div>
       </div>
     </div>
   );

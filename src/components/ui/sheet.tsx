@@ -28,8 +28,8 @@ export function SheetContent({
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="absolute right-4 top-4 rounded-full p-1 text-ink/50 hover:bg-forest/10">
-          <X className="h-4 w-4" />
+        <SheetPrimitive.Close className="absolute right-3 top-3 grid h-11 w-11 place-items-center rounded-full text-ink/50 hover:bg-forest/10">
+          <X className="h-5 w-5" />
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>
     </SheetPrimitive.Portal>

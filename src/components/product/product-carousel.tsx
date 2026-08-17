@@ -86,7 +86,7 @@ export function ProductCarousel({
       <div className="relative">
         <div
           ref={scroller}
-          className="flex items-start snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 [scrollbar-width:none] [touch-action:pan-y] [&::-webkit-scrollbar]:hidden"
+          className="flex items-start snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {products.map((product, i) => (
             <div
@@ -147,8 +147,8 @@ export function ProductCarousel({
                 aria-label={`Go to page ${i + 1}`}
                 onClick={() => goTo(i)}
                 className={cn(
-                  "h-1.5 rounded-full transition-all",
-                  i === page ? "w-6 bg-forest" : "w-1.5 bg-forest/25 hover:bg-forest/50"
+                  "min-h-[44px] min-w-[44px] rounded-full transition-all",
+                  i === page ? "w-8 bg-forest" : "w-2.5 bg-forest/25 hover:bg-forest/50"
                 )}
               />
             ))}

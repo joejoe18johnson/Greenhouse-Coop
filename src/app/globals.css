@@ -30,14 +30,31 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-cream text-ink antialiased;
     text-transform: capitalize;
+    overflow-x: clip;
+    padding-bottom: env(safe-area-inset-bottom);
     background-image:
       radial-gradient(1200px 600px at 10% -10%, rgba(64, 145, 108, 0.08), transparent 50%),
       radial-gradient(900px 500px at 100% 0%, rgba(255, 140, 66, 0.08), transparent 45%);
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  @media (min-width: 768px) {
+    input,
+    textarea,
+    select {
+      font-size: 0.875rem;
+    }
   }
 
   input,
@@ -72,6 +89,14 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  .page-title {
+    @apply font-display text-3xl text-forest-dark sm:text-4xl lg:text-5xl;
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
   }
 
   .arch-frame {

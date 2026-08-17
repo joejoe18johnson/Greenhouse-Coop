@@ -51,7 +51,7 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12">
+    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <div>
           <div className="relative mx-auto h-[420px] w-full max-w-md md:h-[520px]">
@@ -87,8 +87,8 @@ export default function ProductPage() {
             <CategoryIcon className="h-3.5 w-3.5" />
             {product.category}
           </p>
-          <h1 className="mt-2 font-display text-5xl text-forest-dark">{product.name}</h1>
-          <p className="mt-4 text-3xl font-semibold text-forest">{formatBZD(product.price)}</p>
+          <h1 className="page-title mt-2">{product.name}</h1>
+          <p className="mt-4 text-2xl font-semibold text-forest sm:text-3xl">{formatBZD(product.price)}</p>
           <div className="mt-5 flex flex-wrap gap-2">
             <PropagationBadge type={product.propagationType} />
             <Badge className="inline-flex items-center gap-1 bg-cream-dark text-ink/70">
@@ -119,23 +119,27 @@ export default function ProductPage() {
             <p className="text-sm font-semibold text-lime-bright">Flavor Profile</p>
             <p className="mt-3 leading-relaxed text-cream/85">{product.flavorProfile}</p>
           </div>
-          <div className="mt-6 flex items-center gap-3">
-            <div className="flex items-center rounded-full border border-forest/15 bg-white">
-              <button className="grid h-11 w-11 place-items-center" onClick={() => setQty((n) => Math.max(1, n - 1))} aria-label="Decrease quantity">
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="w-8 text-center font-semibold">{qty}</span>
-              <button className="grid h-11 w-11 place-items-center" onClick={() => setQty((n) => n + 1)} aria-label="Increase quantity">
-                <Plus className="h-4 w-4" />
-              </button>
+          <div className="mt-6 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center rounded-full border border-forest/15 bg-white">
+                <button className="grid h-11 w-11 place-items-center" onClick={() => setQty((n) => Math.max(1, n - 1))} aria-label="Decrease quantity">
+                  <Minus className="h-4 w-4" />
+                </button>
+                <span className="w-8 text-center font-semibold">{qty}</span>
+                <button className="grid h-11 w-11 place-items-center" onClick={() => setQty((n) => n + 1)} aria-label="Increase quantity">
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
             </div>
-            <Button size="lg" disabled={!available} onClick={() => add(product.id, qty)}>
-              <ShoppingBag className="h-4 w-4" />
-              {available ? "Add to Cart" : "Out of Stock"}
-            </Button>
-            <Button size="lg" variant="outline" disabled={!available} onClick={() => { add(product.id, qty); router.push("/cart"); }}>
-              Buy now
-            </Button>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <Button size="lg" className="w-full" disabled={!available} onClick={() => add(product.id, qty)}>
+                <ShoppingBag className="h-4 w-4" />
+                {available ? "Add to Cart" : "Out of Stock"}
+              </Button>
+              <Button size="lg" variant="outline" className="w-full" disabled={!available} onClick={() => { add(product.id, qty); router.push("/cart"); }}>
+                Buy now
+              </Button>
+            </div>
           </div>
           <InventoryNotice className="mt-8" />
         </div>

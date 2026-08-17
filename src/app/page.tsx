@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { OrderProcess } from "@/components/home/order-process";
 import { PropagationBenefits } from "@/components/home/propagation-benefits";
-import { ProductCarousel } from "@/components/product/product-carousel";
-import { useProducts } from "@/hooks/use-products";
-import { FAST_SELLER_IDS } from "@/lib/constants";
+import { SellingFast } from "@/components/home/selling-fast";
 import almanac from "@/data/almanac.json";
 import shipping from "@/data/shipping.json";
 import { CHAT_FAQS } from "@/data/faq";
@@ -23,11 +21,6 @@ const reasons = [
 ];
 
 export default function HomePage() {
-  const products = useProducts();
-  const featured = FAST_SELLER_IDS.map((id) => products.find((p) => p.id === id)).filter(
-    (p): p is NonNullable<typeof p> => Boolean(p)
-  );
-
   return (
     <div>
       <section className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-[36px] px-4">
@@ -80,24 +73,9 @@ export default function HomePage() {
 
       <OrderProcess />
 
-      <PropagationBenefits />
+      <SellingFast />
 
-      <section className="mx-auto max-w-7xl px-6 pb-24 pt-16">
-        <div className="mb-12 flex items-end justify-between gap-6">
-          <div>
-            <p className="text-xs text-leaf">Selling fast</p>
-            <h2 className="mt-2 font-display text-4xl text-forest-dark">Popular trees that go quickly.</h2>
-            <p className="mt-3 max-w-xl text-ink/65">
-              Mangosteen, strawberry, Cuban guava, blood orange, Hass Black, and Valencia orange are nursery favorites.
-              Mangosteen and strawberries are always in short supply — order while they last.
-            </p>
-          </div>
-          <Button variant="outline" asChild className="hidden sm:inline-flex">
-            <Link href="/shop">View all <ArrowRight className="h-4 w-4" /></Link>
-          </Button>
-        </div>
-        <ProductCarousel products={featured} />
-      </section>
+      <PropagationBenefits />
 
       <section className="bg-forest-dark py-24 text-cream">
         <div className="mx-auto max-w-7xl px-6">

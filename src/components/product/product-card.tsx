@@ -33,7 +33,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       )}
     >
       <ProductBadges product={product} overlay />
-      <div className="relative mx-auto mt-4 h-56 w-56 md:h-64 md:w-64">
+      <div className="relative mx-auto mt-4 aspect-square w-full max-w-[14rem] sm:max-w-[16rem] md:h-64 md:max-w-[16rem]">
         {!available && (
           <div className="pointer-events-none absolute inset-0 z-[1] rounded-[24px] bg-white/45" aria-hidden />
         )}

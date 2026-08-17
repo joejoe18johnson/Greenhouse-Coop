@@ -66,7 +66,7 @@ export function NavSearch({
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search trees…"
-          className="h-10 w-full rounded-full border border-forest/15 bg-white/80 pl-10 pr-4 text-sm text-ink shadow-sm placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-forest/40"
+          className="h-11 w-full rounded-full border border-forest/15 bg-white/80 pl-10 pr-4 text-base text-ink shadow-sm placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-forest/40 md:text-sm"
         />
       </form>
 

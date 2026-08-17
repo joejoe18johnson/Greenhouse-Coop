@@ -17,7 +17,7 @@ export function WhatsAppWidget() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3 print:hidden">
+    <div className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-[max(1.25rem,env(safe-area-inset-right))] z-50 flex flex-col items-end gap-3 print:hidden">
       <AnimatePresence>
         {open && (
           <motion.div

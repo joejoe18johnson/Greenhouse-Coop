@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
 import { Providers } from "@/components/layout/providers";
 import "./globals.css";
@@ -16,6 +16,13 @@ export const metadata: Metadata = {
   description:
     "Grafted, Air-Layered, And Selectively Bred Fruit Trees Grown For Belize Gardens. Shop Avocados, Mangoes, Citrus, And Tropical Specialties.",
   icons: { icon: "/favicon.png" },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#2D6A4F",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

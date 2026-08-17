@@ -17,16 +17,30 @@ export default function CartPage() {
   const holdUntil = expiresAt ? new Date(expiresAt) : null;
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="inline-flex items-center gap-3 font-display text-5xl text-forest-dark">
-        <ShoppingBag className="h-10 w-10 text-forest" />
+    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <h1 className="page-title inline-flex items-center gap-3">
+        <ShoppingBag className="h-8 w-8 shrink-0 text-forest sm:h-10 sm:w-10" />
         Cart
       </h1>
       {items.length > 0 && (
         <p className="mt-3 inline-flex items-start gap-2 text-sm text-ink/60">
           <Clock className="mt-0.5 h-4 w-4 shrink-0 text-leaf" />
-          Items in your cart are held for 72 hours
-          {holdUntil ? ` (until ${holdUntil.toLocaleString()}).` : "."} After that the cart resets.
+          <span>
+            Items in your cart are held for 72 hours
+            {holdUntil ? (
+              <>
+                {" "}
+                (until{" "}
+                <span className="keep-case">
+                  {holdUntil.toLocaleDateString()} {holdUntil.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+                </span>
+                ).
+              </>
+            ) : (
+              "."
+            )}{" "}
+            After that the cart resets.
+          </span>
         </p>
       )}
       {items.length === 0 ? (
@@ -44,29 +58,33 @@ export default function CartPage() {
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="space-y-4">
             {items.map(({ product, quantity }) => (
-              <div key={product.id} className="flex items-center gap-4 rounded-[24px] bg-white/80 p-4">
-                <div className="relative h-20 w-20 shrink-0">
-                  <Image src={product.fruitImage} alt={product.name} fill className="object-contain" />
+              <div key={product.id} className="rounded-[24px] bg-white/80 p-4">
+                <div className="flex items-start gap-4">
+                  <div className="relative h-20 w-20 shrink-0">
+                    <Image src={product.fruitImage} alt={product.name} fill className="object-contain" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <Link href={`/product/${product.id}`} className="font-semibold text-forest">
+                      {product.name}
+                    </Link>
+                    <p className="text-sm text-ink/50">{product.category}</p>
+                    <p className="text-sm font-medium">{formatBZD(product.price)}</p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <Link href={`/product/${product.id}`} className="font-semibold text-forest">
-                    {product.name}
-                  </Link>
-                  <p className="text-sm text-ink/50">{product.category}</p>
-                  <p className="text-sm font-medium">{formatBZD(product.price)}</p>
-                </div>
-                <div className="flex items-center rounded-full border border-forest/10">
-                  <button className="grid h-9 w-9 place-items-center" onClick={() => setQty(product.id, quantity - 1)} aria-label="Decrease quantity">
-                    <Minus className="h-3.5 w-3.5" />
+                <div className="mt-4 flex items-center justify-between gap-3 border-t border-forest/10 pt-4">
+                  <div className="flex items-center rounded-full border border-forest/10">
+                    <button className="grid h-11 w-11 place-items-center" onClick={() => setQty(product.id, quantity - 1)} aria-label="Decrease quantity">
+                      <Minus className="h-3.5 w-3.5" />
+                    </button>
+                    <span className="w-8 text-center text-sm font-medium">{quantity}</span>
+                    <button className="grid h-11 w-11 place-items-center" onClick={() => setQty(product.id, quantity + 1)} aria-label="Increase quantity">
+                      <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <button className="grid h-11 w-11 place-items-center text-ink/40 hover:text-red-600" onClick={() => remove(product.id)} aria-label="Remove">
+                    <Trash2 className="h-4 w-4" />
                   </button>
-                  <span className="w-6 text-center text-sm">{quantity}</span>
-                  <button className="grid h-9 w-9 place-items-center" onClick={() => setQty(product.id, quantity + 1)} aria-label="Increase quantity">
-                    <Plus className="h-3.5 w-3.5" />
-                  </button>
                 </div>
-                <button className="grid h-9 w-9 place-items-center text-ink/40 hover:text-red-600" onClick={() => remove(product.id)} aria-label="Remove">
-                  <Trash2 className="h-4 w-4" />
-                </button>
               </div>
             ))}
             <InventoryNotice />
