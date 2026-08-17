@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, LogIn, Mail } from "lucide-react";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { safeNextPath } from "@/lib/utils";
 
-export default function LoginPage() {
+function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,8 +37,7 @@ export default function LoginPage() {
   const registerHref = next ? `/register?next=${encodeURIComponent(next)}` : "/register";
 
   return (
-    <div className="mx-auto max-w-md px-6 py-20">
-      <h1 className="font-display text-4xl text-forest-dark">Sign in</h1>
+    <>
       <p className="mt-2 text-sm text-ink/60">
         New here? <Link href={registerHref} className="text-forest underline">Create an account</Link>
       </p>
@@ -64,6 +63,17 @@ export default function LoginPage() {
           <p>Customer: <button type="button" className="text-forest underline" onClick={() => { setEmail("customer@greenhousecoop.com"); setPassword("customer123"); }}>customer@greenhousecoop.com</button> / customer123</p>
         </div>
       </form>
+    </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <div className="mx-auto max-w-md px-6 py-20">
+      <h1 className="font-display text-4xl text-forest-dark">Sign in</h1>
+      <Suspense fallback={<p className="mt-8 text-sm text-ink/50">Loading…</p>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }

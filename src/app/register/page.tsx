@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, Mail, Phone, UserPlus, UserRound } from "lucide-react";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { safeNextPath } from "@/lib/utils";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const { register } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -32,8 +32,7 @@ export default function RegisterPage() {
   const loginHref = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
 
   return (
-    <div className="mx-auto max-w-md px-6 py-20">
-      <h1 className="font-display text-4xl text-forest-dark">Create account</h1>
+    <>
       <p className="mt-2 text-sm text-ink/60">
         Already registered? <Link href={loginHref} className="text-forest underline">Sign in</Link>
       </p>
@@ -69,6 +68,17 @@ export default function RegisterPage() {
           Create account
         </Button>
       </form>
+    </>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <div className="mx-auto max-w-md px-6 py-20">
+      <h1 className="font-display text-4xl text-forest-dark">Create account</h1>
+      <Suspense fallback={<p className="mt-8 text-sm text-ink/50">Loading…</p>}>
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }

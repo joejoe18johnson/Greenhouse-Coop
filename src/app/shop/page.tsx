@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LayoutGrid, Search } from "lucide-react";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
@@ -12,7 +12,7 @@ import { CATEGORIES } from "@/lib/constants";
 import { PROP_ICONS, categoryIcon } from "@/lib/icons";
 import { PROPAGATION_TYPES } from "@/lib/propagation";
 
-export default function ShopPage() {
+function ShopContent() {
   const products = useProducts();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("q") || "");
@@ -62,18 +62,7 @@ export default function ShopPage() {
   }, [products, query, category, prop]);
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12">
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-xs text-leaf">Shop</p>
-          <h1 className="mt-2 font-display text-5xl text-forest-dark">Fruit trees</h1>
-          <p className="mt-3 max-w-xl text-ink/65">
-            Browse grafted, air-layered, and selectively bred trees for Belize gardens.
-          </p>
-        </div>
-        <DownloadCatalogButton variant="outline" />
-      </div>
-
+    <>
       <div className="mt-10 space-y-8">
         <div className="relative max-w-md">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-forest/50" />
@@ -112,6 +101,27 @@ export default function ShopPage() {
           <p className="mt-3">No trees match these filters.</p>
         </div>
       )}
+    </>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="text-xs text-leaf">Shop</p>
+          <h1 className="mt-2 font-display text-5xl text-forest-dark">Fruit trees</h1>
+          <p className="mt-3 max-w-xl text-ink/65">
+            Browse grafted, air-layered, and selectively bred trees for Belize gardens.
+          </p>
+        </div>
+        <DownloadCatalogButton variant="outline" />
+      </div>
+
+      <Suspense fallback={<p className="mt-10 text-sm text-ink/50">Loading shop…</p>}>
+        <ShopContent />
+      </Suspense>
     </div>
   );
 }
