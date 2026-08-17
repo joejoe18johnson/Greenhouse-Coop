@@ -28,6 +28,14 @@ const HOVER_CATEGORY_FILES: Record<string, string> = {
   Guava: "guava-hover-image.png",
 };
 
+/** All guava varieties share one hover image */
+const HOVER_GUAVA_IDS = new Set([
+  "pink-cuban-guava",
+  "chinese-guava",
+  "strawberry-guava",
+  "yellow-spanish-guava",
+]);
+
 /** Mandarins, tangerines, grapefruits, and kumquat share one hover image */
 const HOVER_MT_IDS = new Set([
   "king-mandarin",
@@ -56,11 +64,19 @@ export function hoverImagePath(
     return `/products/hover-images/${HOVER_PRODUCT_FILES[productId]}`;
   }
 
+  if (HOVER_GUAVA_IDS.has(productId)) {
+    return `/products/hover-images/guava-hover-image.png`;
+  }
+
   if (HOVER_MT_IDS.has(productId)) {
     return `/products/hover-images/mt-hover-image.png`;
   }
 
   const category = options?.category;
+  if (category === "Guava") {
+    return `/products/hover-images/guava-hover-image.png`;
+  }
+
   if (category && HOVER_CATEGORY_FILES[category]) {
     return `/products/hover-images/${HOVER_CATEGORY_FILES[category]}`;
   }
