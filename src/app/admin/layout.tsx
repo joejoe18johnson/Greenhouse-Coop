@@ -15,6 +15,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useAdminCounts } from "@/hooks/use-admin-counts";
+import { AdminBackendNotice } from "@/components/admin/backend-notice";
+import { AdminPushNotificationPrompt } from "@/components/admin/push-notification-prompt";
+import { AdminNotificationBell } from "@/components/notifications/admin-notification-bell";
+import { AdminNotificationToasts } from "@/components/notifications/admin-notification-toasts";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
@@ -97,9 +101,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen overflow-x-hidden bg-forest-deep text-cream">
       <div className="mx-auto flex max-w-7xl gap-0 md:gap-8">
         <aside className="hidden w-64 shrink-0 px-2 py-10 print:hidden md:block">
-          <Link href="/" className="block px-4 text-base font-semibold tracking-tight">
-            GreenHouse Admin
-          </Link>
+          <div className="flex items-center justify-between gap-2 px-4">
+            <Link href="/" className="text-base font-semibold tracking-tight">
+              GreenHouse Admin
+            </Link>
+            <AdminNotificationBell adminId={user.id} />
+          </div>
           <nav className="mt-12 flex flex-col gap-2">
             {links.map((link) => (
               <AdminNavLink
@@ -127,7 +134,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/admin" className="min-w-0 truncate text-sm font-semibold text-forest">
               GreenHouse Admin
             </Link>
-            <Button
+            <div className="flex shrink-0 items-center gap-1">
+              <AdminNotificationBell adminId={user.id} />
+              <Button
               type="button"
               variant="citrus"
               size="sm"
@@ -140,6 +149,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <LogOut className="h-3.5 w-3.5" />
               Sign out
             </Button>
+            </div>
           </div>
           <nav className="mb-6 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] print:hidden md:hidden [&::-webkit-scrollbar]:hidden">
             {links.map((link) => (
@@ -152,9 +162,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               />
             ))}
           </nav>
+          <AdminBackendNotice />
+          <AdminPushNotificationPrompt adminId={user.id} />
           {children}
         </div>
       </div>
+      <AdminNotificationToasts adminId={user.id} />
     </div>
   );
 }

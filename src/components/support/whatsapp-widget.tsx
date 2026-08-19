@@ -5,12 +5,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CircleHelp, MessageCircle, X, ChevronRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
-import { CHAT_FAQS, whatsappLink } from "@/data/faq";
+import { useChatFaqs } from "@/hooks/use-faqs";
+import { whatsappLink } from "@/data/faq";
 import { FAQ_ICONS } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 export function WhatsAppWidget() {
   const pathname = usePathname();
+  const chatFaqs = useChatFaqs();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
 
@@ -34,7 +36,7 @@ export function WhatsAppWidget() {
             </div>
 
             <div className="space-y-2 p-4">
-              {CHAT_FAQS.map((faq) => {
+              {chatFaqs.map((faq) => {
                 const expanded = active === faq.id;
                 const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
                 return (

@@ -10,8 +10,9 @@ import { PropagationBenefits } from "@/components/home/propagation-benefits";
 import { SellingFast } from "@/components/home/selling-fast";
 import { ScrollCarousel } from "@/components/ui/scroll-carousel";
 import almanac from "@/data/almanac.json";
-import shipping from "@/data/shipping.json";
-import { CHAT_FAQS } from "@/data/faq";
+import { useShippingSettings } from "@/hooks/use-shipping-settings";
+import { useChatFaqs } from "@/hooks/use-faqs";
+import { localDeliveryHomeBlurb } from "@/lib/shipping-copy";
 import { FAQ_ICONS } from "@/lib/icons";
 
 const reasons = [
@@ -22,6 +23,9 @@ const reasons = [
 ];
 
 export default function HomePage() {
+  const shipping = useShippingSettings();
+  const chatFaqs = useChatFaqs();
+
   return (
     <div>
       <section className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-[36px] px-4">
@@ -169,7 +173,7 @@ export default function HomePage() {
             trackClassName="px-[max(1rem,calc((100%-min(85vw,18rem))/2))] sm:px-0"
             itemClassName="w-[min(85vw,18rem)] snap-center"
           >
-            {CHAT_FAQS.map((faq) => {
+            {chatFaqs.map((faq) => {
               const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
               return (
                 <Link
@@ -186,7 +190,7 @@ export default function HomePage() {
           </ScrollCarousel>
         </div>
         <div className="mt-8 hidden gap-4 md:grid md:grid-cols-3">
-          {CHAT_FAQS.map((faq) => {
+          {chatFaqs.map((faq) => {
             const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
             return (
             <Link key={faq.id} href="/faq" className="rounded-[28px] bg-white/80 p-6 transition hover:-translate-y-0.5 hover:shadow-card">
@@ -207,7 +211,8 @@ export default function HomePage() {
           </p>
           <h2 className="mt-3 font-display text-4xl">Collect, or we can send them.</h2>
           <p className="mt-4 max-w-xl text-cream/75">
-            Pick up centrally at the Belmopan Bus Terminal, or use local delivery to Belmopan, Roaring Creek, and Camalote — {shipping.localDelivery.fee} BZD flat, free over {shipping.localDelivery.freeThreshold} BZD.
+            {localDeliveryHomeBlurb(shipping)}
+            {" "}
             Farther away, IDS and EZY Courier usually deliver office-to-office. You pay courier shipping at their office when you collect — we show approximate rates at checkout.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">

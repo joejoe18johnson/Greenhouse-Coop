@@ -11,14 +11,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Radio } from "@/components/ui/checkbox";
 import { IconBubble } from "@/components/ui/icon-bubble";
+import { BankAccountCard } from "@/components/checkout/bank-account-card";
 import { OrderReceipt } from "@/components/checkout/order-receipt";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
-import { getBankDetails, getCouriers, getIdsRates, getShippingSettings, createOrder } from "@/lib/store";
+import { useCouriers } from "@/hooks/use-couriers";
+import { useIdsRates } from "@/hooks/use-ids-rates";
+import { useShippingSettings } from "@/hooks/use-shipping-settings";
+import { getBankDetails, createOrder } from "@/lib/store";
 import { bankAccounts } from "@/lib/bank";
 import { isLocalTown, computeOrderTotal, getCourierEstimate, quoteShipping } from "@/lib/shipping";
 import { getIdsZoneLabel } from "@/lib/ids-rates";
+import { localDeliveryWaivedText } from "@/lib/shipping-copy";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import {
@@ -35,9 +40,9 @@ export default function CheckoutPage() {
   const { user, ready } = useAuth();
   const { items, subtotal, clear } = useCart();
   const router = useRouter();
-  const shipping = getShippingSettings();
-  const couriers = getCouriers().filter((c) => c.active);
-  const idsRateTable = getIdsRates();
+  const shipping = useShippingSettings();
+  const couriers = useCouriers().filter((c) => c.active);
+  const idsRateTable = useIdsRates();
   const bank = getBankDetails();
 
   const [wantsDelivery, setWantsDelivery] = useState(true);
@@ -250,7 +255,7 @@ export default function CheckoutPage() {
                   <p className="mt-4 flex items-start gap-3 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
                     <Truck className="mt-0.5 h-4 w-4 shrink-0" />
                     Local delivery to {town}. Flat {formatBZD(shipping.localDelivery.fee)}
-                    {subtotal >= shipping.localDelivery.freeThreshold ? " — waived because your order is over $100." : "."}
+                    {subtotal >= shipping.localDelivery.freeThreshold ? localDeliveryWaivedText(shipping) : "."}
                   </p>
                 ) : (
                   <div className="mt-4">
@@ -357,11 +362,7 @@ export default function CheckoutPage() {
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2 text-sm">
               {bankAccounts(bank).map((account) => (
-                <div key={account.accountNumber} className="rounded-2xl bg-cream p-4">
-                  <p><strong>{account.bankName}</strong></p>
-                  <p className="mt-1">{account.accountName}</p>
-                  <p className="mt-1 break-all font-mono text-sm">{account.accountNumber}</p>
-                </div>
+                <BankAccountCard key={account.accountNumber} account={account} />
               ))}
             </div>
             <div className="mt-5 rounded-2xl border border-citrus/40 bg-citrus/10 p-4 text-sm">

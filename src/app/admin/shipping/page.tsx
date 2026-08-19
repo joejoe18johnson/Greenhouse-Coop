@@ -1,14 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getShippingSettings, saveShippingSettings } from "@/lib/store";
+import { useStore } from "@/context/store-context";
+import { useStoreSync } from "@/hooks/use-store-sync";
 
 export default function AdminShippingPage() {
+  const { ready } = useStore();
   const [settings, setSettings] = useState(getShippingSettings());
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useStoreSync(() => {
+    setSettings(getShippingSettings());
+  });
+
+  useEffect(() => {
+    if (ready) setSettings(getShippingSettings());
+  }, [ready]);
+
+  async function handleSave() {
+    setSaving(true);
+    setError("");
+    try {
+      await saveShippingSettings(settings);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save shipping settings.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <div className="min-w-0">
@@ -53,8 +80,11 @@ export default function AdminShippingPage() {
             </div>
           ))}
         </div>
-        <Button onClick={() => { saveShippingSettings(settings); setSaved(true); }}>Save shipping</Button>
-        {saved && <p className="text-sm text-leaf">Saved.</p>}
+        <Button onClick={handleSave} disabled={saving}>
+          {saving ? "Saving…" : "Save shipping"}
+        </Button>
+        {saved && <p className="text-sm text-leaf">Saved to database.</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     </div>
   );

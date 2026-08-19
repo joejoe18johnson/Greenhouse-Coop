@@ -4,10 +4,13 @@ import { CircleHelp } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
-import { FAQS, whatsappLink } from "@/data/faq";
+import { useFaqs } from "@/hooks/use-faqs";
+import { whatsappLink } from "@/data/faq";
 import { FAQ_ICONS } from "@/lib/icons";
 
 export default function FaqPage() {
+  const faqs = useFaqs();
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <p className="text-xs text-leaf">Help</p>
@@ -17,7 +20,7 @@ export default function FaqPage() {
       </p>
 
       <Accordion type="single" collapsible className="mt-10 rounded-[28px] bg-white/80 px-6">
-        {FAQS.map((faq) => {
+        {faqs.map((faq) => {
           const Icon = FAQ_ICONS[faq.id] ?? CircleHelp;
           return (
           <AccordionItem key={faq.id} value={faq.id}>

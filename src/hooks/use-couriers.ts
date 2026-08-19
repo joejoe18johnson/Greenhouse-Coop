@@ -1,18 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getProducts } from "@/lib/store";
+import { getCouriers } from "@/lib/store";
 import { useStore } from "@/context/store-context";
 import { useStoreSync } from "@/hooks/use-store-sync";
-import type { Product } from "@/types";
-import productsSeed from "@/data/products.json";
+import type { Courier } from "@/types";
+import couriersSeed from "@/data/couriers.json";
 
-export function useProducts() {
+export function useCouriers() {
   const { ready } = useStore();
-  const [products, setProducts] = useState<Product[]>(productsSeed as Product[]);
+  const [couriers, setCouriers] = useState<Courier[]>(couriersSeed as Courier[]);
 
   const refresh = useCallback(() => {
-    setProducts(getProducts());
+    setCouriers(getCouriers());
   }, []);
 
   useStoreSync(refresh);
@@ -25,5 +25,5 @@ export function useProducts() {
     if (ready) refresh();
   }, [ready, refresh]);
 
-  return products;
+  return couriers;
 }

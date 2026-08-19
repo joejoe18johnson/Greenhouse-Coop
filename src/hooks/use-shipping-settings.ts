@@ -1,18 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getProducts } from "@/lib/store";
+import { getShippingSettings } from "@/lib/store";
 import { useStore } from "@/context/store-context";
 import { useStoreSync } from "@/hooks/use-store-sync";
-import type { Product } from "@/types";
-import productsSeed from "@/data/products.json";
+import type { ShippingSettings } from "@/types";
+import shippingSeed from "@/data/shipping.json";
 
-export function useProducts() {
+export function useShippingSettings() {
   const { ready } = useStore();
-  const [products, setProducts] = useState<Product[]>(productsSeed as Product[]);
+  const [settings, setSettings] = useState<ShippingSettings>(shippingSeed as ShippingSettings);
 
   const refresh = useCallback(() => {
-    setProducts(getProducts());
+    setSettings(getShippingSettings());
   }, []);
 
   useStoreSync(refresh);
@@ -25,5 +25,5 @@ export function useProducts() {
     if (ready) refresh();
   }, [ready, refresh]);
 
-  return products;
+  return settings;
 }

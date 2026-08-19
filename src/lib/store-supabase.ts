@@ -11,7 +11,6 @@ import {
   orderFromRow,
   orderToRow,
   productFromRow,
-  productToRow,
   profileToUser,
   sessionFromProfile,
   type AddressRow,
@@ -55,11 +54,6 @@ async function fetchSetting<T>(key: string, fallback: T): Promise<T> {
   const { data, error } = await supabase().from("app_settings").select("value").eq("key", key).maybeSingle();
   if (error) throw error;
   return (data?.value as T | undefined) ?? fallback;
-}
-
-async function saveSetting<T>(key: string, value: T) {
-  const { error } = await supabase().from("app_settings").upsert({ key, value });
-  if (error) throw error;
 }
 
 async function loadProfiles(includeAll: boolean, userId?: string): Promise<User[]> {
@@ -196,6 +190,58 @@ async function persistRemoteCart(userId: string, items: CartItem[]) {
   setCache({ cart: { items, updatedAt } });
 }
 
+async function adminSaveSetting(key: string, value: unknown) {
+  const res = await fetch("/api/admin/settings", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ key, value }),
+  });
+  const body = (await res.json().catch(() => ({}))) as { error?: string };
+  if (!res.ok) {
+    throw new Error(body.error || "Could not save settings.");
+  }
+}
+
+async function adminSaveProducts(products: Product[]) {
+  const res = await fetch("/api/admin/products", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(products),
+  });
+  const body = (await res.json().catch(() => ({}))) as { error?: string };
+  if (!res.ok) {
+    throw new Error(body.error || "Could not save products.");
+  }
+}
+
+async function adminDeleteProduct(id: string) {
+  const res = await fetch(`/api/admin/products?id=${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  const body = (await res.json().catch(() => ({}))) as { error?: string };
+  if (!res.ok) {
+    throw new Error(body.error || "Could not delete product.");
+  }
+}
+
+export async function reloadCatalogSettings() {
+  const shipping = await fetchSetting("shipping", defaultShipping);
+  const couriers = await fetchSetting("couriers", defaultCouriers);
+  const idsRates = await fetchSetting("ids_rates", defaultIdsRates);
+  const bank = await fetchSetting("bank", defaultBank);
+  setCache({ shipping, couriers, idsRates, bank });
+}
+
+export async function reloadProductsFromRemote() {
+  const { data: productRows, error } = await supabase().from("products").select("*").order("name");
+  if (error) throw error;
+  const products = ((productRows ?? []) as ProductRow[]).map(productFromRow);
+  setCache({ products: products.length ? products : seedProducts });
+}
+
 export function getProducts(): Product[] {
   const { products } = getCache();
   return (products.length ? products : seedProducts).map((p) => ({
@@ -204,13 +250,10 @@ export function getProducts(): Product[] {
   }));
 }
 
-export function saveProducts(next: Product[]) {
+export async function saveProducts(next: Product[]) {
   setCache({ products: next });
-  void (async () => {
-    const rows = next.map(productToRow);
-    const { error } = await supabase().from("products").upsert(rows);
-    if (error) console.error("Failed to save products:", error);
-  })();
+  await adminSaveProducts(next);
+  await reloadProductsFromRemote();
 }
 
 export function getProduct(id: string) {
@@ -267,49 +310,55 @@ export function getShippingSettings(): ShippingSettings {
   return getCache().shipping ?? defaultShipping;
 }
 
-export function saveShippingSettings(next: ShippingSettings) {
+export async function saveShippingSettings(next: ShippingSettings) {
   setCache({ shipping: next });
-  void saveSetting("shipping", next);
+  await adminSaveSetting("shipping", next);
+  await reloadCatalogSettings();
 }
 
 export function getCouriers(): Courier[] {
   return getCache().couriers.length ? getCache().couriers : defaultCouriers;
 }
 
-export function saveCouriers(next: Courier[]) {
+export async function saveCouriers(next: Courier[]) {
   setCache({ couriers: next });
-  void saveSetting("couriers", next);
+  await adminSaveSetting("couriers", next);
+  await reloadCatalogSettings();
 }
 
 export function getIdsRates(): IdsRates {
   return getCache().idsRates ?? defaultIdsRates;
 }
 
-export function saveIdsRates(next: IdsRates) {
+export async function saveIdsRates(next: IdsRates) {
   setCache({ idsRates: next });
-  void saveSetting("ids_rates", next);
+  await adminSaveSetting("ids_rates", next);
+  await reloadCatalogSettings();
 }
 
 export function getBankDetails(): BankDetails {
   return getCache().bank ?? defaultBank;
 }
 
-export function saveBankDetails(next: BankDetails) {
+export async function saveBankDetails(next: BankDetails) {
   setCache({ bank: next });
-  void saveSetting("bank", next);
+  await adminSaveSetting("bank", next);
+  await reloadCatalogSettings();
 }
 
-export function upsertProduct(product: Product) {
+export async function upsertProduct(product: Product) {
   const all = getProducts();
   const index = all.findIndex((p) => p.id === product.id);
   if (index >= 0) all[index] = product;
   else all.unshift(product);
-  saveProducts(all);
+  await saveProducts(all);
 }
 
-export function deleteProduct(id: string) {
-  saveProducts(getProducts().filter((p) => p.id !== id));
-  void supabase().from("products").delete().eq("id", id);
+export async function deleteProduct(id: string) {
+  const next = getProducts().filter((p) => p.id !== id);
+  setCache({ products: next });
+  await adminDeleteProduct(id);
+  await reloadProductsFromRemote();
 }
 
 export function createUser(_user: Omit<User, "id" | "createdAt" | "role" | "addresses"> & { addresses?: User["addresses"] }) {

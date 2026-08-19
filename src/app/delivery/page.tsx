@@ -6,8 +6,14 @@ import { Building2, Package, Store, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IconBubble } from "@/components/ui/icon-bubble";
 import { IdsRateTable } from "@/components/delivery/ids-rate-table";
-import { getCouriers, getIdsRates } from "@/lib/store";
-import shipping from "@/data/shipping.json";
+import { useCouriers } from "@/hooks/use-couriers";
+import { useIdsRates } from "@/hooks/use-ids-rates";
+import { useShippingSettings } from "@/hooks/use-shipping-settings";
+import {
+  localDeliveryFeeText,
+  localDeliveryFreeOverText,
+  localDeliveryTownsLabel,
+} from "@/lib/shipping-copy";
 import { formatBZD } from "@/lib/utils";
 
 function SectionHeading({
@@ -30,8 +36,9 @@ function SectionHeading({
 }
 
 export default function DeliveryPage() {
-  const couriers = getCouriers();
-  const idsRates = getIdsRates();
+  const shipping = useShippingSettings();
+  const couriers = useCouriers();
+  const idsRates = useIdsRates();
   const ezy = couriers.find((c) => c.id === "ezy");
 
   return (
@@ -48,9 +55,9 @@ export default function DeliveryPage() {
         <SectionHeading icon={Truck} bubbleClassName="bg-white/15 text-lime-bright" light>
           Local delivery
         </SectionHeading>
-        <p className="mt-3 text-cream/80">Belmopan · Roaring Creek · Camalote</p>
-        <p className="mt-4 text-2xl font-semibold">{formatBZD(shipping.localDelivery.fee)} flat</p>
-        <p className="mt-1 text-cream/75">FREE over {formatBZD(shipping.localDelivery.freeThreshold)}</p>
+        <p className="mt-3 text-cream/80">{localDeliveryTownsLabel(shipping)}</p>
+        <p className="mt-4 text-2xl font-semibold">{localDeliveryFeeText(shipping)}</p>
+        <p className="mt-1 text-cream/75">{localDeliveryFreeOverText(shipping)}</p>
       </section>
       <section className="mt-8 rounded-[28px] bg-white/80 p-5 sm:p-8">
         <SectionHeading icon={Building2}>IDS (Inter District Shipping)</SectionHeading>

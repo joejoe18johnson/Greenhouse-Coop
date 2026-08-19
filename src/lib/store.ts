@@ -16,9 +16,10 @@ export function getProducts() {
   return isRemoteBackend() ? remote.getProducts() : local.getProducts();
 }
 
-export function saveProducts(next: Parameters<typeof local.saveProducts>[0]) {
-  if (isRemoteBackend()) return remote.saveProducts(next);
-  return local.saveProducts(next);
+export async function saveProducts(next: Parameters<typeof local.saveProducts>[0]) {
+  if (isRemoteBackend()) await remote.saveProducts(next);
+  else local.saveProducts(next);
+  notifyStoreUpdate();
 }
 
 export function getProduct(id: string) {
@@ -73,53 +74,61 @@ export function getShippingSettings() {
   return isRemoteBackend() ? remote.getShippingSettings() : local.getShippingSettings();
 }
 
-export function saveShippingSettings(next: Parameters<typeof local.saveShippingSettings>[0]) {
-  if (isRemoteBackend()) return remote.saveShippingSettings(next);
-  return local.saveShippingSettings(next);
+export async function saveShippingSettings(next: Parameters<typeof local.saveShippingSettings>[0]) {
+  if (isRemoteBackend()) await remote.saveShippingSettings(next);
+  else local.saveShippingSettings(next);
+  notifyStoreUpdate();
 }
 
 export function getCouriers() {
   return isRemoteBackend() ? remote.getCouriers() : local.getCouriers();
 }
 
-export function saveCouriers(next: Parameters<typeof local.saveCouriers>[0]) {
-  if (isRemoteBackend()) return remote.saveCouriers(next);
-  return local.saveCouriers(next);
+export async function saveCouriers(next: Parameters<typeof local.saveCouriers>[0]) {
+  if (isRemoteBackend()) await remote.saveCouriers(next);
+  else local.saveCouriers(next);
+  notifyStoreUpdate();
 }
 
 export function getIdsRates() {
   return isRemoteBackend() ? remote.getIdsRates() : local.getIdsRates();
 }
 
-export function saveIdsRates(next: Parameters<typeof local.saveIdsRates>[0]) {
-  if (isRemoteBackend()) return remote.saveIdsRates(next);
-  return local.saveIdsRates(next);
+export async function saveIdsRates(next: Parameters<typeof local.saveIdsRates>[0]) {
+  if (isRemoteBackend()) await remote.saveIdsRates(next);
+  else local.saveIdsRates(next);
+  notifyStoreUpdate();
 }
 
 export function getBankDetails() {
   return isRemoteBackend() ? remote.getBankDetails() : local.getBankDetails();
 }
 
-export function saveBankDetails(next: Parameters<typeof local.saveBankDetails>[0]) {
-  if (isRemoteBackend()) return remote.saveBankDetails(next);
-  return local.saveBankDetails(next);
+export async function saveBankDetails(next: Parameters<typeof local.saveBankDetails>[0]) {
+  if (isRemoteBackend()) await remote.saveBankDetails(next);
+  else local.saveBankDetails(next);
+  notifyStoreUpdate();
 }
 
-export function upsertProduct(product: Parameters<typeof local.upsertProduct>[0]) {
-  if (isRemoteBackend()) return remote.upsertProduct(product);
-  return local.upsertProduct(product);
+export async function upsertProduct(product: Parameters<typeof local.upsertProduct>[0]) {
+  if (isRemoteBackend()) await remote.upsertProduct(product);
+  else local.upsertProduct(product);
+  notifyStoreUpdate();
 }
 
-export function deleteProduct(id: string) {
-  if (isRemoteBackend()) return remote.deleteProduct(id);
-  return local.deleteProduct(id);
+export async function deleteProduct(id: string) {
+  if (isRemoteBackend()) await remote.deleteProduct(id);
+  else local.deleteProduct(id);
+  notifyStoreUpdate();
 }
 
 export function createUser(input: Parameters<typeof local.createUser>[0]): ReturnType<typeof local.createUser> {
   if (isRemoteBackend()) {
     throw new Error("Use Supabase Auth to create users.");
   }
-  return local.createUser(input);
+  const created = local.createUser(input);
+  notifyStoreUpdate();
+  return created;
 }
 
 export function updateUser(user: Parameters<typeof local.updateUser>[0]) {

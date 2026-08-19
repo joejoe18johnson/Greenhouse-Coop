@@ -6,12 +6,14 @@ import { ArrowRight, Clock, Minus, Package, Plus, ShoppingBag, Sprout, Trash2 } 
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useCart } from "@/hooks/use-cart";
+import { useShippingSettings } from "@/hooks/use-shipping-settings";
+import { localDeliveryBlurb } from "@/lib/shipping-copy";
 import { formatBZD } from "@/lib/utils";
-import shipping from "@/data/shipping.json";
 import { recommendBox } from "@/lib/shipping";
 
 export default function CartPage() {
   const { items, subtotal, expiresAt, setQty, remove } = useCart();
+  const shipping = useShippingSettings();
   const plantCount = items.reduce((sum, i) => sum + i.quantity, 0);
   const box = recommendBox(plantCount, shipping.boxes);
   const holdUntil = expiresAt ? new Date(expiresAt) : null;
@@ -103,8 +105,9 @@ export default function CartPage() {
               <span>{box.label}</span>
             </div>
             <p className="mt-4 text-xs text-cream/60">
-              Collect at the Belmopan Bus Terminal, or choose delivery at checkout. Local delivery {formatBZD(shipping.localDelivery.fee)} to Belmopan, Roaring Creek, and Camalote.
-              Free over {formatBZD(shipping.localDelivery.freeThreshold)}. Couriers are office-to-office — you pay shipping at their office; we show approximate rates at checkout.
+              Collect at the Belmopan Bus Terminal, or choose delivery at checkout. {localDeliveryBlurb(shipping)}
+              {" "}
+              Couriers are office-to-office — you pay shipping at their office; we show approximate rates at checkout.
             </p>
             <Button variant="citrus" className="mt-6 w-full" asChild>
               <Link href="/checkout">

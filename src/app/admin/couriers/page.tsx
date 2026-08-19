@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,12 +8,44 @@ import { IdsRateTable } from "@/components/delivery/ids-rate-table";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import { IDS_PACKAGE_TIERS, idsPackageLabel } from "@/lib/ids-rates";
 import { getCouriers, getIdsRates, saveCouriers, saveIdsRates } from "@/lib/store";
+import { useStore } from "@/context/store-context";
+import { useStoreSync } from "@/hooks/use-store-sync";
 import type { IdsPackageTier, IdsRates } from "@/types";
 
 export default function AdminCouriersPage() {
+  const { ready } = useStore();
   const [couriers, setCouriers] = useState(getCouriers());
   const [idsRates, setIdsRates] = useState(getIdsRates());
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useStoreSync(() => {
+    setCouriers(getCouriers());
+    setIdsRates(getIdsRates());
+  });
+
+  useEffect(() => {
+    if (ready) {
+      setCouriers(getCouriers());
+      setIdsRates(getIdsRates());
+    }
+  }, [ready]);
+
+  async function handleSave() {
+    setSaving(true);
+    setError("");
+    try {
+      await saveIdsRates(idsRates);
+      await saveCouriers(couriers);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save courier settings.");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   function updateIdsPackage(
     zone: keyof IdsRates["zones"],
@@ -136,17 +168,11 @@ export default function AdminCouriersPage() {
         </section>
       )}
 
-      <Button
-        className="mt-6"
-        onClick={() => {
-          saveIdsRates(idsRates);
-          saveCouriers(couriers);
-          setSaved(true);
-        }}
-      >
-        Save courier settings
+      <Button className="mt-6" onClick={handleSave} disabled={saving}>
+        {saving ? "Saving…" : "Save courier settings"}
       </Button>
-      {saved && <p className="mt-2 text-sm text-leaf">Saved.</p>}
+      {saved && <p className="mt-2 text-sm text-leaf">Saved to database.</p>}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

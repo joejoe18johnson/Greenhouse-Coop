@@ -90,16 +90,17 @@ export async function hydrateStore() {
       setItem(STORAGE_KEYS.users, users);
     }
     const storedCouriers = getItem<Courier[]>(STORAGE_KEYS.couriers, []);
-    if (storedCouriers.length) {
-      const byId = new Map(couriers.map((c) => [c.id, c]));
-      setItem(
-        STORAGE_KEYS.couriers,
-        storedCouriers.map((item) => {
-          const seed = byId.get(item.id);
-          if (!seed) return item;
-          return { ...item, notes: seed.notes, rateModel: seed.rateModel ?? item.rateModel, rates: seed.rateModel === "ids" ? [] : item.rates.length ? item.rates : seed.rates };
-        })
-      );
+    if (!storedCouriers.length) {
+      setItem(STORAGE_KEYS.couriers, couriers);
+    } else {
+      const ids = new Set(storedCouriers.map((c) => c.id));
+      const merged = [...storedCouriers];
+      for (const seedCourier of couriers) {
+        if (!ids.has(seedCourier.id)) merged.push(seedCourier);
+      }
+      if (merged.length !== storedCouriers.length) {
+        setItem(STORAGE_KEYS.couriers, merged);
+      }
     }
     const catalogVersion = getItem<string>(STORAGE_KEYS.catalogSeed, "");
 
@@ -115,37 +116,21 @@ export async function hydrateStore() {
     } else {
       const stored = getItem<Product[]>(STORAGE_KEYS.products, []);
       if (stored.length) {
-        const merged = products.map((seed) => {
-          const item = stored.find((s) => s.id === seed.id);
-          if (!item) return seed;
-          return {
-            ...item,
-            name: seed.name,
-            category: seed.category,
-            fruitImage: seed.fruitImage,
-            plantImage: seed.plantImage,
-            description: seed.description,
-            flavorProfile: seed.flavorProfile,
-            propagationType: seed.propagationType,
-          };
-        });
+        const storedById = new Map(stored.map((p) => [p.id, p]));
+        const merged = products.map((seed) => storedById.get(seed.id) ?? seed);
         setItem(STORAGE_KEYS.products, merged);
       }
     }
     getStoredCart();
-    const storedShipping = getItem<ShippingSettings>(STORAGE_KEYS.shipping, shipping);
-    if (storedShipping?.boxes?.length) {
-      const seedBoxes = new Map(shipping.boxes.map((b) => [b.id, b]));
-      setItem(STORAGE_KEYS.shipping, {
-        ...storedShipping,
-        boxes: storedShipping.boxes.map((box) => {
-          const seed = seedBoxes.get(box.id);
-          return seed ? { ...box, name: seed.name } : box;
-        }),
-      });
+    if (!getItem<ShippingSettings | null>(STORAGE_KEYS.shipping, null)) {
+      setItem(STORAGE_KEYS.shipping, shipping);
     }
-    setItem(STORAGE_KEYS.bank, bank);
-    setItem(STORAGE_KEYS.idsRates, idsRates);
+    if (!getItem<IdsRates | null>(STORAGE_KEYS.idsRates, null)) {
+      setItem(STORAGE_KEYS.idsRates, idsRates);
+    }
+    if (!getItem<BankDetails | null>(STORAGE_KEYS.bank, null)) {
+      setItem(STORAGE_KEYS.bank, bank);
+    }
     const storedOrders = getItem<(Order & { courierFee?: number })[]>(STORAGE_KEYS.orders, []);
     if (storedOrders.length) {
       setItem(STORAGE_KEYS.orders, normalizeOrders(storedOrders));
