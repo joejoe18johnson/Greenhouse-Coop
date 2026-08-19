@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOrders } from "@/lib/store";
-import { formatOrderDeposit } from "@/lib/order-deposit";
+import { formatAmountDueNow, getPaymentPlan } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
 
 export default function AdminPaymentsPage() {
@@ -27,8 +27,8 @@ export default function AdminPaymentsPage() {
               </div>
               <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end sm:text-right">
                 <StatusBadge status={o.status} />
-                <p>{formatOrderDeposit(o.total)} deposit</p>
-                <p className="text-xs text-ink/45">{formatBZD(o.total)} total</p>
+                <p>{formatAmountDueNow(o.total, getPaymentPlan(o.payment))} due</p>
+                <p className="text-xs text-ink/45">{formatBZD(o.total)} total · {getPaymentPlan(o.payment) === "full" ? "full pay" : "deposit"}</p>
               </div>
             </div>
           </Link>

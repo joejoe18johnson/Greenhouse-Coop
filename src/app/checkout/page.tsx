@@ -21,7 +21,14 @@ import { isLocalTown, computeOrderTotal, getCourierEstimate, quoteShipping } fro
 import { getIdsZoneLabel } from "@/lib/ids-rates";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
-import { DEPOSIT_NOTICE, formatOrderBalance, formatOrderDeposit } from "@/lib/order-deposit";
+import {
+  DEPOSIT_NOTICE,
+  FULL_PAYMENT_NOTICE,
+  formatAmountDueNow,
+  formatOrderBalance,
+  formatOrderDeposit,
+  type PaymentPlan,
+} from "@/lib/order-deposit";
 import locations from "@/data/locations.json";
 
 export default function CheckoutPage() {
@@ -40,7 +47,9 @@ export default function CheckoutPage() {
   const [fullAddress, setFullAddress] = useState(user?.addresses[0]?.fullAddress || "");
   const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
   const [customerNotes, setCustomerNotes] = useState("");
+  const [paymentPlan, setPaymentPlan] = useState<PaymentPlan>("deposit");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [placed, setPlaced] = useState<string>();
 
   const towns = locations.districts.find((d) => d.name === district)?.towns || [];
@@ -67,6 +76,8 @@ export default function CheckoutPage() {
     deliveryFee: quote.deliveryFee,
     boxFee: quote.boxFee,
   });
+  const amountDueNow = formatAmountDueNow(total, paymentPlan);
+  const dueNowLabel = paymentPlan === "full" ? "Pay in full now" : "Deposit due now (50%)";
 
   if (!ready) return null;
 
@@ -93,53 +104,66 @@ export default function CheckoutPage() {
   }
 
   function placeOrder() {
+    if (submitting) return;
     setError("");
+
     if (wantsDelivery && !fullAddress.trim()) {
-      setError("Please enter your full delivery address.");
+      const message = "Please enter your full delivery address.";
+      setError(message);
+      document.getElementById("checkout-address")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
-    const order = createOrder({
-      userId: user!.id,
-      items: items.map((i) => ({
-        productId: i.product.id,
-        name: i.product.name,
-        price: i.product.price,
-        quantity: i.quantity,
-      })),
-      subtotal,
-      deliveryFee: quote.deliveryFee,
-      boxFee: quote.boxFee,
-      courierEstimate: quote.courierEstimate,
-      total,
-      boxRecommendation: quote.box,
-      status: "Payment Pending",
-      shipping: {
-        firstName: user!.firstName,
-        lastName: user!.lastName,
-        email: user!.email,
-        phone: user!.phone,
-        district: wantsDelivery ? district : "Cayo",
-        town: wantsDelivery ? town : "Belmopan",
-        village: wantsDelivery ? village : "",
-        fullAddress: wantsDelivery ? fullAddress : PICKUP_LOCATION,
-        method,
-        courierId: method === "courier" ? courier?.id : undefined,
-        courierName: method === "courier" ? courier?.name : undefined,
-      },
-      payment: {
-        method: "bank-transfer",
-        proofChannel: "whatsapp",
-      },
-      customerNotes: customerNotes.trim() || undefined,
-    });
-    clear();
-    setPlaced(order.reference);
-    router.push(`/dashboard/orders/${order.id}`);
+    setSubmitting(true);
+
+    try {
+      const order = createOrder({
+        userId: user!.id,
+        items: items.map((i) => ({
+          productId: i.product.id,
+          name: i.product.name,
+          price: i.product.price,
+          quantity: i.quantity,
+        })),
+        subtotal,
+        deliveryFee: quote.deliveryFee,
+        boxFee: quote.boxFee,
+        courierEstimate: quote.courierEstimate,
+        total,
+        boxRecommendation: quote.box,
+        status: "Payment Pending",
+        shipping: {
+          firstName: user!.firstName,
+          lastName: user!.lastName,
+          email: user!.email,
+          phone: user!.phone,
+          district: wantsDelivery ? district : "Cayo",
+          town: wantsDelivery ? town : "Belmopan",
+          village: wantsDelivery ? village : "",
+          fullAddress: wantsDelivery ? fullAddress : PICKUP_LOCATION,
+          method,
+          courierId: method === "courier" ? courier?.id : undefined,
+          courierName: method === "courier" ? courier?.name : undefined,
+        },
+        payment: {
+          method: "bank-transfer",
+          proofChannel: "whatsapp",
+          paymentPlan,
+        },
+        customerNotes: customerNotes.trim() || undefined,
+      });
+
+      setPlaced(order.reference);
+      clear();
+      router.push(`/dashboard/orders/${order.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not place your order. Please try again.");
+      setSubmitting(false);
+    }
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 pb-28 sm:px-6 lg:pb-12">
+    <div className="mx-auto max-w-6xl px-4 py-12 pb-32 sm:px-6 lg:pb-12">
       <h1 className="page-title">Checkout</h1>
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="order-2 space-y-8 lg:order-1">
@@ -167,7 +191,10 @@ export default function CheckoutPage() {
               <Radio
                 name="fulfillment"
                 checked={!wantsDelivery}
-                onChange={() => setWantsDelivery(false)}
+                onChange={() => {
+                  setWantsDelivery(false);
+                  setError("");
+                }}
                 className={`rounded-2xl border p-4 ${!wantsDelivery ? "border-forest bg-forest/5" : "border-forest/10"}`}
                 label={
                   <span className="flex items-start gap-3">
@@ -205,9 +232,18 @@ export default function CheckoutPage() {
                     <Label>Village</Label>
                     <Input className="mt-1" value={village} onChange={(e) => setVillage(e.target.value)} placeholder="Optional" />
                   </div>
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2" id="checkout-address">
                     <Label>Full address</Label>
-                    <Textarea className="mt-1" value={fullAddress} onChange={(e) => setFullAddress(e.target.value)} placeholder="Street, lot, landmarks" />
+                    <Textarea
+                      className="mt-1"
+                      value={fullAddress}
+                      onChange={(e) => {
+                        setFullAddress(e.target.value);
+                        if (error) setError("");
+                      }}
+                      placeholder="Street, lot, landmarks"
+                      required={wantsDelivery}
+                    />
                   </div>
                 </div>
                 {local ? (
@@ -288,9 +324,38 @@ export default function CheckoutPage() {
           <section className="rounded-[28px] bg-white/80 p-6">
             <h2 className="flex items-center gap-2 font-display text-2xl text-forest">
               <Landmark className="h-6 w-6" />
-              Pay by bank transfer
+              Payment
             </h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
+
+            <div className="mt-4 grid gap-3">
+              <Radio
+                name="payment-plan"
+                checked={paymentPlan === "deposit"}
+                onChange={() => setPaymentPlan("deposit")}
+                className={`rounded-2xl border p-4 ${paymentPlan === "deposit" ? "border-forest bg-forest/5" : "border-forest/10"}`}
+                label={
+                  <span>
+                    <span className="block font-semibold text-forest">50% deposit — {formatOrderDeposit(total)} now</span>
+                    <span className="mt-1 block text-sm text-ink/60">{DEPOSIT_NOTICE}</span>
+                    <span className="mt-1 block text-sm text-ink/55">Balance {formatOrderBalance(total)} due at pickup.</span>
+                  </span>
+                }
+              />
+              <Radio
+                name="payment-plan"
+                checked={paymentPlan === "full"}
+                onChange={() => setPaymentPlan("full")}
+                className={`rounded-2xl border p-4 ${paymentPlan === "full" ? "border-forest bg-forest/5" : "border-forest/10"}`}
+                label={
+                  <span>
+                    <span className="block font-semibold text-forest">Pay in full — {formatBZD(total)} now</span>
+                    <span className="mt-1 block text-sm text-ink/60">{FULL_PAYMENT_NOTICE}</span>
+                  </span>
+                }
+              />
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 text-sm">
               {bankAccounts(bank).map((account) => (
                 <div key={account.accountNumber} className="rounded-2xl bg-cream p-4">
                   <p><strong>{account.bankName}</strong></p>
@@ -300,22 +365,26 @@ export default function CheckoutPage() {
               ))}
             </div>
             <div className="mt-5 rounded-2xl border border-citrus/40 bg-citrus/10 p-4 text-sm">
-              <p className="font-semibold text-forest">50% deposit to secure your order</p>
-              <p className="mt-2 text-ink/75">{DEPOSIT_NOTICE}</p>
+              <p className="font-semibold text-forest">After you place the order</p>
               <ol className="mt-3 list-decimal space-y-2 pl-5 text-ink/75">
-                <li>Place this order first. You will receive a 6-character reference such as <strong className="keep-case">A7B2K9</strong>.</li>
-                <li>Transfer <strong>{formatOrderDeposit(total)}</strong> (50% deposit) and put that reference in the payment notes.</li>
-                <li>Send your transfer screenshot on WhatsApp with the same reference. A WhatsApp button appears on your order page after checkout.</li>
-                <li>Pay the remaining <strong>{formatOrderBalance(total)}</strong> when you collect your trees.</li>
+                <li>You will receive a 6-character reference such as <strong className="keep-case">A7B2K9</strong>.</li>
+                <li>Transfer <strong>{amountDueNow}</strong> and put that reference in the payment notes.</li>
+                <li>Send your transfer screenshot on WhatsApp with the same reference.</li>
               </ol>
               <p className="mt-3">{PAYMENT_NOTICE}</p>
             </div>
           </section>
           <InventoryNotice />
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <Button size="lg" className="hidden w-full lg:inline-flex" onClick={placeOrder}>
+          {error && <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
+          <Button
+            type="button"
+            size="lg"
+            className="hidden w-full lg:inline-flex"
+            disabled={submitting}
+            onClick={placeOrder}
+          >
             <CircleCheck className="h-4 w-4" />
-            Place order
+            {submitting ? "Placing order…" : "Place order"}
           </Button>
           <p className="hidden text-sm text-ink/50 lg:block">You will send payment proof on WhatsApp after this order is placed.</p>
         </div>
@@ -348,8 +417,9 @@ export default function CheckoutPage() {
               : undefined
           }
           total={formatBZD(total)}
-          depositDue={formatOrderDeposit(total)}
-          balanceDue={formatOrderBalance(total)}
+          depositDue={amountDueNow}
+          balanceDue={paymentPlan === "deposit" ? formatOrderBalance(total) : undefined}
+          dueNowLabel={dueNowLabel}
           note={
             wantsDelivery && quote.box.label
               ? method === "courier"
@@ -361,16 +431,27 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-forest/10 bg-cream/95 p-4 backdrop-blur-lg safe-bottom lg:hidden">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 pr-1">
-          <div className="min-w-0">
-            <p className="text-xs text-ink/50">Deposit due now (50%)</p>
-            <p className="text-xl font-semibold text-forest">{formatOrderDeposit(total)}</p>
+      <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-forest/10 bg-cream/95 p-4 backdrop-blur-lg safe-bottom lg:hidden">
+        <div className="mx-auto max-w-6xl space-y-2">
+          {error && (
+            <p className="rounded-xl bg-red-50 px-3 py-2 text-xs text-red-600">{error}</p>
+          )}
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs text-ink/50">{dueNowLabel}</p>
+              <p className="text-xl font-semibold text-forest">{amountDueNow}</p>
+            </div>
+            <Button
+              type="button"
+              size="lg"
+              className="min-w-[9.5rem] shrink-0"
+              disabled={submitting}
+              onClick={placeOrder}
+            >
+              <CircleCheck className="h-4 w-4" />
+              {submitting ? "Placing…" : "Place order"}
+            </Button>
           </div>
-          <Button size="lg" className="min-w-[9.5rem] shrink-0" onClick={placeOrder}>
-            <CircleCheck className="h-4 w-4" />
-            Place order
-          </Button>
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { ORDER_STATUSES } from "@/lib/constants";
 import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
 import { fulfillmentLabel } from "@/lib/shipping";
-import { formatOrderBalance, formatOrderDeposit } from "@/lib/order-deposit";
+import { formatOrderBalance, formatOrderDeposit, getPaymentPlan, orderAmountDueNow } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import type { OrderStatus } from "@/types";
@@ -36,6 +36,9 @@ export default function AdminOrderDetailPage() {
     order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
 
   const invoiceId = `order-invoice-${order.id}`;
+
+  const paymentPlan = getPaymentPlan(order.payment);
+  const dueNow = orderAmountDueNow(order.total, paymentPlan);
 
   return (
     <div className="min-w-0">
@@ -167,7 +170,11 @@ export default function AdminOrderDetailPage() {
             {order.boxFee > 0 && <li>Box — {formatBZD(order.boxFee)}</li>}
           </ul>
           <p className="mt-4 font-semibold">Order total {formatBZD(order.total)}</p>
-          <p className="mt-1 text-sm text-forest">Deposit due {formatOrderDeposit(order.total)} · Balance {formatOrderBalance(order.total)}</p>
+          <p className="mt-1 text-sm text-forest">
+            {paymentPlan === "full"
+              ? `Expecting full payment ${formatBZD(dueNow)}`
+              : `Expecting ${formatOrderDeposit(order.total)} deposit · ${formatOrderBalance(order.total)} due at pickup`}
+          </p>
           {courierEstimate > 0 && (
             <p className="mt-2 text-sm text-ink/55">
               + Approx. {formatBZD(courierEstimate)} at courier ({COURIER_ESTIMATE_NOTICE})
@@ -183,7 +190,9 @@ export default function AdminOrderDetailPage() {
             {customer?.phone ? <> · <span className="keep-case">{customer.phone}</span></> : ""}.
           </p>
           <p className="mt-2 text-sm font-medium text-forest">
-            Expecting {formatOrderDeposit(order.total)} deposit · {formatOrderBalance(order.total)} due at pickup
+            {paymentPlan === "full"
+              ? `Expecting ${formatBZD(dueNow)} in full`
+              : `Expecting ${formatOrderDeposit(order.total)} deposit · ${formatOrderBalance(order.total)} due at pickup`}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>

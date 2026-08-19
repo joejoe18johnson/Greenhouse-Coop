@@ -1,4 +1,5 @@
 import type { OrderStatus } from "@/types";
+import type { PaymentPlan } from "@/lib/order-deposit";
 
 export const CUSTOMER_STATUS_HEADLINE: Record<OrderStatus, string> = {
   "Payment Pending": "Awaiting your payment",
@@ -37,13 +38,22 @@ export function customerTimelineNote(status: OrderStatus, note?: string) {
   return note?.trim() || CUSTOMER_TIMELINE_NOTES[status];
 }
 
-export function customerStatusHeadline(status: OrderStatus | string) {
+export function customerStatusHeadline(status: OrderStatus | string, paymentPlan: PaymentPlan = "deposit") {
+  if (status === "Paid" && paymentPlan === "full") {
+    return "Payment verified";
+  }
   if (status in CUSTOMER_STATUS_HEADLINE) {
     return CUSTOMER_STATUS_HEADLINE[status as OrderStatus];
   }
   return String(status);
 }
 
-export function customerStatusDescription(status: OrderStatus) {
+export function customerStatusDescription(status: OrderStatus, paymentPlan: PaymentPlan = "deposit") {
+  if (status === "Payment Pending" && paymentPlan === "full") {
+    return "Your order is placed. Transfer the full order total to Greenhouse Co-Op and send your proof on WhatsApp with your reference number.";
+  }
+  if (status === "Paid" && paymentPlan === "full") {
+    return "Your full payment was verified and your order is secured. Nothing further is due to Greenhouse Co-Op at pickup.";
+  }
   return CUSTOMER_STATUS_DESCRIPTION[status];
 }

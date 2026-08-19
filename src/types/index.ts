@@ -147,6 +147,7 @@ export interface ShippingInfo {
 
 export interface PaymentInfo {
   method: "bank-transfer";
+  paymentPlan?: "deposit" | "full";
   proofChannel?: "whatsapp" | "upload";
   proofDataUrl?: string;
   proofFileName?: string;

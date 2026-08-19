@@ -17,7 +17,12 @@ import { formatBZD } from "@/lib/utils";
 import { whatsappPaymentLink } from "@/data/faq";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
 import { markNotificationsRead } from "@/lib/customer-notifications";
-import { formatOrderBalance, formatOrderDeposit } from "@/lib/order-deposit";
+import {
+  formatAmountDueNow,
+  formatOrderBalance,
+  getPaymentPlan,
+  paymentPlanLabel,
+} from "@/lib/order-deposit";
 import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import { STORE_UPDATED_EVENT } from "@/lib/store-events";
 
@@ -51,6 +56,10 @@ export default function OrderDetailPage() {
 
   const invoiceId = `order-invoice-${order.id}`;
 
+  const paymentPlan = getPaymentPlan(order.payment);
+  const amountDue = formatAmountDueNow(order.total, paymentPlan);
+  const whatsappKind = paymentPlan === "full" ? "full" : "deposit";
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
       <Button variant="ghost" className="print:hidden" asChild>
@@ -76,19 +85,25 @@ export default function OrderDetailPage() {
         )}
       </div>
 
-      {order.status === "Payment Review" && <OrderStatusBanner status={order.status} />}
+      {order.status === "Payment Review" && (
+        <OrderStatusBanner status={order.status} paymentPlan={paymentPlan} />
+      )}
 
       {awaitingPay && order.status === "Payment Pending" && (
         <div className="mt-8 rounded-[28px] bg-citrus/10 p-5 text-sm print:hidden">
-          <p className="font-semibold text-forest">Next step: send deposit proof on WhatsApp</p>
+          <p className="font-semibold text-forest">
+            Next step: send {paymentPlan === "full" ? "payment" : "deposit"} proof on WhatsApp
+          </p>
           <p className="mt-2">
-            Your order is placed. Transfer the <strong>50% deposit</strong> of{" "}
-            <strong>{formatOrderDeposit(order.total)}</strong> to Greenhouse Co-Op, then send the screenshot here with
-            reference <strong className="keep-case">{order.reference}</strong>.
+            Your order is placed ({paymentPlanLabel(paymentPlan).toLowerCase()}). Transfer{" "}
+            <strong>{amountDue}</strong> to Greenhouse Co-Op, then send the screenshot here with reference{" "}
+            <strong className="keep-case">{order.reference}</strong>.
           </p>
-          <p className="mt-2 text-ink/70">
-            Order total {formatBZD(order.total)} · balance of {formatOrderBalance(order.total)} due when you collect.
-          </p>
+          {paymentPlan === "deposit" && (
+            <p className="mt-2 text-ink/70">
+              Order total {formatBZD(order.total)} · balance of {formatOrderBalance(order.total)} due when you collect.
+            </p>
+          )}
           {courierEstimate > 0 && (
             <p className="mt-2 text-ink/70">
               Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "the courier"} is paid separately when you collect — not in this transfer.
@@ -96,19 +111,19 @@ export default function OrderDetailPage() {
           )}
           <p className="mt-2">{PAYMENT_NOTICE}</p>
           <a
-            href={whatsappPaymentLink(order.reference, formatOrderDeposit(order.total), "deposit")}
+            href={whatsappPaymentLink(order.reference, amountDue, whatsappKind)}
             target="_blank"
             rel="noreferrer"
             className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1ebe5d]"
           >
             <WhatsAppIcon className="h-5 w-5" />
-            Send deposit proof on WhatsApp
+            Send {paymentPlan === "full" ? "payment" : "deposit"} proof on WhatsApp
           </a>
           <p className="mt-2 text-xs text-ink/50">Attach your transfer screenshot in the chat. Do not upload files on this site.</p>
         </div>
       )}
 
-      {!awaitingPay && <OrderStatusBanner status={order.status} />}
+      {!awaitingPay && <OrderStatusBanner status={order.status} paymentPlan={paymentPlan} />}
 
       {order.shipping.method === "courier" && courierEstimate > 0 && !awaitingPay && (
         <p className="mt-6 rounded-2xl bg-leaf/10 px-4 py-3 text-sm text-forest print:hidden">
@@ -127,7 +142,7 @@ export default function OrderDetailPage() {
       <ol className="mt-8 space-y-3 print:hidden">
         {order.timeline.map((event, i) => (
           <li key={i} className="rounded-2xl bg-white/80 p-4">
-            <p className="font-medium text-forest">{customerStatusHeadline(event.status)}</p>
+            <p className="font-medium text-forest">{customerStatusHeadline(event.status, paymentPlan)}</p>
             <p className="text-xs text-ink/50">{new Date(event.at).toLocaleString()}</p>
             {event.note && <p className="text-sm text-ink/65">{event.note}</p>}
           </li>
@@ -139,7 +154,7 @@ export default function OrderDetailPage() {
           <OrderInvoice id={invoiceId} order={order} customer={user} bank={bank} />
         ) : (
           <p className="rounded-[24px] bg-white/80 p-6 text-sm text-ink/60 print:hidden">
-            An invoice is created automatically when Greenhouse Co-Op confirms your deposit.
+            An invoice is created automatically when Greenhouse Co-Op confirms your {paymentPlan === "full" ? "payment" : "deposit"}.
           </p>
         )}
       </div>

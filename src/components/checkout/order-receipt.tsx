@@ -30,6 +30,7 @@ export function OrderReceipt({
   total,
   depositDue,
   balanceDue,
+  dueNowLabel = "Deposit due now",
   note,
   estimates,
   children,
@@ -40,6 +41,7 @@ export function OrderReceipt({
   total: string;
   depositDue?: string;
   balanceDue?: string;
+  dueNowLabel?: string;
   note?: string;
   estimates?: { label: string; value: string }[];
   children?: React.ReactNode;
@@ -113,7 +115,7 @@ export function OrderReceipt({
 
           {depositDue && (
             <div className="mt-2 flex items-baseline justify-between gap-3 font-display text-xl text-forest-dark">
-              <span>Deposit due now</span>
+              <span>{dueNowLabel}</span>
               <span className="tabular-nums">{depositDue}</span>
             </div>
           )}

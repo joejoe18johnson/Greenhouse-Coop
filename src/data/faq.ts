@@ -55,8 +55,9 @@ export function whatsappLink(message?: string) {
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }
 
-export function whatsappPaymentLink(reference: string, amount: string, kind: "deposit" | "balance" = "deposit") {
-  const label = kind === "deposit" ? "Deposit (50%)" : "Balance";
+export function whatsappPaymentLink(reference: string, amount: string, kind: "deposit" | "balance" | "full" = "deposit") {
+  const label =
+    kind === "full" ? "Full payment" : kind === "balance" ? "Balance" : "Deposit (50%)";
   return whatsappLink(
     `Hello Greenhouse Co-Op, here is my proof of payment.\nReference: ${reference}\n${label}: ${amount}`
   );

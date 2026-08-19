@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -11,6 +12,7 @@ import { cn } from "@/lib/utils";
 type ToastItem = CustomerNotification & { toastId: string };
 
 export function CustomerNotificationToasts() {
+  const pathname = usePathname();
   const { user, session } = useAuth();
   const isCustomer = session?.role === "customer" && user;
   const { notifications, markRead } = useCustomerNotifications(isCustomer ? user.id : undefined);
@@ -52,7 +54,7 @@ export function CustomerNotificationToasts() {
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, [toasts]);
 
-  if (!isCustomer || !toasts.length) return null;
+  if (!isCustomer || !toasts.length || pathname === "/checkout") return null;
 
   function dismiss(toastId: string) {
     setToasts((current) => current.filter((entry) => entry.toastId !== toastId));
