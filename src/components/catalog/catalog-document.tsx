@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/brand/logo";
 import { BookOpen } from "lucide-react";
 import { CatalogProductMeta } from "@/components/catalog/catalog-product-meta";
 import { InventoryNotice } from "@/components/product/inventory-notice";
@@ -95,15 +95,9 @@ export function CatalogDocument({
         </p>
 
         <div className="mt-5 flex flex-wrap items-center gap-4 rounded-2xl border border-forest/10 bg-white/80 px-4 py-3 text-xs text-ink/60">
-          <div className="flex items-center gap-3">
-            <Image src="/logos/logo-icon.png" alt="" width={36} height={36} className="h-9 w-9 object-contain" />
-            <div>
-              <p className="font-semibold text-forest-dark">{BRAND.name}</p>
-              <p className="text-ink/50">{BRAND.location}</p>
-            </div>
-          </div>
+          <Logo variant="horizontal" iconSize={36} wordmarkVisibility="always" />
           <div className="h-8 w-px bg-forest/10" />
-          <p className="keep-case">{BRAND.phone}</p>
+          <p>{BRAND.location}</p>
           <p className="keep-case">{BRAND.email}</p>
           <p>
             Updated {generatedAt.toLocaleDateString("en-BZ", { month: "long", year: "numeric" })} ·{" "}

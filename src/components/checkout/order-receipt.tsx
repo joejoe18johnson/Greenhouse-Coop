@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { GreenHouseWordmark, Logo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
 function ReceiptRow({
@@ -50,17 +50,9 @@ export function OrderReceipt({
     <aside className="h-fit [filter:drop-shadow(0_18px_40px_rgba(31,41,55,0.16))]">
       <div className="border-x border-t border-forest/10 bg-[#FFFEF8]">
         <div className="bg-forest-dark px-6 py-5 text-center text-cream">
-          <Image
-            src="/logos/logo-icon.png"
-            alt=""
-            width={44}
-            height={44}
-            className="mx-auto"
-          />
-          <p className="mt-2 font-display text-xl leading-none">Greenhouse Co-Op</p>
-          <p className="mt-2 text-[10px] text-lime-bright">
-            Belmopan, Belize
-          </p>
+          <Logo variant="icon" iconSize={44} className="mx-auto" />
+          <GreenHouseWordmark tone="light" size="lg" className="mt-2 block" />
+          <p className="mt-2 text-[10px] text-lime-bright">Belmopan, Belize</p>
         </div>
 
         <div className="px-6 pb-5 pt-5">

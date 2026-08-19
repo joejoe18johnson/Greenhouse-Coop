@@ -53,7 +53,7 @@ export function OrderInvoice({
       <header className="flex items-start justify-between gap-4 border-b border-forest/10 px-4 py-4 sm:px-6 sm:py-5">
         <div className="flex min-w-0 items-center gap-3">
           <img
-            src="/logos/logo-icon.png"
+            src="/logos/logo-mark.png"
             alt=""
             width={48}
             height={48}
@@ -61,7 +61,10 @@ export function OrderInvoice({
             crossOrigin="anonymous"
           />
           <div className="min-w-0">
-            <p className="text-base font-semibold leading-tight text-forest-dark sm:text-lg">{BRAND.name}</p>
+            <p className="text-base font-semibold leading-tight sm:text-lg">
+              <span className="text-forest">Green</span>
+              <span className="text-lime">House</span>
+            </p>
             <p className="text-[11px] text-ink/55 sm:text-xs">{BRAND.tagline}</p>
             <p className="mt-0.5 text-[10px] text-ink/45 sm:text-[11px]">
               {BRAND.location} · <span className="keep-case">{BRAND.phone}</span>

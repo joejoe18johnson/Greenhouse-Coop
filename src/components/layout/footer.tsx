@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/brand/logo";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { BRAND } from "@/lib/constants";
@@ -16,13 +16,7 @@ export function Footer() {
     <footer className="mt-16 border-t border-forest/10 bg-forest-deep text-cream md:mt-24 print:hidden">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-4">
         <div className="md:col-span-1">
-          <Image
-            src="/logos/logo-white.png"
-            alt={BRAND.name}
-            width={220}
-            height={90}
-            className="mb-4 h-16 w-auto object-contain"
-          />
+          <Logo variant="footer" iconSize={48} className="mb-4" />
           <p className="text-sm leading-relaxed text-cream/70">
             Grafted, air-layered, and seedling fruit trees grown for Belize gardens.
           </p>

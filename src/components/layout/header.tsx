@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { LogOut, Menu, ShoppingBag, UserRound } from "lucide-react";
+import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { NavSearch } from "@/components/layout/nav-search";
@@ -48,19 +48,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 px-4 pt-[max(1rem,env(safe-area-inset-top))] print:hidden">
       <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full glass px-4 py-2 md:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/logos/logo-icon.png"
-            alt="Greenhouse Co-Op"
-            width={44}
-            height={44}
-            className="h-11 w-11 object-contain"
-            priority
-          />
-          <span className="hidden sm:block">
-            <span className="block font-semibold leading-none text-forest">GreenHouse</span>
-            <span className="text-[11px] text-ink/50">Co-Operative</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Logo variant="horizontal" showTagline iconSize={44} priority />
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
@@ -101,9 +90,8 @@ export function Header() {
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
-          <Link href="/" className="mb-8 flex items-center gap-2" onClick={() => setOpen(false)}>
-            <Image src="/logos/logo-icon.png" alt="" width={40} height={40} />
-            <span className="font-semibold text-forest">GreenHouse Co-Operative</span>
+          <Link href="/" className="mb-8 block" onClick={() => setOpen(false)}>
+            <Logo variant="horizontal" iconSize={40} wordmarkVisibility="always" />
           </Link>
           <NavSearch className="mb-4" onNavigate={() => setOpen(false)} />
           {session && (
