@@ -30,14 +30,12 @@ export function GreenHouseWordmark({
 export function Logo({
   variant = "horizontal",
   className,
-  showTagline = false,
   iconSize = 44,
   priority = false,
   wordmarkVisibility = "responsive",
 }: {
   variant?: "horizontal" | "stacked" | "icon" | "wordmark" | "footer";
   className?: string;
-  showTagline?: boolean;
   iconSize?: number;
   priority?: boolean;
   wordmarkVisibility?: "responsive" | "always";
@@ -73,11 +71,11 @@ export function Logo({
   }
 
   const wordmarkTone = variant === "footer" ? "light" : "brand";
-  const taglineClass = variant === "footer" ? "text-cream/60" : "text-ink/50";
   const wordmarkHidden = wordmarkVisibility === "responsive" && variant !== "footer";
+  const wordmarkSize = iconSize >= 44 ? "lg" : iconSize >= 36 ? "md" : "sm";
 
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
+    <span className={cn("inline-flex items-center gap-2", className)}>
       <Image
         src="/logos/logo-mark.png"
         alt=""
@@ -88,10 +86,7 @@ export function Logo({
         priority={priority}
       />
       <span className={cn(wordmarkHidden && "hidden sm:block")}>
-        <GreenHouseWordmark size={iconSize >= 40 ? "md" : "sm"} tone={wordmarkTone} />
-        {showTagline && (
-          <span className={cn("mt-0.5 block text-[11px]", taglineClass)}>Co-Operative</span>
-        )}
+        <GreenHouseWordmark size={wordmarkSize} tone={wordmarkTone} />
       </span>
     </span>
   );

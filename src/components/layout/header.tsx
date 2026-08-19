@@ -49,7 +49,7 @@ export function Header() {
     <header className="sticky top-0 z-40 px-4 pt-[max(1rem,env(safe-area-inset-top))] print:hidden">
       <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full glass px-4 py-2 md:px-6">
         <Link href="/" className="flex items-center">
-          <Logo variant="horizontal" showTagline iconSize={44} priority />
+          <Logo variant="horizontal" iconSize={44} wordmarkVisibility="always" priority />
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
@@ -91,7 +91,7 @@ export function Header() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
           <Link href="/" className="mb-8 block" onClick={() => setOpen(false)}>
-            <Logo variant="horizontal" iconSize={40} wordmarkVisibility="always" />
+            <Logo variant="horizontal" iconSize={44} wordmarkVisibility="always" />
           </Link>
           <NavSearch className="mb-4" onNavigate={() => setOpen(false)} />
           {session && (
