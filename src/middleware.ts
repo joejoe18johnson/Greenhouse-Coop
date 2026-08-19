@@ -5,8 +5,13 @@ export async function middleware(request: NextRequest) {
   return updateSession(request);
 }
 
+/** Only run auth refresh on routes that need a session — keeps /cart, /shop, etc. fast on mobile. */
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/admin/:path*",
+    "/dashboard/:path*",
+    "/checkout",
+    "/login",
+    "/register",
   ],
 };

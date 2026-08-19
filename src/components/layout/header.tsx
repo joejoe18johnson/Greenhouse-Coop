@@ -21,13 +21,13 @@ function isNavActive(pathname: string, href: string) {
 
 function navLinkClass(active: boolean, mobile = false) {
   return cn(
-    "relative inline-flex items-center transition",
-    mobile ? "gap-3 text-lg font-medium" : "gap-1.5 pb-1 text-sm font-medium",
+    "inline-flex items-center transition",
+    mobile ? "gap-3 text-lg font-medium" : "relative gap-1.5 pb-1 text-sm font-medium",
     active
       ? cn(
           "font-semibold text-forest",
-          "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-forest",
-          mobile && "after:-bottom-0.5"
+          !mobile &&
+            "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-forest"
         )
       : cn("text-ink/70 hover:text-forest", mobile && "text-forest/80")
   );
@@ -77,21 +77,21 @@ export function Header() {
         <div className="flex items-center gap-2">
           <NavSearch className="hidden w-44 md:block lg:w-56" />
           {isCustomer && <NotificationBell userId={user.id} />}
-          <Link href={session ? (session.role === "admin" ? "/admin" : "/dashboard") : "/login"}>
-            <Button variant="ghost" size="icon" aria-label="Account">
+          <Button variant="ghost" size="icon" aria-label="Account" asChild>
+            <Link href={session ? (session.role === "admin" ? "/admin" : "/dashboard") : "/login"}>
               <UserRound className="h-5 w-5" />
-            </Button>
-          </Link>
-          <Link href="/cart" className="relative">
-            <Button variant="ghost" size="icon" aria-label="Cart">
+            </Link>
+          </Button>
+          <Button variant="ghost" size="icon" aria-label="Cart" asChild className="relative">
+            <Link href="/cart">
               <ShoppingBag className="h-5 w-5" />
-            </Button>
-            {count > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-citrus px-1 text-[10px] font-bold text-ink">
-                {count}
-              </span>
-            )}
-          </Link>
+              {count > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-citrus px-1 text-[10px] font-bold text-ink">
+                  {count > 9 ? "9+" : count}
+                </span>
+              )}
+            </Link>
+          </Button>
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
@@ -127,6 +127,24 @@ export function Header() {
             {isCustomer && (
               <NotificationBellLink userId={user.id} onNavigate={() => setOpen(false)} />
             )}
+            <Link
+              href="/cart"
+              onClick={() => setOpen(false)}
+              className={cn(
+                "inline-flex items-center gap-3 text-lg font-medium",
+                isNavActive(pathname, "/cart") ? "font-semibold text-forest" : "text-forest/80"
+              )}
+            >
+              <span className="relative">
+                <ShoppingBag className="h-5 w-5" />
+                {count > 0 && (
+                  <span className="absolute -right-2 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-citrus px-1 text-[9px] font-bold text-ink">
+                    {count > 9 ? "9+" : count}
+                  </span>
+                )}
+              </span>
+              Cart
+            </Link>
           </div>
         </SheetContent>
       </Sheet>
