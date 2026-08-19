@@ -90,19 +90,15 @@ export default function HomePage() {
               trackClassName="px-[max(1rem,calc((100%-min(85vw,18rem))/2))] sm:px-0"
               itemClassName="w-[min(85vw,18rem)] snap-center sm:w-[min(48vw,18rem)] sm:snap-start"
             >
-              {reasons.map((reason, i) => (
-                <motion.div
+              {reasons.map((reason) => (
+                <div
                   key={reason.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
                   className="h-full rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur"
                 >
                   <reason.icon className="mb-4 h-6 w-6 text-lime-bright" />
                   <h3 className="text-lg font-semibold">{reason.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-cream/70">{reason.text}</p>
-                </motion.div>
+                </div>
               ))}
             </ScrollCarousel>
           </div>

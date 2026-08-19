@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOrders } from "@/lib/store";
+import { formatOrderDeposit } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
 
 export default function AdminPaymentsPage() {
@@ -12,7 +13,7 @@ export default function AdminPaymentsPage() {
   return (
     <div className="min-w-0">
       <h1 className="page-title font-semibold">Payments</h1>
-      <p className="mt-2 text-sm text-ink/55">Confirm bank transfers from WhatsApp, then an invoice is issued automatically.</p>
+      <p className="mt-2 text-sm text-ink/55">Confirm 50% deposit transfers from WhatsApp, then an invoice is issued automatically.</p>
       <div className="mt-6 space-y-3">
         {orders.map((o) => (
           <Link key={o.id} href={`/admin/orders/${o.id}`} className="block rounded-[24px] bg-white p-5">
@@ -26,7 +27,8 @@ export default function AdminPaymentsPage() {
               </div>
               <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end sm:text-right">
                 <StatusBadge status={o.status} />
-                <p>{formatBZD(o.total)}</p>
+                <p>{formatOrderDeposit(o.total)} deposit</p>
+                <p className="text-xs text-ink/45">{formatBZD(o.total)} total</p>
               </div>
             </div>
           </Link>

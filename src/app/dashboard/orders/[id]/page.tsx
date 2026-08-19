@@ -16,8 +16,9 @@ import { customerStatusHeadline } from "@/lib/order-status-messages";
 import { formatBZD } from "@/lib/utils";
 import { whatsappPaymentLink } from "@/data/faq";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
-import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import { markNotificationsRead } from "@/lib/customer-notifications";
+import { formatOrderBalance, formatOrderDeposit } from "@/lib/order-deposit";
+import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import { STORE_UPDATED_EVENT } from "@/lib/store-events";
 
 export default function OrderDetailPage() {
@@ -79,8 +80,15 @@ export default function OrderDetailPage() {
 
       {awaitingPay && order.status === "Payment Pending" && (
         <div className="mt-8 rounded-[28px] bg-citrus/10 p-5 text-sm print:hidden">
-          <p className="font-semibold text-forest">Next step: send proof on WhatsApp</p>
-          <p className="mt-2">Your order is placed. Transfer <strong>{formatBZD(order.total)}</strong> to Greenhouse Co-Op, then send the screenshot here with reference <strong className="keep-case">{order.reference}</strong>.</p>
+          <p className="font-semibold text-forest">Next step: send deposit proof on WhatsApp</p>
+          <p className="mt-2">
+            Your order is placed. Transfer the <strong>50% deposit</strong> of{" "}
+            <strong>{formatOrderDeposit(order.total)}</strong> to Greenhouse Co-Op, then send the screenshot here with
+            reference <strong className="keep-case">{order.reference}</strong>.
+          </p>
+          <p className="mt-2 text-ink/70">
+            Order total {formatBZD(order.total)} · balance of {formatOrderBalance(order.total)} due when you collect.
+          </p>
           {courierEstimate > 0 && (
             <p className="mt-2 text-ink/70">
               Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "the courier"} is paid separately when you collect — not in this transfer.
@@ -88,13 +96,13 @@ export default function OrderDetailPage() {
           )}
           <p className="mt-2">{PAYMENT_NOTICE}</p>
           <a
-            href={whatsappPaymentLink(order.reference, formatBZD(order.total))}
+            href={whatsappPaymentLink(order.reference, formatOrderDeposit(order.total), "deposit")}
             target="_blank"
             rel="noreferrer"
             className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1ebe5d]"
           >
             <WhatsAppIcon className="h-5 w-5" />
-            Send proof on WhatsApp
+            Send deposit proof on WhatsApp
           </a>
           <p className="mt-2 text-xs text-ink/50">Attach your transfer screenshot in the chat. Do not upload files on this site.</p>
         </div>
@@ -131,7 +139,7 @@ export default function OrderDetailPage() {
           <OrderInvoice id={invoiceId} order={order} customer={user} bank={bank} />
         ) : (
           <p className="rounded-[24px] bg-white/80 p-6 text-sm text-ink/60 print:hidden">
-            An invoice is created automatically when Greenhouse Co-Op confirms your payment.
+            An invoice is created automatically when Greenhouse Co-Op confirms your deposit.
           </p>
         )}
       </div>

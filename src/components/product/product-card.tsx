@@ -16,16 +16,24 @@ import { cn, formatBZD } from "@/lib/utils";
 import { HOVER_TREE_IMAGES_ENABLED } from "@/lib/product-images";
 import type { Product } from "@/types";
 
-export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
+export function ProductCard({
+  product,
+  index = 0,
+  inCarousel = false,
+}: {
+  product: Product;
+  index?: number;
+  inCarousel?: boolean;
+}) {
   const { add } = useCart();
   const CategoryIcon = categoryIcon(product.category);
   const available = isInStock(product);
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
+      initial={inCarousel ? false : { opacity: 0, y: 28 }}
+      whileInView={inCarousel ? undefined : { opacity: 1, y: 0 }}
+      viewport={inCarousel ? undefined : { once: true, margin: "-40px" }}
       transition={{ duration: 0.5, delay: index * 0.05 }}
       className={cn(
         "group relative overflow-hidden rounded-[32px] border bg-white/80 shadow-card backdrop-blur-md",
@@ -38,7 +46,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <div className="pointer-events-none absolute inset-0 z-[1] rounded-[24px] bg-white/45" aria-hidden />
         )}
         <motion.div
-          animate={available ? { y: [0, -8, 0] } : { y: 0 }}
+          animate={available && !inCarousel ? { y: [0, -8, 0] } : { y: 0 }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: index * 0.2 }}
           className={cn("h-full w-full", !available && "opacity-60 saturate-50")}
         >

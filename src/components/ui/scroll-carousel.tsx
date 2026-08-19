@@ -18,7 +18,7 @@ function readGap(el: HTMLElement) {
 }
 
 const TRACK_CLASS =
-  "flex items-start overflow-x-auto overflow-y-visible overscroll-x-contain [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] snap-x snap-mandatory scroll-smooth [scroll-behavior:smooth] [&::-webkit-scrollbar]:hidden";
+  "flex items-stretch overflow-x-auto overflow-y-hidden overscroll-x-contain [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] [scrollbar-width:none] snap-x snap-mandatory scroll-smooth [scroll-behavior:smooth] [&::-webkit-scrollbar]:hidden";
 
 export function ScrollCarousel({
   children,
@@ -119,18 +119,18 @@ export function ScrollCarousel({
   }
 
   return (
-    <div className={cn("min-w-0", bleed && "-mx-2 sm:mx-0", className)}>
-      <div className="relative min-w-0">
+    <div className={cn("min-w-0 overflow-visible", bleed && "-mx-2 sm:mx-0", className)}>
+      <div className="relative min-w-0 overflow-visible py-2">
         <div
           ref={scroller}
           className={cn(
             TRACK_CLASS,
-            "gap-4 pb-1 sm:gap-6",
+            "gap-4 py-3 sm:gap-6",
             trackClassName
           )}
         >
           {items.map((child, i) => (
-            <div key={i} className={cn("h-auto shrink-0 snap-always", itemClassName)}>
+            <div key={i} className={cn("h-auto shrink-0 snap-always snap-center self-stretch", itemClassName)}>
               {child}
             </div>
           ))}

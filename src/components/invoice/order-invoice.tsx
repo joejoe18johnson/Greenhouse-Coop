@@ -1,6 +1,7 @@
 import { BRAND } from "@/lib/constants";
 import { bankAccounts } from "@/lib/bank";
 import { fulfillmentLabel } from "@/lib/shipping";
+import { orderBalanceAmount, orderDepositAmount } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
 import type { BankDetails, Order } from "@/types";
 
@@ -35,6 +36,8 @@ export function OrderInvoice({
   const issued = order.invoiceIssuedAt || order.createdAt;
   const confirmed = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
   const courierFee = courierEstimate(order);
+  const depositAmount = orderDepositAmount(order.total);
+  const balanceAmount = orderBalanceAmount(order.total);
 
   return (
     <article
@@ -88,7 +91,7 @@ export function OrderInvoice({
           <dt className="text-ink/45">Fulfillment</dt>
           <dd>{fulfillmentLine(order)}</dd>
           <dt className="text-ink/45">Payment</dt>
-          <dd>{confirmed ? "Paid in full" : "Due on confirmation"}</dd>
+          <dd>{confirmed ? "Deposit paid (50%)" : "50% deposit due"}</dd>
           <dt className="text-ink/45">Status</dt>
           <dd>{order.status}</dd>
         </dl>
@@ -148,9 +151,17 @@ export function OrderInvoice({
             <span>Subtotal</span>
             <span className="tabular-nums">{formatBZD(order.subtotal)}</span>
           </div>
-          <div className="flex justify-between border-t border-forest/10 pt-1.5 text-sm font-semibold text-forest-dark sm:text-base">
-            <span>Total due to {BRAND.short}</span>
+          <div className="flex justify-between text-ink/60">
+            <span>Order total</span>
             <span className="tabular-nums">{formatBZD(order.total)}</span>
+          </div>
+          <div className="flex justify-between border-t border-forest/10 pt-1.5 text-sm font-semibold text-forest-dark sm:text-base">
+            <span>{confirmed ? "Deposit received" : "Deposit due (50%)"}</span>
+            <span className="tabular-nums">{formatBZD(depositAmount)}</span>
+          </div>
+          <div className="flex justify-between pt-1 text-[11px] text-ink/55 sm:text-xs">
+            <span>{confirmed ? "Balance due at pickup" : "Balance at pickup"}</span>
+            <span className="tabular-nums">{formatBZD(balanceAmount)}</span>
           </div>
           {courierFee > 0 && (
             <div className="border-t border-dashed border-forest/15 pt-1.5 text-[10px] text-ink/55 sm:text-[11px]">

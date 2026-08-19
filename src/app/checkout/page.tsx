@@ -21,6 +21,7 @@ import { isLocalTown, computeOrderTotal, getCourierEstimate, quoteShipping } fro
 import { getIdsZoneLabel } from "@/lib/ids-rates";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
+import { DEPOSIT_NOTICE, formatOrderBalance, formatOrderDeposit } from "@/lib/order-deposit";
 import locations from "@/data/locations.json";
 
 export default function CheckoutPage() {
@@ -299,11 +300,13 @@ export default function CheckoutPage() {
               ))}
             </div>
             <div className="mt-5 rounded-2xl border border-citrus/40 bg-citrus/10 p-4 text-sm">
-              <p className="font-semibold text-forest">How payment works</p>
+              <p className="font-semibold text-forest">50% deposit to secure your order</p>
+              <p className="mt-2 text-ink/75">{DEPOSIT_NOTICE}</p>
               <ol className="mt-3 list-decimal space-y-2 pl-5 text-ink/75">
                 <li>Place this order first. You will receive a 6-character reference such as <strong className="keep-case">A7B2K9</strong>.</li>
-                <li>Make the bank transfer and put that reference in the payment notes.</li>
-                <li>Then send your transfer screenshot on WhatsApp with the same reference. A WhatsApp button appears on your order page after checkout.</li>
+                <li>Transfer <strong>{formatOrderDeposit(total)}</strong> (50% deposit) and put that reference in the payment notes.</li>
+                <li>Send your transfer screenshot on WhatsApp with the same reference. A WhatsApp button appears on your order page after checkout.</li>
+                <li>Pay the remaining <strong>{formatOrderBalance(total)}</strong> when you collect your trees.</li>
               </ol>
               <p className="mt-3">{PAYMENT_NOTICE}</p>
             </div>
@@ -345,6 +348,8 @@ export default function CheckoutPage() {
               : undefined
           }
           total={formatBZD(total)}
+          depositDue={formatOrderDeposit(total)}
+          balanceDue={formatOrderBalance(total)}
           note={
             wantsDelivery && quote.box.label
               ? method === "courier"
@@ -359,8 +364,8 @@ export default function CheckoutPage() {
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-forest/10 bg-cream/95 p-4 backdrop-blur-lg safe-bottom lg:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 pr-1">
           <div className="min-w-0">
-            <p className="text-xs text-ink/50">Total due now</p>
-            <p className="text-xl font-semibold text-forest">{formatBZD(total)}</p>
+            <p className="text-xs text-ink/50">Deposit due now (50%)</p>
+            <p className="text-xl font-semibold text-forest">{formatOrderDeposit(total)}</p>
           </div>
           <Button size="lg" className="min-w-[9.5rem] shrink-0" onClick={placeOrder}>
             <CircleCheck className="h-4 w-4" />

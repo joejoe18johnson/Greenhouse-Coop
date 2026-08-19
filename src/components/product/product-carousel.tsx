@@ -27,7 +27,7 @@ export function ProductCarousel({
       itemClassName={MOBILE_ITEM}
     >
       {products.map((product, i) => (
-        <ProductCard key={product.id} product={product} index={Math.min(i, 3)} />
+        <ProductCard key={product.id} product={product} index={Math.min(i, 3)} inCarousel />
       ))}
     </ScrollCarousel>
   );

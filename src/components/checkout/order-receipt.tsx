@@ -28,6 +28,8 @@ export function OrderReceipt({
   items,
   rows,
   total,
+  depositDue,
+  balanceDue,
   note,
   estimates,
   children,
@@ -36,6 +38,8 @@ export function OrderReceipt({
   items: { id: string; name: string; quantity: number; amount: string }[];
   rows: { label: string; value: string }[];
   total: string;
+  depositDue?: string;
+  balanceDue?: string;
   note?: string;
   estimates?: { label: string; value: string }[];
   children?: React.ReactNode;
@@ -102,10 +106,31 @@ export function OrderReceipt({
 
           <div className="my-4 border-t border-dashed border-forest/25" />
 
-          <div className="flex items-baseline justify-between gap-3 font-display text-xl text-forest-dark">
-            <span>Total</span>
+          <div className="flex items-baseline justify-between gap-3 text-sm text-ink/70">
+            <span>Order total</span>
             <span className="tabular-nums">{total}</span>
           </div>
+
+          {depositDue && (
+            <div className="mt-2 flex items-baseline justify-between gap-3 font-display text-xl text-forest-dark">
+              <span>Deposit due now</span>
+              <span className="tabular-nums">{depositDue}</span>
+            </div>
+          )}
+
+          {balanceDue && (
+            <div className="mt-1.5 flex items-baseline justify-between gap-3 text-sm text-ink/55">
+              <span>Balance at pickup</span>
+              <span className="tabular-nums">{balanceDue}</span>
+            </div>
+          )}
+
+          {!depositDue && (
+            <div className="flex items-baseline justify-between gap-3 font-display text-xl text-forest-dark">
+              <span>Total</span>
+              <span className="tabular-nums">{total}</span>
+            </div>
+          )}
 
           {estimates && estimates.length > 0 && (
             <div className="mt-4 space-y-1.5 border-t border-dashed border-forest/20 pt-4 text-sm">

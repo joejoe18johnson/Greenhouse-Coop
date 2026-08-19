@@ -3,7 +3,7 @@ import type { OrderStatus } from "@/types";
 export const CUSTOMER_STATUS_HEADLINE: Record<OrderStatus, string> = {
   "Payment Pending": "Awaiting your payment",
   "Payment Review": "Payment under review",
-  Paid: "Payment verified",
+  Paid: "Deposit verified",
   Processing: "Preparing your order",
   Shipped: "Ready for pickup or in transit",
   Completed: "Order complete",
@@ -12,10 +12,10 @@ export const CUSTOMER_STATUS_HEADLINE: Record<OrderStatus, string> = {
 
 export const CUSTOMER_STATUS_DESCRIPTION: Record<OrderStatus, string> = {
   "Payment Pending":
-    "Your order is placed. Transfer payment to Greenhouse Co-Op and send your proof on WhatsApp with your reference number.",
+    "Your order is placed. Transfer your 50% deposit to Greenhouse Co-Op and send your proof on WhatsApp with your reference number.",
   "Payment Review":
     "We received your payment proof and are verifying it. You will see an update here once payment is confirmed.",
-  Paid: "Your payment was verified and your invoice is ready. We will begin preparing your trees shortly.",
+  Paid: "Your deposit was verified and your order is secured. The remaining balance is due when you collect your trees.",
   Processing: "Your trees are being prepared for pickup or courier. We will notify you when they are on the way.",
   Shipped:
     "Your order has been sent or is ready at the pickup point. Check your fulfillment details below for collection instructions.",
@@ -24,9 +24,9 @@ export const CUSTOMER_STATUS_DESCRIPTION: Record<OrderStatus, string> = {
 };
 
 export const CUSTOMER_TIMELINE_NOTES: Record<OrderStatus, string> = {
-  "Payment Pending": "Order placed. Transfer payment and send proof on WhatsApp with your reference.",
-  "Payment Review": "Payment proof received — we are verifying your transfer.",
-  Paid: "Payment verified. Your invoice is ready and we are preparing your order.",
+  "Payment Pending": "Order placed. Transfer your 50% deposit and send proof on WhatsApp with your reference.",
+  "Payment Review": "Deposit proof received — we are verifying your transfer.",
+  Paid: "Deposit verified. Your order is secured — balance due at pickup.",
   Processing: "Your order is being prepared for pickup or courier.",
   Shipped: "Your order is on its way or ready at the pickup point.",
   Completed: "Order collected — thank you for shopping with Greenhouse Co-Op.",

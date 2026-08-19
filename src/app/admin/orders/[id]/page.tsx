@@ -12,6 +12,7 @@ import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { ORDER_STATUSES } from "@/lib/constants";
 import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
 import { fulfillmentLabel } from "@/lib/shipping";
+import { formatOrderBalance, formatOrderDeposit } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import type { OrderStatus } from "@/types";
@@ -55,7 +56,7 @@ export default function AdminOrderDetailPage() {
         <div className="flex flex-wrap gap-2">
           {order.status === "Payment Pending" || order.status === "Payment Review" ? (
             <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
-              Confirm payment
+              Confirm deposit
             </Button>
           ) : null}
           {order.status === "Paid" && (
@@ -165,7 +166,8 @@ export default function AdminOrderDetailPage() {
             {order.deliveryFee > 0 && <li>Local delivery — {formatBZD(order.deliveryFee)}</li>}
             {order.boxFee > 0 && <li>Box — {formatBZD(order.boxFee)}</li>}
           </ul>
-          <p className="mt-4 font-semibold">Total due {formatBZD(order.total)}</p>
+          <p className="mt-4 font-semibold">Order total {formatBZD(order.total)}</p>
+          <p className="mt-1 text-sm text-forest">Deposit due {formatOrderDeposit(order.total)} · Balance {formatOrderBalance(order.total)}</p>
           {courierEstimate > 0 && (
             <p className="mt-2 text-sm text-ink/55">
               + Approx. {formatBZD(courierEstimate)} at courier ({COURIER_ESTIMATE_NOTICE})
@@ -176,19 +178,23 @@ export default function AdminOrderDetailPage() {
         <div className="rounded-[24px] bg-white p-6">
           <h2 className="font-semibold text-forest">Payment</h2>
           <p className="mt-3 text-sm text-ink/70">
-            Bank transfer · proof on WhatsApp with reference <span className="keep-case">{order.reference}</span>
+            50% deposit via bank transfer · proof on WhatsApp with reference{" "}
+            <span className="keep-case">{order.reference}</span>
             {customer?.phone ? <> · <span className="keep-case">{customer.phone}</span></> : ""}.
+          </p>
+          <p className="mt-2 text-sm font-medium text-forest">
+            Expecting {formatOrderDeposit(order.total)} deposit · {formatOrderBalance(order.total)} due at pickup
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
-              Confirm payment
+              Confirm deposit
             </Button>
             <Button variant="outline" onClick={() => {
               updateOrder({ ...order, status: "Payment Pending", payment: { ...order.payment, rejectionReason: reason } });
               updateOrderStatus(
                 order.id,
                 "Payment Pending",
-                reason || "We could not verify your payment. Please contact us or resubmit proof on WhatsApp."
+                reason || "We could not verify your deposit. Please contact us or resubmit proof on WhatsApp."
               );
               refresh();
             }}>Reject</Button>

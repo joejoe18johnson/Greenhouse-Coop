@@ -13,15 +13,15 @@ const ICONS: Record<PropagationType, typeof Sprout> = {
   Seedling: Sprout,
 };
 
-function BenefitCard({ type, index }: { type: PropagationType; index: number }) {
+function BenefitCard({ type, index, inCarousel = false }: { type: PropagationType; index: number; inCarousel?: boolean }) {
   const info = PROPAGATION_INFO[type];
   const Icon = ICONS[type];
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
+      initial={inCarousel ? false : { opacity: 0, y: 24 }}
+      whileInView={inCarousel ? undefined : { opacity: 1, y: 0 }}
+      viewport={inCarousel ? undefined : { once: true, margin: "-40px" }}
       transition={{ duration: 0.45, delay: index * 0.08 }}
       className="flex h-full flex-col rounded-[32px] border border-leaf/30 bg-white/80 p-7 shadow-card backdrop-blur-md"
     >
@@ -51,6 +51,10 @@ function BenefitCard({ type, index }: { type: PropagationType; index: number }) 
 
 export function PropagationBenefits() {
   const cards = PROPAGATION_TYPES.map((type, i) => (
+    <BenefitCard key={type} type={type} index={i} inCarousel />
+  ));
+
+  const gridCards = PROPAGATION_TYPES.map((type, i) => (
     <BenefitCard key={type} type={type} index={i} />
   ));
 
@@ -79,7 +83,7 @@ export function PropagationBenefits() {
         </ScrollCarousel>
       </div>
 
-      <div className="mt-12 hidden gap-6 lg:grid lg:grid-cols-3">{cards}</div>
+      <div className="mt-12 hidden gap-6 lg:grid lg:grid-cols-3">{gridCards}</div>
     </section>
   );
 }

@@ -5,7 +5,7 @@ export const FAQS = [
     id: "payment",
     question: "How do I pay for my trees?",
     answer:
-      "Place the order first to get a 6-character reference such as A7B2K9. Include that number in your bank transfer notes, then send your payment screenshot to us on WhatsApp with the same reference. Do not send proof before the order is placed.",
+      "Place the order first to get a 6-character reference such as A7B2K9. Pay a 50% deposit to secure your order — include that reference in your bank transfer notes, then send your deposit screenshot to us on WhatsApp with the same reference. The remaining balance is due when you collect your trees.",
   },
   {
     id: "delivery",
@@ -55,8 +55,9 @@ export function whatsappLink(message?: string) {
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }
 
-export function whatsappPaymentLink(reference: string, total: string) {
+export function whatsappPaymentLink(reference: string, amount: string, kind: "deposit" | "balance" = "deposit") {
+  const label = kind === "deposit" ? "Deposit (50%)" : "Balance";
   return whatsappLink(
-    `Hello Greenhouse Co-Op, here is my proof of payment.\nReference: ${reference}\nAmount: ${total}`
+    `Hello Greenhouse Co-Op, here is my proof of payment.\nReference: ${reference}\n${label}: ${amount}`
   );
 }

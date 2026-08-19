@@ -21,7 +21,7 @@ export const COURIER_ESTIMATE_NOTICE =
   "Courier Shipping Is Paid Directly At The Courier Office When You Collect Your Trees. IDS Uses Published Package Rates — Central And Northern Districts Share The Same Price. Amounts Shown Are Approximate Guides Only.";
 
 export const PAYMENT_NOTICE =
-  "First Place Your Order To Receive A 6-Character Reference Number. Include That Number In Your Bank Transfer Notes, Then Send Your Payment Screenshot To Us On WhatsApp With The Same Reference. Failure To Include Your Reference Number May Delay Order Processing.";
+  "Place your order first to receive a 6-character reference number. Transfer your 50% deposit, include that reference in the bank transfer notes, then send your payment screenshot on WhatsApp with the same reference. The remaining balance is due when you collect your trees.";
 
 export const CART_HOLD_HOURS = 72;
 export const CART_HOLD_MS = CART_HOLD_HOURS * 60 * 60 * 1000;
