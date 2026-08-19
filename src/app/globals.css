@@ -119,6 +119,15 @@
   .arch-frame {
     border-radius: 180px 180px 28px 28px;
   }
+
+  .invoice-sheet {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .invoice-capture {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
 }
 
 @media print {

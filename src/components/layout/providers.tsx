@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { StoreProvider } from "@/context/store-context";
+import { CustomerNotificationToasts } from "@/components/notifications/customer-notification-toasts";
 import { WhatsAppWidget } from "@/components/support/whatsapp-widget";
 import { usePathname } from "next/navigation";
 
@@ -30,6 +31,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
       </motion.main>
       <Footer />
       <WhatsAppWidget />
+      <CustomerNotificationToasts />
     </>
   );
 }

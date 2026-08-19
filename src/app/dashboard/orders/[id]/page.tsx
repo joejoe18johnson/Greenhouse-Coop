@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
@@ -16,6 +17,8 @@ import { formatBZD } from "@/lib/utils";
 import { whatsappPaymentLink } from "@/data/faq";
 import { WhatsAppIcon } from "@/components/support/whatsapp-icon";
 import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
+import { markNotificationsRead } from "@/lib/customer-notifications";
+import { STORE_UPDATED_EVENT } from "@/lib/store-events";
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,11 +27,18 @@ export default function OrderDetailPage() {
   const order = getOrders().find((o) => o.id === id);
   const bank = getBankDetails();
 
+  useEffect(() => {
+    if (!user || !order || order.userId !== user.id) return;
+    markNotificationsRead(user.id, [order.id]);
+    window.dispatchEvent(new Event(STORE_UPDATED_EVENT));
+  }, [user, order?.id, order?.updatedAt]);
+
   if (!ready) return null;
   if (!user) {
     router.push("/login");
     return null;
   }
+
   if (!order || (order.userId !== user.id && user.role !== "admin")) {
     return <div className="px-6 py-20 text-center">Order not found.</div>;
   }

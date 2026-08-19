@@ -8,6 +8,7 @@ import { Menu, ShoppingBag, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { NavSearch } from "@/components/layout/nav-search";
+import { NotificationBell, NotificationBellLink } from "@/components/notifications/notification-bell";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
 import { NAV_LINKS } from "@/lib/icons";
@@ -38,6 +39,8 @@ export function Header() {
   const { session, user } = useAuth();
   const [open, setOpen] = useState(false);
   const isAdminArea = pathname.startsWith("/admin");
+
+  const isCustomer = session?.role === "customer" && user;
 
   if (isAdminArea) return null;
 
@@ -73,6 +76,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <NavSearch className="hidden w-44 md:block lg:w-56" />
+          {isCustomer && <NotificationBell userId={user.id} />}
           <Link href={session ? (session.role === "admin" ? "/admin" : "/dashboard") : "/login"}>
             <Button variant="ghost" size="icon" aria-label="Account">
               <UserRound className="h-5 w-5" />
@@ -120,6 +124,9 @@ export function Header() {
               <UserRound className="h-5 w-5" />
               {user ? "Dashboard" : "Sign in"}
             </Link>
+            {isCustomer && (
+              <NotificationBellLink userId={user.id} onNavigate={() => setOpen(false)} />
+            )}
           </div>
         </SheetContent>
       </Sheet>
