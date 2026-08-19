@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useAdminCounts } from "@/hooks/use-admin-counts";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 
@@ -108,8 +109,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 count={badgeCount(link)}
               />
             ))}
-            <button
-              className="mt-10 inline-flex items-center gap-3 rounded-full px-4 py-3 text-left text-sm text-cream/50 hover:bg-white/10 hover:text-cream"
+            <Button
+              variant="citrus"
+              className="mt-10 w-full justify-start gap-3 px-4"
               onClick={() => {
                 logout();
                 router.push("/");
@@ -117,7 +119,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <LogOut className="h-4 w-4" />
               Sign out
-            </button>
+            </Button>
           </nav>
         </aside>
         <div className="min-h-screen min-w-0 flex-1 overflow-x-hidden bg-cream p-4 text-ink print:m-0 print:bg-white print:p-0 md:my-6 md:rounded-[32px] md:p-8 print:md:my-0 print:md:rounded-none">
@@ -125,9 +127,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/admin" className="min-w-0 truncate text-sm font-semibold text-forest">
               GreenHouse Admin
             </Link>
-            <button
+            <Button
               type="button"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-forest px-3.5 py-2 text-xs font-medium text-cream"
+              variant="citrus"
+              size="sm"
+              className="shrink-0 gap-1.5"
               onClick={() => {
                 logout();
                 router.push("/");
@@ -135,7 +139,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <LogOut className="h-3.5 w-3.5" />
               Sign out
-            </button>
+            </Button>
           </div>
           <nav className="mb-6 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] print:hidden md:hidden [&::-webkit-scrollbar]:hidden">
             {links.map((link) => (

@@ -41,7 +41,7 @@ export default function DashboardPage() {
           <p className="text-xs text-leaf">Account</p>
           <h1 className="mt-2 font-display text-4xl text-forest-dark">Hello, {user.firstName}</h1>
         </div>
-        <Button variant="outline" onClick={() => { logout(); router.push("/"); }}>
+        <Button variant="citrus" onClick={() => { logout(); router.push("/"); }}>
           <LogOut className="h-4 w-4" />
           Sign out
         </Button>

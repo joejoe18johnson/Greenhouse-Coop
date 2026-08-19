@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Menu, ShoppingBag, UserRound } from "lucide-react";
+import { LogOut, Menu, ShoppingBag, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { NavSearch } from "@/components/layout/nav-search";
@@ -36,7 +36,8 @@ function navLinkClass(active: boolean, mobile = false) {
 export function Header() {
   const pathname = usePathname();
   const { count } = useCart();
-  const { session, user } = useAuth();
+  const { session, user, logout } = useAuth();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const isAdminArea = pathname.startsWith("/admin");
 
@@ -104,7 +105,21 @@ export function Header() {
             <Image src="/logos/logo-icon.png" alt="" width={40} height={40} />
             <span className="font-semibold text-forest">GreenHouse Co-Operative</span>
           </Link>
-          <NavSearch className="mb-6" onNavigate={() => setOpen(false)} />
+          <NavSearch className="mb-4" onNavigate={() => setOpen(false)} />
+          {session && (
+            <Button
+              variant="citrus"
+              className="mb-6 w-full"
+              onClick={() => {
+                logout();
+                setOpen(false);
+                router.push("/");
+              }}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </Button>
+          )}
           <div className="flex flex-col gap-4">
             {NAV_LINKS.map((link) => {
               const active = isNavActive(pathname, link.href);
