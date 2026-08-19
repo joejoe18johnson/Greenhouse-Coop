@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "Grafted, Air-Layered, And Selectively Bred Fruit Trees Grown For Belize Gardens. Shop Avocados, Mangoes, Citrus, And Tropical Specialties.",
   icons: {
     icon: [
-      { url: "/logos/favicons/favicon.ico", sizes: "any" },
+      { url: "/favicon.ico", sizes: "any" },
       { url: "/logos/favicons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/logos/favicons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
