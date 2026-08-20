@@ -7,6 +7,7 @@ import {
   Banknote,
   BarChart3,
   ClipboardList,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Sprout,
@@ -25,12 +26,13 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 
-const links: { href: string; label: string; icon: LucideIcon; countKey?: "overview" | "orders" | "payments" | "products" }[] = [
+const links: { href: string; label: string; icon: LucideIcon; countKey?: "overview" | "orders" | "payments" | "products" | "requests" }[] = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, countKey: "overview" },
   { href: "/admin/orders", label: "Orders", icon: ClipboardList, countKey: "orders" },
   { href: "/admin/payments", label: "Payments", icon: Banknote, countKey: "payments" },
   { href: "/admin/financials", label: "Financials", icon: BarChart3 },
   { href: "/admin/products", label: "Products", icon: Sprout, countKey: "products" },
+  { href: "/admin/requests", label: "Customer requests", icon: Inbox, countKey: "requests" },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/shipping", label: "Shipping", icon: Truck },
   { href: "/admin/couriers", label: "Couriers", icon: Warehouse },

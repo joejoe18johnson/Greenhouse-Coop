@@ -3,6 +3,7 @@ import type {
   BankDetails,
   CartItem,
   Courier,
+  CustomerRequest,
   IdsRates,
   Order,
   Product,
@@ -213,6 +214,7 @@ export interface DataCache {
   session: Session | null;
   cart: StoredCart;
   stockWaitRequests: StockWaitRequest[];
+  customerRequests: CustomerRequest[];
 }
 
 export function createEmptyCache(): DataCache {
@@ -227,6 +229,7 @@ export function createEmptyCache(): DataCache {
     session: null,
     cart: { items: [], updatedAt: new Date().toISOString() },
     stockWaitRequests: [],
+    customerRequests: [],
   };
 }
 

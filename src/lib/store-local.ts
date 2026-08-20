@@ -29,6 +29,8 @@ import type {
   ShippingSettings,
   StockWaitRequest,
   StockWaitStatus,
+  CustomerRequest,
+  CustomerRequestStatus,
   StoredCart,
   User,
 } from "@/types";
@@ -134,6 +136,7 @@ export async function hydrateStore() {
     if (!getItem<BankDetails | null>(STORAGE_KEYS.bank, null)) {
       setItem(STORAGE_KEYS.bank, bank);
     }
+    seedCustomerRequestsIfNeeded();
     const storedOrders = getItem<(Order & { courierFee?: number })[]>(STORAGE_KEYS.orders, []);
     if (storedOrders.length) {
       setItem(STORAGE_KEYS.orders, normalizeOrders(storedOrders));
@@ -151,8 +154,30 @@ export async function hydrateStore() {
   setItem(STORAGE_KEYS.users, [await seedAdmin()]);
   setItem(STORAGE_KEYS.orders, [] as Order[]);
   setItem(STORAGE_KEYS.cart, { items: [], updatedAt: new Date().toISOString() } as StoredCart);
+  seedCustomerRequestsIfNeeded();
   setItem(STORAGE_KEYS.hydrated, true);
   await ensureAdminUser(seedAdmin);
+}
+
+function seedCustomerRequestsIfNeeded() {
+  if (getItem(STORAGE_KEYS.customerRequestsSeeded, false)) return;
+  const now = new Date().toISOString();
+  const deborah: CustomerRequest = {
+    id: "req_deborah_dubon",
+    customerName: "Deborah Dubon",
+    phone: "600-7842",
+    email: "daniellydubon10@gmail.com",
+    town: "Belmopan",
+    district: "Cayo",
+    productIds: ["peach-mexican", "purple-passion-fruit"],
+    productNames: ["Peach (Mexican)", "Purple Passion Fruit"],
+    notes: "Asked admin to check nursery availability.",
+    status: "pending",
+    createdAt: now,
+    updatedAt: now,
+  };
+  setItem(STORAGE_KEYS.customerRequests, [deborah]);
+  setItem(STORAGE_KEYS.customerRequestsSeeded, true);
 }
 
 export function getProducts(): Product[] {
@@ -384,4 +409,61 @@ export function setStockWaitRequestStatus(id: string, status: StockWaitStatus) {
   const next = updateStockWaitStatus(getStockWaitRequests(), id, status);
   saveStockWaitRequests(next);
   return next.find((entry) => entry.id === id);
+}
+
+export function getCustomerRequests(): CustomerRequest[] {
+  return getItem<CustomerRequest[]>(STORAGE_KEYS.customerRequests, []);
+}
+
+export function saveCustomerRequests(next: CustomerRequest[]) {
+  setItem(STORAGE_KEYS.customerRequests, next);
+}
+
+export function createCustomerRequest(
+  input: Omit<CustomerRequest, "id" | "createdAt" | "updatedAt" | "status"> & {
+    status?: CustomerRequestStatus;
+  }
+): CustomerRequest {
+  const now = new Date().toISOString();
+  const request: CustomerRequest = {
+    ...input,
+    id: `req_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
+    status: input.status ?? "pending",
+    createdAt: now,
+    updatedAt: now,
+  };
+  saveCustomerRequests([request, ...getCustomerRequests()]);
+  return request;
+}
+
+export function updateCustomerRequest(
+  id: string,
+  patch: Partial<
+    Pick<
+      CustomerRequest,
+      | "customerName"
+      | "phone"
+      | "email"
+      | "town"
+      | "district"
+      | "userId"
+      | "productIds"
+      | "productNames"
+      | "notes"
+      | "status"
+    >
+  >
+) {
+  const now = new Date().toISOString();
+  const next = getCustomerRequests().map((entry) => {
+    if (entry.id !== id) return entry;
+    return { ...entry, ...patch, updatedAt: now };
+  });
+  saveCustomerRequests(next);
+  return next.find((entry) => entry.id === id);
+}
+
+export function deleteCustomerRequest(id: string) {
+  const next = getCustomerRequests().filter((entry) => entry.id !== id);
+  saveCustomerRequests(next);
 }

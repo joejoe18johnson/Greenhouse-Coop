@@ -57,6 +57,25 @@ export interface StockWaitRequest {
   updatedAt: string;
 }
 
+export type CustomerRequestStatus = "pending" | "checking" | "found" | "notified" | "closed";
+
+/** Admin-tracked availability check — customer asked about specific trees. */
+export interface CustomerRequest {
+  id: string;
+  customerName: string;
+  phone: string;
+  email?: string;
+  town?: string;
+  district?: string;
+  userId?: string;
+  productIds: string[];
+  productNames: string[];
+  notes?: string;
+  status: CustomerRequestStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CartItem {
   productId: string;
   quantity: number;

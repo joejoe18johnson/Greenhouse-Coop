@@ -1,5 +1,6 @@
 import { customerTimelineNote } from "@/lib/order-status-messages";
 import { updateStockWaitStatus } from "@/lib/stock-wait-requests";
+import { updateCustomerRequestStatus } from "@/lib/customer-requests";
 import productsSeed from "@/data/products.json";
 import shippingSeed from "@/data/shipping.json";
 import couriersSeed from "@/data/couriers.json";
@@ -34,6 +35,8 @@ import type {
   ShippingSettings,
   StockWaitRequest,
   StockWaitStatus,
+  CustomerRequest,
+  CustomerRequestStatus,
   StoredCart,
   User,
 } from "@/types";
@@ -46,6 +49,42 @@ const seedProducts = (productsSeed as Product[]).map((p) => ({
   ...p,
   propagationType: normalizePropagationType(p.propagationType),
 }));
+
+function defaultCustomerRequestsSeed(): CustomerRequest[] {
+  const now = new Date().toISOString();
+  return [
+    {
+      id: "req_deborah_dubon",
+      customerName: "Deborah Dubon",
+      phone: "600-7842",
+      email: "daniellydubon10@gmail.com",
+      town: "Belmopan",
+      district: "Cayo",
+      productIds: ["peach-mexican", "purple-passion-fruit"],
+      productNames: ["Peach (Mexican)", "Purple Passion Fruit"],
+      notes: "Asked admin to check nursery availability.",
+      status: "pending",
+      createdAt: now,
+      updatedAt: now,
+    },
+  ];
+}
+
+async function loadCustomerRequests(): Promise<CustomerRequest[]> {
+  const stored = await fetchSetting<CustomerRequest[]>("customer_requests", []);
+  if (stored.length) return stored;
+  const seeded = await fetchSetting<boolean>("customer_requests_seeded", false);
+  if (seeded) return [];
+  const seed = defaultCustomerRequestsSeed();
+  const { error } = await supabase()
+    .from("app_settings")
+    .upsert([
+      { key: "customer_requests", value: seed },
+      { key: "customer_requests_seeded", value: true },
+    ]);
+  if (error) console.error("Failed to seed customer requests:", error);
+  return seed;
+}
 
 function supabase() {
   const client = getSupabaseClient();
@@ -122,6 +161,7 @@ export async function hydrateStore() {
   const idsRates = await fetchSetting("ids_rates", defaultIdsRates);
   const bank = await fetchSetting("bank", defaultBank);
   const stockWaitRequests = await fetchSetting<StockWaitRequest[]>("stock_wait_requests", []);
+  const customerRequests = await loadCustomerRequests();
 
   setCache({
     products: products.length ? products : seedProducts,
@@ -130,6 +170,7 @@ export async function hydrateStore() {
     idsRates,
     bank,
     stockWaitRequests,
+    customerRequests,
     orders: [],
     users: [],
   });
@@ -473,6 +514,37 @@ export function prependStockWaitRequest(request: StockWaitRequest) {
 export function setStockWaitRequestStatus(id: string, status: StockWaitStatus) {
   const next = updateStockWaitStatus(getStockWaitRequests(), id, status);
   setCache({ stockWaitRequests: next });
+  return next.find((entry) => entry.id === id);
+}
+
+export function getCustomerRequests(): CustomerRequest[] {
+  return getCache().customerRequests ?? [];
+}
+
+export function setCustomerRequests(requests: CustomerRequest[]) {
+  setCache({ customerRequests: requests });
+}
+
+export function prependCustomerRequest(request: CustomerRequest) {
+  setCache({ customerRequests: [request, ...getCustomerRequests()] });
+}
+
+export function patchCustomerRequestCache(id: string, patch: Partial<CustomerRequest>) {
+  const now = new Date().toISOString();
+  const next = getCustomerRequests().map((entry) =>
+    entry.id === id ? { ...entry, ...patch, updatedAt: now } : entry
+  );
+  setCache({ customerRequests: next });
+  return next.find((entry) => entry.id === id);
+}
+
+export function removeCustomerRequestFromCache(id: string) {
+  setCache({ customerRequests: getCustomerRequests().filter((entry) => entry.id !== id) });
+}
+
+export function setCustomerRequestStatus(id: string, status: CustomerRequestStatus) {
+  const next = updateCustomerRequestStatus(getCustomerRequests(), id, status);
+  setCache({ customerRequests: next });
   return next.find((entry) => entry.id === id);
 }
 

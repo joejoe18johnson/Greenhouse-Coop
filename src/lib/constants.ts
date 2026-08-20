@@ -66,6 +66,8 @@ export const STORAGE_KEYS = {
   demoSeed: "demoSeed",
   catalogSeed: "catalogSeed",
   stockWaitRequests: "stockWaitRequests",
+  customerRequests: "customerRequests",
+  customerRequestsSeeded: "customerRequestsSeeded",
 } as const;
 
 export const ORDER_STATUSES = [

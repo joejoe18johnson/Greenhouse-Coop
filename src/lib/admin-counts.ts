@@ -1,11 +1,13 @@
-import { getOrders, getProducts } from "@/lib/store";
+import { getOrders, getProducts, getCustomerRequests } from "@/lib/store";
 import { SHORT_SUPPLY_IDS } from "@/lib/constants";
+import { pendingCustomerRequests } from "@/lib/customer-requests";
 
 export interface AdminCounts {
   payments: number;
   orders: number;
   products: number;
   overview: number;
+  requests: number;
 }
 
 export function getAdminCounts(): AdminCounts {
@@ -27,5 +29,6 @@ export function getAdminCounts(): AdminCounts {
     orders: ordersAttention,
     products: outOfStock,
     overview: payments + ordersAttention,
+    requests: pendingCustomerRequests(getCustomerRequests()).length,
   };
 }

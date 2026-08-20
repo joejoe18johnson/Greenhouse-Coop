@@ -234,3 +234,86 @@ export async function refreshStockWaitRequestsFromRemote() {
   }
   return remote.getStockWaitRequests();
 }
+
+export function getCustomerRequests() {
+  return isRemoteBackend() ? remote.getCustomerRequests() : local.getCustomerRequests();
+}
+
+export async function createCustomerRequest(input: Parameters<typeof local.createCustomerRequest>[0]) {
+  if (isRemoteBackend()) {
+    const res = await fetch("/api/admin/customer-requests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(typeof payload.error === "string" ? payload.error : "Could not save customer request.");
+    }
+    remote.prependCustomerRequest(payload);
+    notifyStoreUpdate();
+    return payload as ReturnType<typeof local.createCustomerRequest>;
+  }
+
+  const request = local.createCustomerRequest(input);
+  notifyStoreUpdate();
+  return request;
+}
+
+export async function updateCustomerRequest(
+  id: string,
+  patch: Parameters<typeof local.updateCustomerRequest>[1]
+) {
+  if (isRemoteBackend()) {
+    const res = await fetch("/api/admin/customer-requests", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, ...patch }),
+    });
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(typeof payload.error === "string" ? payload.error : "Could not update customer request.");
+    }
+    if (payload.request) remote.patchCustomerRequestCache(id, payload.request);
+    else remote.patchCustomerRequestCache(id, patch);
+    notifyStoreUpdate();
+    return remote.getCustomerRequests().find((entry) => entry.id === id);
+  }
+
+  const updated = local.updateCustomerRequest(id, patch);
+  notifyStoreUpdate();
+  return updated;
+}
+
+export async function deleteCustomerRequest(id: string) {
+  if (isRemoteBackend()) {
+    const res = await fetch("/api/admin/customer-requests", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(typeof payload.error === "string" ? payload.error : "Could not delete customer request.");
+    }
+    remote.removeCustomerRequestFromCache(id);
+    notifyStoreUpdate();
+    return;
+  }
+
+  local.deleteCustomerRequest(id);
+  notifyStoreUpdate();
+}
+
+export async function refreshCustomerRequestsFromRemote() {
+  if (!isRemoteBackend()) return getCustomerRequests();
+  const res = await fetch("/api/admin/customer-requests");
+  if (!res.ok) return remote.getCustomerRequests();
+  const data = await res.json();
+  if (Array.isArray(data)) {
+    remote.setCustomerRequests(data);
+    notifyStoreUpdate();
+    return data;
+  }
+  return remote.getCustomerRequests();
+}
