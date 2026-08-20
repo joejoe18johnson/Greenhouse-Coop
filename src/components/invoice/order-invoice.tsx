@@ -3,9 +3,10 @@ import { bankAccounts } from "@/lib/bank";
 import { fulfillmentLabel } from "@/lib/shipping";
 import {
   getPaymentPlan,
+  isCashOnDelivery,
   orderAmountDueLater,
   orderAmountDueNow,
-  paymentPlanLabel,
+  paymentMethodLabel,
 } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
 import type { BankDetails, Order } from "@/types";
@@ -27,6 +28,36 @@ function addressLine(order: Order) {
   return parts.join(", ");
 }
 
+function paymentStatusLabel(order: Order, confirmed: boolean) {
+  const isCod = isCashOnDelivery(order.payment);
+  const plan = getPaymentPlan(order.payment);
+  if (isCod) {
+    return confirmed ? "Cash on delivery · paid" : "Cash on delivery · due at handoff";
+  }
+  if (confirmed) {
+    return plan === "full" ? "Paid in full" : "Deposit paid (50%)";
+  }
+  return plan === "full" ? "Full payment due" : "50% deposit due";
+}
+
+function amountDueLabel(order: Order, confirmed: boolean) {
+  const isCod = isCashOnDelivery(order.payment);
+  const plan = getPaymentPlan(order.payment);
+  if (confirmed) {
+    if (isCod) return "Amount received";
+    return plan === "full" ? "Amount received" : "Deposit received";
+  }
+  if (isCod) return "Due at handoff";
+  return plan === "full" ? "Pay in full" : "Deposit due (50%)";
+}
+
+function balanceLabel(order: Order, confirmed: boolean) {
+  if (isCashOnDelivery(order.payment)) {
+    return confirmed ? "Paid in cash" : "Pay in cash at delivery";
+  }
+  return confirmed ? "Balance due at pickup" : "Balance at pickup";
+}
+
 export function OrderInvoice({
   order,
   bank,
@@ -41,9 +72,9 @@ export function OrderInvoice({
   const issued = order.invoiceIssuedAt || order.createdAt;
   const confirmed = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
   const courierFee = courierEstimate(order);
-  const paymentPlan = getPaymentPlan(order.payment);
-  const dueNowAmount = orderAmountDueNow(order.total, paymentPlan);
-  const dueLaterAmount = orderAmountDueLater(order.total, paymentPlan);
+  const isCod = isCashOnDelivery(order.payment);
+  const dueNowAmount = orderAmountDueNow(order.total, order.payment);
+  const dueLaterAmount = orderAmountDueLater(order.total, order.payment);
 
   return (
     <article
@@ -100,15 +131,7 @@ export function OrderInvoice({
           <dt className="text-ink/45">Fulfillment</dt>
           <dd>{fulfillmentLine(order)}</dd>
           <dt className="text-ink/45">Payment</dt>
-          <dd>
-            {confirmed
-              ? paymentPlan === "full"
-                ? "Paid in full"
-                : "Deposit paid (50%)"
-              : paymentPlan === "full"
-                ? "Full payment due"
-                : "50% deposit due"}
-          </dd>
+          <dd>{paymentStatusLabel(order, confirmed)}</dd>
           <dt className="text-ink/45">Status</dt>
           <dd>{order.status}</dd>
         </dl>
@@ -172,25 +195,19 @@ export function OrderInvoice({
             <span>Order total</span>
             <span className="tabular-nums">{formatBZD(order.total)}</span>
           </div>
-          <div className="flex justify-between border-t border-forest/10 pt-1.5 text-sm font-semibold text-forest-dark sm:text-base">
-            <span>
-              {confirmed
-                ? paymentPlan === "full"
-                  ? "Amount received"
-                  : "Deposit received"
-                : paymentPlan === "full"
-                  ? "Pay in full"
-                  : "Deposit due (50%)"}
-            </span>
-            <span className="tabular-nums">{formatBZD(dueNowAmount)}</span>
-          </div>
+          {!isCod && (
+            <div className="flex justify-between border-t border-forest/10 pt-1.5 text-sm font-semibold text-forest-dark sm:text-base">
+              <span>{amountDueLabel(order, confirmed)}</span>
+              <span className="tabular-nums">{formatBZD(dueNowAmount)}</span>
+            </div>
+          )}
           {dueLaterAmount > 0 && (
-            <div className="flex justify-between pt-1 text-[11px] text-ink/55 sm:text-xs">
-              <span>{confirmed ? "Balance due at pickup" : "Balance at pickup"}</span>
+            <div className={`flex justify-between pt-1 text-[11px] text-ink/55 sm:text-xs ${isCod ? "border-t border-forest/10 pt-1.5 text-sm font-semibold text-forest-dark sm:text-base" : ""}`}>
+              <span>{balanceLabel(order, confirmed)}</span>
               <span className="tabular-nums">{formatBZD(dueLaterAmount)}</span>
             </div>
           )}
-          <p className="pt-1 text-[10px] text-ink/45">{paymentPlanLabel(paymentPlan)}</p>
+          <p className="pt-1 text-[10px] text-ink/45">{paymentMethodLabel(order.payment)}</p>
           {courierFee > 0 && (
             <div className="border-t border-dashed border-forest/15 pt-1.5 text-[10px] text-ink/55 sm:text-[11px]">
               <div className="flex justify-between gap-2">
@@ -204,22 +221,36 @@ export function OrderInvoice({
       </section>
 
       <footer className="border-t border-forest/10 px-4 py-4 sm:px-6">
-        <p className="text-center text-[10px] font-semibold uppercase tracking-wide text-ink/40">
-          Banking & payment
-        </p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 sm:gap-3">
-          {accounts.map((account) => (
-            <div key={account.accountNumber} className="rounded-xl bg-cream/80 px-3 py-2.5 text-[11px] sm:text-xs">
-              <p className="font-semibold text-forest">{account.bankName}</p>
-              <p className="mt-0.5 text-ink/70">{account.accountName}</p>
-              <p className="mt-0.5 font-mono tracking-wide">{account.accountNumber}</p>
-              {account.branch && <p className="mt-0.5 text-[10px] text-ink/45">{account.branch}</p>}
+        {isCod ? (
+          <>
+            <p className="text-center text-[10px] font-semibold uppercase tracking-wide text-ink/40">
+              Cash on delivery
+            </p>
+            <p className="mt-3 text-center text-xs text-ink/60">
+              Pay {formatBZD(order.total)} in cash at delivery or collection. Reference{" "}
+              <strong className="keep-case text-forest">{order.reference}</strong>.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-center text-[10px] font-semibold uppercase tracking-wide text-ink/40">
+              Banking & payment
+            </p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 sm:gap-3">
+              {accounts.map((account) => (
+                <div key={account.accountNumber} className="rounded-xl bg-cream/80 px-3 py-2.5 text-[11px] sm:text-xs">
+                  <p className="font-semibold text-forest">{account.bankName}</p>
+                  <p className="mt-0.5 text-ink/70">{account.accountName}</p>
+                  <p className="mt-0.5 font-mono tracking-wide">{account.accountNumber}</p>
+                  {account.branch && <p className="mt-0.5 text-[10px] text-ink/45">{account.branch}</p>}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <p className="mt-3 text-center text-[10px] text-ink/50 sm:text-[11px]">
-          Include reference <strong className="keep-case text-forest">{order.reference}</strong> in transfer notes.
-        </p>
+            <p className="mt-3 text-center text-[10px] text-ink/50 sm:text-[11px]">
+              Include reference <strong className="keep-case text-forest">{order.reference}</strong> in transfer notes.
+            </p>
+          </>
+        )}
         <p className="mt-2 text-center text-xs italic text-ink/45">Thank you for your business.</p>
         <p className="mt-0.5 text-center text-[10px] text-ink/35">{fulfillmentLabel(order.shipping)}</p>
       </footer>

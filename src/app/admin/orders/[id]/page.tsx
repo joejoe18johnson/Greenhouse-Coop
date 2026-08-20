@@ -12,7 +12,7 @@ import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { ORDER_STATUSES } from "@/lib/constants";
 import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
 import { fulfillmentLabel } from "@/lib/shipping";
-import { formatOrderBalance, formatOrderDeposit, getPaymentPlan, orderAmountDueNow } from "@/lib/order-deposit";
+import { formatOrderBalance, formatOrderDeposit, isCashOnDelivery, orderAmountDueNow } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 import type { OrderStatus } from "@/types";
@@ -37,8 +37,8 @@ export default function AdminOrderDetailPage() {
 
   const invoiceId = `order-invoice-${order.id}`;
 
-  const paymentPlan = getPaymentPlan(order.payment);
-  const dueNow = orderAmountDueNow(order.total, paymentPlan);
+  const isCod = isCashOnDelivery(order.payment);
+  const dueNow = orderAmountDueNow(order.total, order.payment);
 
   return (
     <div className="min-w-0">
@@ -65,6 +65,11 @@ export default function AdminOrderDetailPage() {
           {order.status === "Paid" && (
             <Button onClick={() => { updateOrderStatus(order.id, "Processing"); refresh(); }}>
               Fulfill order
+            </Button>
+          )}
+          {isCod && order.status === "Processing" && (
+            <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
+              Confirm cash received
             </Button>
           )}
           {order.status === "Processing" && (
@@ -171,9 +176,11 @@ export default function AdminOrderDetailPage() {
           </ul>
           <p className="mt-4 font-semibold">Order total {formatBZD(order.total)}</p>
           <p className="mt-1 text-sm text-forest">
-            {paymentPlan === "full"
-              ? `Expecting full payment ${formatBZD(dueNow)}`
-              : `Expecting ${formatOrderDeposit(order.total)} deposit · ${formatOrderBalance(order.total)} due at pickup`}
+            {isCod
+              ? `Cash on delivery — collect ${formatBZD(order.total)} in cash at handoff`
+              : order.payment.paymentPlan === "full"
+                ? `Expecting full payment ${formatBZD(dueNow)}`
+                : `Expecting ${formatOrderDeposit(order.total)} deposit · ${formatOrderBalance(order.total)} due at pickup`}
           </p>
           {courierEstimate > 0 && (
             <p className="mt-2 text-sm text-ink/55">
@@ -184,13 +191,33 @@ export default function AdminOrderDetailPage() {
 
         <div className="rounded-[24px] bg-white p-6">
           <h2 className="font-semibold text-forest">Payment</h2>
+          {isCod ? (
+            <>
+              <p className="mt-3 text-sm text-ink/70">
+                Cash on delivery · customer pays {formatBZD(order.total)} in cash at delivery or collection · reference{" "}
+                <span className="keep-case">{order.reference}</span>
+                {customer?.phone ? <> · <span className="keep-case">{customer.phone}</span></> : ""}.
+              </p>
+              <p className="mt-2 text-sm font-medium text-forest">
+                Collect {formatBZD(order.total)} in cash when the order is handed off.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {order.status !== "Paid" && order.status !== "Completed" && (
+                  <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
+                    Confirm cash received
+                  </Button>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
           <p className="mt-3 text-sm text-ink/70">
             50% deposit via bank transfer · proof on WhatsApp with reference{" "}
             <span className="keep-case">{order.reference}</span>
             {customer?.phone ? <> · <span className="keep-case">{customer.phone}</span></> : ""}.
           </p>
           <p className="mt-2 text-sm font-medium text-forest">
-            {paymentPlan === "full"
+            {order.payment.paymentPlan === "full"
               ? `Expecting ${formatBZD(dueNow)} in full`
               : `Expecting ${formatOrderDeposit(order.total)} deposit · ${formatOrderBalance(order.total)} due at pickup`}
           </p>
@@ -209,6 +236,8 @@ export default function AdminOrderDetailPage() {
             }}>Reject</Button>
           </div>
           <Textarea className="mt-3" placeholder="Rejection reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+            </>
+          )}
         </div>
 
         <div className="rounded-[24px] bg-white p-6">

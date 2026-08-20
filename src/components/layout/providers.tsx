@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { StoreProvider } from "@/context/store-context";
 import { CustomerNotificationToasts } from "@/components/notifications/customer-notification-toasts";
+import { StockWaitAlertToasts } from "@/components/notifications/stock-wait-alert-toasts";
 import { WhatsAppWidget } from "@/components/support/whatsapp-widget";
 import { usePathname } from "next/navigation";
 
@@ -32,6 +33,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
       <Footer />
       <WhatsAppWidget />
       <CustomerNotificationToasts />
+      <StockWaitAlertToasts />
     </>
   );
 }

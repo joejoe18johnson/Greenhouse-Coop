@@ -30,6 +30,7 @@ export function OrderReceipt({
   total,
   depositDue,
   balanceDue,
+  balanceDueLabel = "Balance at pickup",
   dueNowLabel = "Deposit due now",
   note,
   estimates,
@@ -41,6 +42,7 @@ export function OrderReceipt({
   total: string;
   depositDue?: string;
   balanceDue?: string;
+  balanceDueLabel?: string;
   dueNowLabel?: string;
   note?: string;
   estimates?: { label: string; value: string }[];
@@ -114,7 +116,7 @@ export function OrderReceipt({
 
           {balanceDue && (
             <div className="mt-1.5 flex items-baseline justify-between gap-3 text-sm text-ink/55">
-              <span>Balance at pickup</span>
+              <span>{balanceDueLabel}</span>
               <span className="tabular-nums">{balanceDue}</span>
             </div>
           )}

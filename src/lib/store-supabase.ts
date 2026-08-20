@@ -1,4 +1,5 @@
 import { customerTimelineNote } from "@/lib/order-status-messages";
+import { updateStockWaitStatus } from "@/lib/stock-wait-requests";
 import productsSeed from "@/data/products.json";
 import shippingSeed from "@/data/shipping.json";
 import couriersSeed from "@/data/couriers.json";
@@ -31,6 +32,8 @@ import type {
   Product,
   Session,
   ShippingSettings,
+  StockWaitRequest,
+  StockWaitStatus,
   StoredCart,
   User,
 } from "@/types";
@@ -118,6 +121,7 @@ export async function hydrateStore() {
   const couriers = await fetchSetting("couriers", defaultCouriers);
   const idsRates = await fetchSetting("ids_rates", defaultIdsRates);
   const bank = await fetchSetting("bank", defaultBank);
+  const stockWaitRequests = await fetchSetting<StockWaitRequest[]>("stock_wait_requests", []);
 
   setCache({
     products: products.length ? products : seedProducts,
@@ -125,6 +129,7 @@ export async function hydrateStore() {
     couriers,
     idsRates,
     bank,
+    stockWaitRequests,
     orders: [],
     users: [],
   });
@@ -398,7 +403,7 @@ export function createOrder(
     invoiceNumber: generateInvoiceNumber(),
     createdAt: now,
     updatedAt: now,
-    timeline: [{ status: input.status, at: now, note: customerTimelineNote(input.status) }],
+    timeline: [{ status: input.status, at: now, note: customerTimelineNote(input.status, undefined, input.payment) }],
   };
 
   const orders = getOrders();
@@ -426,7 +431,7 @@ export function updateOrderStatus(id: string, status: OrderStatus, note?: string
       invoiceIssuedAt: issuedStatuses.includes(status) ? order.invoiceIssuedAt ?? now : order.invoiceIssuedAt,
       payment:
         status === "Paid" ? { ...order.payment, reviewedAt: now, reviewedBy: "admin" } : order.payment,
-      timeline: [...order.timeline, { status, at: now, note: customerTimelineNote(status, note) }],
+      timeline: [...order.timeline, { status, at: now, note: customerTimelineNote(status, note, order.payment) }],
     };
   });
 
@@ -450,6 +455,25 @@ export function updateOrder(order: Order) {
     const { error } = await supabase().from("orders").update(orderToRow(updated)).eq("id", order.id);
     if (error) console.error("Failed to update order:", error);
   })();
+}
+
+export function getStockWaitRequests(): StockWaitRequest[] {
+  return getCache().stockWaitRequests ?? [];
+}
+
+export function setStockWaitRequests(requests: StockWaitRequest[]) {
+  setCache({ stockWaitRequests: requests });
+}
+
+export function prependStockWaitRequest(request: StockWaitRequest) {
+  const next = [request, ...getStockWaitRequests()];
+  setCache({ stockWaitRequests: next });
+}
+
+export function setStockWaitRequestStatus(id: string, status: StockWaitStatus) {
+  const next = updateStockWaitStatus(getStockWaitRequests(), id, status);
+  setCache({ stockWaitRequests: next });
+  return next.find((entry) => entry.id === id);
 }
 
 export async function syncAuthSession() {

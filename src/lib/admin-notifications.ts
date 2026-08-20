@@ -1,6 +1,7 @@
 import { getOrders, getUsers } from "@/lib/store";
 import { getItem, setItem } from "@/lib/storage";
 import { formatBZD } from "@/lib/utils";
+import { isCashOnDelivery } from "@/lib/order-deposit";
 import type { Order, OrderStatus, User } from "@/types";
 
 export type AdminNotificationKind = "order" | "customer";
@@ -42,6 +43,9 @@ export function setAdminPushEnabled(adminId: string, enabled: boolean) {
 }
 
 function orderHeadline(status: OrderStatus | string, order: Order) {
+  if (isCashOnDelivery(order.payment) && status === "Processing") {
+    return "New COD order";
+  }
   switch (status) {
     case "Payment Pending":
       return "New order placed";
@@ -77,6 +81,11 @@ function orderMessage(status: OrderStatus | string, order: Order, note?: string)
   switch (status) {
     case "Payment Pending":
       return `${name} placed order ${order.reference} · ${formatBZD(order.total)} · ${fulfillment}`;
+    case "Processing":
+      if (isCashOnDelivery(order.payment)) {
+        return `${name} placed COD order ${order.reference} · ${formatBZD(order.total)} · collect cash · ${fulfillment}`;
+      }
+      return `${order.reference} · ${name} · ${fulfillment}`;
     case "Payment Review":
       return `${name} submitted payment for ${order.reference} — review in Payments`;
     case "Paid":

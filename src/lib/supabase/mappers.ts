@@ -8,6 +8,7 @@ import type {
   Product,
   Session,
   ShippingSettings,
+  StockWaitRequest,
   StoredCart,
   User,
 } from "@/types";
@@ -208,6 +209,7 @@ export interface DataCache {
   bank: BankDetails | null;
   session: Session | null;
   cart: StoredCart;
+  stockWaitRequests: StockWaitRequest[];
 }
 
 export function createEmptyCache(): DataCache {
@@ -221,6 +223,7 @@ export function createEmptyCache(): DataCache {
     bank: null,
     session: null,
     cart: { items: [], updatedAt: new Date().toISOString() },
+    stockWaitRequests: [],
   };
 }
 

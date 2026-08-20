@@ -16,6 +16,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { useAdminCounts } from "@/hooks/use-admin-counts";
 import { AdminBackendNotice } from "@/components/admin/backend-notice";
+import { AdminStockWaitPanel } from "@/components/admin/stock-wait-panel";
 import { AdminPushNotificationPrompt } from "@/components/admin/push-notification-prompt";
 import { AdminNotificationBell } from "@/components/notifications/admin-notification-bell";
 import { AdminNotificationToasts } from "@/components/notifications/admin-notification-toasts";
@@ -168,6 +169,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
       <AdminNotificationToasts adminId={user.id} />
+      <AdminStockWaitPanel />
     </div>
   );
 }

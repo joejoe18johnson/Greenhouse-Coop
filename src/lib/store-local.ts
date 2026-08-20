@@ -16,6 +16,7 @@ import { normalizePropagationType } from "@/lib/propagation";
 import { computeOrderTotal } from "@/lib/shipping";
 import { ensureAdminUser } from "@/lib/demo";
 import { customerTimelineNote } from "@/lib/order-status-messages";
+import { updateStockWaitStatus, isDuplicateStockWait } from "@/lib/stock-wait-requests";
 import type {
   BankDetails,
   CartItem,
@@ -26,6 +27,8 @@ import type {
   Product,
   Session,
   ShippingSettings,
+  StockWaitRequest,
+  StockWaitStatus,
   StoredCart,
   User,
 } from "@/types";
@@ -299,7 +302,7 @@ export function createOrder(input: Omit<Order, "id" | "createdAt" | "updatedAt" 
     createdAt: now,
     updatedAt: now,
     timeline: [
-      { status: input.status, at: now, note: customerTimelineNote(input.status) },
+      { status: input.status, at: now, note: customerTimelineNote(input.status, undefined, input.payment) },
     ],
   };
   const orders = getOrders();
@@ -325,7 +328,7 @@ export function updateOrderStatus(id: string, status: OrderStatus, note?: string
         status === "Paid"
           ? { ...order.payment, reviewedAt: now, reviewedBy: "admin" }
           : order.payment,
-      timeline: [...order.timeline, { status, at: now, note: customerTimelineNote(status, note) }],
+      timeline: [...order.timeline, { status, at: now, note: customerTimelineNote(status, note, order.payment) }],
     };
   });
   saveOrders(next);
@@ -334,4 +337,51 @@ export function updateOrderStatus(id: string, status: OrderStatus, note?: string
 
 export function updateOrder(order: Order) {
   saveOrders(getOrders().map((o) => (o.id === order.id ? { ...order, updatedAt: new Date().toISOString() } : o)));
+}
+
+export function getStockWaitRequests(): StockWaitRequest[] {
+  return getItem<StockWaitRequest[]>(STORAGE_KEYS.stockWaitRequests, []);
+}
+
+export function saveStockWaitRequests(next: StockWaitRequest[]) {
+  setItem(STORAGE_KEYS.stockWaitRequests, next);
+}
+
+export function createStockWaitRequest(input: {
+  productId: string;
+  productName: string;
+  customerName: string;
+  phone: string;
+  email?: string;
+  userId?: string;
+  notes?: string;
+}) {
+  const existing = getStockWaitRequests();
+  if (isDuplicateStockWait(existing, input.productId, input.phone)) {
+    throw new Error("You are already on the waitlist for this tree with that phone number.");
+  }
+
+  const now = new Date().toISOString();
+  const request: StockWaitRequest = {
+    id: generateId("wait"),
+    productId: input.productId,
+    productName: input.productName,
+    customerName: input.customerName.trim(),
+    phone: input.phone.trim(),
+    email: input.email?.trim() || undefined,
+    userId: input.userId,
+    notes: input.notes?.trim() || undefined,
+    status: "pending",
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  saveStockWaitRequests([request, ...existing]);
+  return request;
+}
+
+export function setStockWaitRequestStatus(id: string, status: StockWaitStatus) {
+  const next = updateStockWaitStatus(getStockWaitRequests(), id, status);
+  saveStockWaitRequests(next);
+  return next.find((entry) => entry.id === id);
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Building2, CircleCheck, Landmark, MessageSquare, Store, Truck } from "lucide-react";
+import { Building2, CircleCheck, Landmark, MessageSquare, Store, Truck, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,6 +27,7 @@ import { localDeliveryWaivedText } from "@/lib/shipping-copy";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import {
+  COD_NOTICE,
   DEPOSIT_NOTICE,
   FULL_PAYMENT_NOTICE,
   formatAmountDueNow,
@@ -34,6 +35,7 @@ import {
   formatOrderDeposit,
   type PaymentPlan,
 } from "@/lib/order-deposit";
+import type { PaymentInfo } from "@/types";
 import locations from "@/data/locations.json";
 
 export default function CheckoutPage() {
@@ -52,6 +54,7 @@ export default function CheckoutPage() {
   const [fullAddress, setFullAddress] = useState(user?.addresses[0]?.fullAddress || "");
   const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
   const [customerNotes, setCustomerNotes] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentInfo["method"]>("bank-transfer");
   const [paymentPlan, setPaymentPlan] = useState<PaymentPlan>("deposit");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -81,8 +84,23 @@ export default function CheckoutPage() {
     deliveryFee: quote.deliveryFee,
     boxFee: quote.boxFee,
   });
-  const amountDueNow = formatAmountDueNow(total, paymentPlan);
-  const dueNowLabel = paymentPlan === "full" ? "Pay in full now" : "Deposit due now (50%)";
+  const codAvailable = method !== "courier";
+  const isCod = paymentMethod === "cod";
+
+  useEffect(() => {
+    if (!codAvailable && paymentMethod === "cod") {
+      setPaymentMethod("bank-transfer");
+    }
+  }, [codAvailable, paymentMethod]);
+  const paymentContext: PaymentInfo = isCod
+    ? { method: "cod" }
+    : { method: "bank-transfer", paymentPlan };
+  const amountDueNow = isCod ? formatBZD(total) : formatAmountDueNow(total, paymentContext);
+  const dueNowLabel = isCod
+    ? "Pay in cash on delivery"
+    : paymentPlan === "full"
+      ? "Pay in full now"
+      : "Deposit due now (50%)";
 
   if (!ready) return null;
 
@@ -136,7 +154,7 @@ export default function CheckoutPage() {
         courierEstimate: quote.courierEstimate,
         total,
         boxRecommendation: quote.box,
-        status: "Payment Pending",
+        status: isCod ? "Processing" : "Payment Pending",
         shipping: {
           firstName: user!.firstName,
           lastName: user!.lastName,
@@ -150,11 +168,13 @@ export default function CheckoutPage() {
           courierId: method === "courier" ? courier?.id : undefined,
           courierName: method === "courier" ? courier?.name : undefined,
         },
-        payment: {
-          method: "bank-transfer",
-          proofChannel: "whatsapp",
-          paymentPlan,
-        },
+        payment: isCod
+          ? { method: "cod" }
+          : {
+              method: "bank-transfer",
+              proofChannel: "whatsapp",
+              paymentPlan,
+            },
         customerNotes: customerNotes.trim() || undefined,
       });
 
@@ -334,6 +354,44 @@ export default function CheckoutPage() {
 
             <div className="mt-4 grid gap-3">
               <Radio
+                name="payment-method"
+                checked={paymentMethod === "bank-transfer"}
+                onChange={() => setPaymentMethod("bank-transfer")}
+                className={`rounded-2xl border p-4 ${paymentMethod === "bank-transfer" ? "border-forest bg-forest/5" : "border-forest/10"}`}
+                label={
+                  <span className="flex items-start gap-3">
+                    <IconBubble icon={Landmark} size="sm" />
+                    <span>
+                      <span className="block font-semibold text-forest">Bank transfer</span>
+                      <span className="mt-1 block text-sm text-ink/60">Pay by deposit or in full before pickup or delivery.</span>
+                    </span>
+                  </span>
+                }
+              />
+              <Radio
+                name="payment-method"
+                checked={paymentMethod === "cod"}
+                onChange={() => codAvailable && setPaymentMethod("cod")}
+                className={`rounded-2xl border p-4 ${paymentMethod === "cod" ? "border-forest bg-forest/5" : "border-forest/10"} ${!codAvailable ? "opacity-50" : ""}`}
+                label={
+                  <span className="flex items-start gap-3">
+                    <IconBubble icon={Banknote} size="sm" />
+                    <span>
+                      <span className="block font-semibold text-forest">Cash on delivery</span>
+                      <span className="mt-1 block text-sm text-ink/60">
+                        {codAvailable
+                          ? "Pay the full amount in cash when we deliver or when you collect. No deposit required."
+                          : "Available for local delivery and bus terminal pickup only — not courier orders."}
+                      </span>
+                    </span>
+                  </span>
+                }
+              />
+            </div>
+
+            {paymentMethod === "bank-transfer" && (
+            <div className="mt-4 grid gap-3">
+              <Radio
                 name="payment-plan"
                 checked={paymentPlan === "deposit"}
                 onChange={() => setPaymentPlan("deposit")}
@@ -359,7 +417,16 @@ export default function CheckoutPage() {
                 }
               />
             </div>
+            )}
 
+            {isCod ? (
+              <div className="mt-5 rounded-2xl border border-leaf/30 bg-leaf/10 p-4 text-sm">
+                <p className="font-semibold text-forest">Cash on delivery</p>
+                <p className="mt-2 text-ink/75">{COD_NOTICE}</p>
+                <p className="mt-2 font-medium text-forest">Amount due at handoff: {formatBZD(total)}</p>
+              </div>
+            ) : (
+            <>
             <div className="mt-5 grid gap-3 sm:grid-cols-2 text-sm">
               {bankAccounts(bank).map((account) => (
                 <BankAccountCard key={account.accountNumber} account={account} />
@@ -369,11 +436,13 @@ export default function CheckoutPage() {
               <p className="font-semibold text-forest">After you place the order</p>
               <ol className="mt-3 list-decimal space-y-2 pl-5 text-ink/75">
                 <li>You will receive a 6-character reference such as <strong className="keep-case">A7B2K9</strong>.</li>
-                <li>Transfer <strong>{amountDueNow}</strong> and put that reference in the payment notes.</li>
+                <li>Transfer <strong>{formatAmountDueNow(total, paymentContext)}</strong> and put that reference in the payment notes.</li>
                 <li>Send your transfer screenshot on WhatsApp with the same reference.</li>
               </ol>
               <p className="mt-3">{PAYMENT_NOTICE}</p>
             </div>
+            </>
+            )}
           </section>
           <InventoryNotice />
           {error && <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
@@ -387,7 +456,11 @@ export default function CheckoutPage() {
             <CircleCheck className="h-4 w-4" />
             {submitting ? "Placing order…" : "Place order"}
           </Button>
-          <p className="hidden text-sm text-ink/50 lg:block">You will send payment proof on WhatsApp after this order is placed.</p>
+          <p className="hidden text-sm text-ink/50 lg:block">
+            {isCod
+              ? "Your order is confirmed once placed — pay in cash at delivery or collection."
+              : "You will send payment proof on WhatsApp after this order is placed."}
+          </p>
         </div>
 
         <div className="order-1 lg:order-2">
@@ -418,8 +491,15 @@ export default function CheckoutPage() {
               : undefined
           }
           total={formatBZD(total)}
-          depositDue={amountDueNow}
-          balanceDue={paymentPlan === "deposit" ? formatOrderBalance(total) : undefined}
+          depositDue={isCod ? undefined : formatAmountDueNow(total, paymentContext)}
+          balanceDue={
+            isCod
+              ? formatBZD(total)
+              : paymentPlan === "deposit"
+                ? formatOrderBalance(total)
+                : undefined
+          }
+          balanceDueLabel={isCod ? "Pay in cash at delivery" : undefined}
           dueNowLabel={dueNowLabel}
           note={
             wantsDelivery && quote.box.label

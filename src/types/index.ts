@@ -40,6 +40,23 @@ export interface User {
   role: "customer" | "admin";
 }
 
+export type StockWaitStatus = "pending" | "fulfilled" | "dismissed";
+
+/** Customer waiting for an out-of-stock product to become available. */
+export interface StockWaitRequest {
+  id: string;
+  productId: string;
+  productName: string;
+  customerName: string;
+  phone: string;
+  email?: string;
+  userId?: string;
+  notes?: string;
+  status: StockWaitStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CartItem {
   productId: string;
   quantity: number;
@@ -146,7 +163,7 @@ export interface ShippingInfo {
 }
 
 export interface PaymentInfo {
-  method: "bank-transfer";
+  method: "bank-transfer" | "cod";
   paymentPlan?: "deposit" | "full";
   proofChannel?: "whatsapp" | "upload";
   proofDataUrl?: string;

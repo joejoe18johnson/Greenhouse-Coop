@@ -1,8 +1,8 @@
-import { BellRing, CheckCircle2, Clock3, Package, Truck } from "lucide-react";
 import type { OrderStatus } from "@/types";
-import type { PaymentPlan } from "@/lib/order-deposit";
+import type { PaymentContext } from "@/lib/order-deposit";
 import { customerStatusDescription, customerStatusHeadline } from "@/lib/order-status-messages";
 import { cn } from "@/lib/utils";
+import { BellRing, CheckCircle2, Clock3, Package, Truck } from "lucide-react";
 
 const STATUS_STYLE: Record<OrderStatus, { className: string; icon: typeof BellRing }> = {
   "Payment Pending": { className: "bg-citrus/10 text-forest", icon: Clock3 },
@@ -16,10 +16,10 @@ const STATUS_STYLE: Record<OrderStatus, { className: string; icon: typeof BellRi
 
 export function OrderStatusBanner({
   status,
-  paymentPlan = "deposit",
+  payment,
 }: {
   status: OrderStatus;
-  paymentPlan?: PaymentPlan;
+  payment?: PaymentContext;
 }) {
   const style = STATUS_STYLE[status];
   const Icon = style.icon;
@@ -28,9 +28,9 @@ export function OrderStatusBanner({
     <div className={cn("mt-8 rounded-[28px] p-5 text-sm print:hidden", style.className)}>
       <p className="flex items-center gap-2 font-semibold">
         <Icon className="h-4 w-4 shrink-0" />
-        {customerStatusHeadline(status, paymentPlan)}
+        {customerStatusHeadline(status, payment)}
       </p>
-      <p className="mt-2 leading-relaxed opacity-90">{customerStatusDescription(status, paymentPlan)}</p>
+      <p className="mt-2 leading-relaxed opacity-90">{customerStatusDescription(status, payment)}</p>
     </div>
   );
 }

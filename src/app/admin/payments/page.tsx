@@ -27,7 +27,7 @@ export default function AdminPaymentsPage() {
               </div>
               <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end sm:text-right">
                 <StatusBadge status={o.status} />
-                <p>{formatAmountDueNow(o.total, getPaymentPlan(o.payment))} due</p>
+                <p>{formatAmountDueNow(o.total, o.payment)} due</p>
                 <p className="text-xs text-ink/45">{formatBZD(o.total)} total · {getPaymentPlan(o.payment) === "full" ? "full pay" : "deposit"}</p>
               </div>
             </div>

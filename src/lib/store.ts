@@ -160,6 +160,55 @@ export function updateOrder(order: Parameters<typeof local.updateOrder>[0]) {
   notifyStoreUpdate();
 }
 
+export function getStockWaitRequests() {
+  return isRemoteBackend() ? remote.getStockWaitRequests() : local.getStockWaitRequests();
+}
+
+export async function createStockWaitRequest(input: Parameters<typeof local.createStockWaitRequest>[0]) {
+  if (isRemoteBackend()) {
+    const res = await fetch("/api/stock-wait", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(typeof payload.error === "string" ? payload.error : "Could not join the waitlist.");
+    }
+    remote.prependStockWaitRequest(payload);
+    notifyStoreUpdate();
+    return payload as ReturnType<typeof local.createStockWaitRequest>;
+  }
+
+  const request = local.createStockWaitRequest(input);
+  notifyStoreUpdate();
+  return request;
+}
+
+export async function setStockWaitRequestStatus(
+  id: string,
+  status: Parameters<typeof local.setStockWaitRequestStatus>[1]
+) {
+  if (isRemoteBackend()) {
+    const res = await fetch("/api/admin/stock-wait", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status }),
+    });
+    const payload = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(typeof payload.error === "string" ? payload.error : "Could not update waitlist.");
+    }
+    remote.setStockWaitRequestStatus(id, status);
+    notifyStoreUpdate();
+    return remote.getStockWaitRequests().find((entry) => entry.id === id);
+  }
+
+  const updated = local.setStockWaitRequestStatus(id, status);
+  notifyStoreUpdate();
+  return updated;
+}
+
 export async function syncAuthSession() {
   if (isRemoteBackend()) return remote.syncAuthSession();
   return local.getSession();
@@ -171,4 +220,17 @@ export async function signOutRemote() {
 
 export function isUsingSupabase() {
   return isRemoteBackend();
+}
+
+export async function refreshStockWaitRequestsFromRemote() {
+  if (!isRemoteBackend()) return getStockWaitRequests();
+  const res = await fetch("/api/admin/stock-wait");
+  if (!res.ok) return remote.getStockWaitRequests();
+  const data = await res.json();
+  if (Array.isArray(data)) {
+    remote.setStockWaitRequests(data);
+    notifyStoreUpdate();
+    return data;
+  }
+  return remote.getStockWaitRequests();
 }

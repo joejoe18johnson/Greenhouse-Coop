@@ -12,6 +12,7 @@ import { TreeImageReferenceNotice } from "@/components/product/tree-image-refere
 import { ProductCarousel } from "@/components/product/product-carousel";
 import { PropagationBadge } from "@/components/product/propagation-badge";
 import { ProductBadges } from "@/components/product/product-badges";
+import { StockWaitForm } from "@/components/product/stock-wait-form";
 import { useCart } from "@/hooks/use-cart";
 import { useProducts } from "@/hooks/use-products";
 import { categoryIcon } from "@/lib/icons";
@@ -104,11 +105,12 @@ export default function ProductPage() {
               <div>
                 <p className="font-semibold">Currently out of stock</p>
                 <p className="mt-1 text-sm text-red-800/90">
-                  This variety is not available at the nursery right now. Check back soon or message us on WhatsApp for alternatives.
+                  This variety is not available at the nursery right now. Join the waitlist below or message us on WhatsApp for alternatives.
                 </p>
               </div>
             </div>
           )}
+          {!available && <StockWaitForm product={product} />}
           {available && product.veryRare && (
             <p className="mt-4 rounded-2xl border border-forest/20 bg-forest/5 px-4 py-3 text-sm text-ink/80">
               This is a very rare nursery variety with limited availability. Message us on WhatsApp if you would like to be notified when stock returns.

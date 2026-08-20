@@ -57,6 +57,7 @@ export const STORAGE_KEYS = {
   hydrated: "hydrated",
   demoSeed: "demoSeed",
   catalogSeed: "catalogSeed",
+  stockWaitRequests: "stockWaitRequests",
 } as const;
 
 export const ORDER_STATUSES = [
