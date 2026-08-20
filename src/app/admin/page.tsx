@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOrders, getProducts, getUsers } from "@/lib/store";
+import { summarizeFinancials } from "@/lib/financials";
 import { formatBZD } from "@/lib/utils";
 import { ORDER_STATUSES, SHORT_SUPPLY_IDS } from "@/lib/constants";
 import type { LucideIcon } from "lucide-react";
@@ -21,8 +22,7 @@ export default function AdminHomePage() {
   const orders = getOrders();
   const products = getProducts();
   const customers = getUsers().filter((u) => u.role === "customer");
-  const confirmed = ["Paid", "Processing", "Shipped", "Completed"];
-  const revenue = orders.filter((o) => confirmed.includes(o.status)).reduce((s, o) => s + o.total, 0);
+  const financials = summarizeFinancials(orders);
   const pendingPay = orders.filter((o) => o.status === "Payment Review" || o.status === "Payment Pending");
   const toFulfill = orders.filter((o) => o.status === "Paid" || o.status === "Processing");
   const sent = orders.filter((o) => o.status === "Shipped" || o.status === "Completed");
@@ -30,7 +30,7 @@ export default function AdminHomePage() {
 
   const stats: { label: string; value: string; icon: LucideIcon; href: string }[] = [
     { label: "Orders", value: String(orders.length), icon: ClipboardList, href: "/admin/orders" },
-    { label: "Revenue (confirmed)", value: formatBZD(revenue), icon: Wallet, href: "/admin/orders" },
+    { label: "Revenue (confirmed)", value: formatBZD(financials.totalRevenue), icon: Wallet, href: "/admin/financials" },
     { label: "Awaiting payment", value: String(pendingPay.length), icon: Banknote, href: "/admin/payments" },
     { label: "To fulfill", value: String(toFulfill.length), icon: PackageCheck, href: "/admin/orders" },
     { label: "Customers", value: String(customers.length), icon: Users, href: "/admin/customers" },

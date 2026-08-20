@@ -44,6 +44,14 @@ export const DEMO_CUSTOMER_PASSWORD = "customer123";
 export const DEMO_SEED_VERSION = "v4";
 export const CATALOG_SEED_VERSION = "v11";
 
+/** Completed test orders — excluded from admin financials but kept in the database. */
+export const TEST_ORDER_REFERENCES = [
+  "J22R72",
+  "9JS8R3",
+  "KKT2CA",
+  "2FPUSX",
+] as const;
+
 export const STORAGE_KEYS = {
   products: "products",
   users: "users",

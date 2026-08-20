@@ -198,6 +198,8 @@ export interface Order {
   payment: PaymentInfo;
   /** Substitutions, delivery instructions, or other requests from the customer at checkout. */
   customerNotes?: string;
+  /** Test/demo orders — excluded from admin financials when true. */
+  excludeFromFinancials?: boolean;
   createdAt: string;
   updatedAt: string;
   timeline: OrderEvent[];

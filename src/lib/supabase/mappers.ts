@@ -70,6 +70,7 @@ export interface OrderRow {
   payment: Order["payment"];
   timeline: Order["timeline"];
   customer_notes?: string | null;
+  exclude_from_financials?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -171,6 +172,7 @@ export function orderFromRow(row: OrderRow): Order {
     shipping: row.shipping,
     payment: row.payment,
     customerNotes: row.customer_notes?.trim() || undefined,
+    excludeFromFinancials: row.exclude_from_financials ?? false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     timeline: row.timeline,
@@ -196,6 +198,7 @@ export function orderToRow(order: Order): Omit<OrderRow, "created_at" | "updated
     payment: order.payment,
     timeline: order.timeline,
     customer_notes: order.customerNotes?.trim() || null,
+    exclude_from_financials: order.excludeFromFinancials ?? false,
   };
 }
 

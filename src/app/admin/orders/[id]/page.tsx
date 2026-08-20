@@ -9,12 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { DownloadInvoiceButton } from "@/components/invoice/download-invoice-button";
 import { OrderInvoice } from "@/components/invoice/order-invoice";
-import { ORDER_STATUSES } from "@/lib/constants";
+import { Checkbox } from "@/components/ui/checkbox";
+import { invoiceFinancials, isDemoOrder, isKnownTestOrder, orderCountsInFinancials } from "@/lib/financials";
 import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
 import { fulfillmentLabel } from "@/lib/shipping";
 import { formatOrderBalance, formatOrderDeposit, isCashOnDelivery, orderAmountDueNow } from "@/lib/order-deposit";
 import { formatBZD } from "@/lib/utils";
-import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
+import { COURIER_ESTIMATE_NOTICE, ORDER_STATUSES } from "@/lib/constants";
 import type { OrderStatus } from "@/types";
 
 export default function AdminOrderDetailPage() {
@@ -39,6 +40,8 @@ export default function AdminOrderDetailPage() {
 
   const isCod = isCashOnDelivery(order.payment);
   const dueNow = orderAmountDueNow(order.total, order.payment);
+  const financials = invoiceFinancials(order);
+  const countsInFinancials = orderCountsInFinancials(order);
 
   return (
     <div className="min-w-0">
@@ -89,6 +92,60 @@ export default function AdminOrderDetailPage() {
             />
           )}
         </div>
+      </div>
+
+      <div className="mt-6 rounded-[24px] bg-white p-5 print:hidden">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-forest">Financials</p>
+            <p className="mt-1 text-xs text-ink/50">
+              {countsInFinancials
+                ? "Included in admin revenue totals"
+                : isKnownTestOrder(order)
+                  ? "Known test order — excluded from revenue"
+                  : isDemoOrder(order)
+                    ? "Demo order — excluded from revenue"
+                    : order.excludeFromFinancials
+                      ? "Marked as test — excluded from revenue"
+                      : "Not counted yet (awaiting payment confirmation)"}
+            </p>
+          </div>
+          <Checkbox
+            checked={Boolean(order.excludeFromFinancials)}
+            onChange={(checked) => {
+              updateOrder({ ...order, excludeFromFinancials: checked });
+              refresh();
+            }}
+            label="Exclude from financials (test order)"
+          />
+        </div>
+        {countsInFinancials && (
+          <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+            <div>
+              <dt className="text-xs text-ink/45">Plants</dt>
+              <dd className="font-medium tabular-nums">{formatBZD(financials.plantRevenue)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-ink/45">Shipping</dt>
+              <dd className="font-medium tabular-nums">{formatBZD(financials.shippingRevenue)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-ink/45">Revenue</dt>
+              <dd className="font-medium tabular-nums">{formatBZD(financials.totalRevenue)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-ink/45">COGS</dt>
+              <dd className="font-medium tabular-nums">
+                {formatBZD(financials.cogs)}
+                {financials.cogsUnknown && " *"}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-ink/45">Profit</dt>
+              <dd className="font-semibold tabular-nums text-forest">{formatBZD(financials.grossProfit)}</dd>
+            </div>
+          </dl>
+        )}
       </div>
 
       <div className="mt-6 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:flex-wrap md:overflow-visible [&::-webkit-scrollbar]:hidden print:hidden">

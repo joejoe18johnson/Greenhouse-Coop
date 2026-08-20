@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import {
   Banknote,
+  BarChart3,
   ClipboardList,
   LayoutDashboard,
   LogOut,
@@ -28,6 +29,7 @@ const links: { href: string; label: string; icon: LucideIcon; countKey?: "overvi
   { href: "/admin", label: "Overview", icon: LayoutDashboard, countKey: "overview" },
   { href: "/admin/orders", label: "Orders", icon: ClipboardList, countKey: "orders" },
   { href: "/admin/payments", label: "Payments", icon: Banknote, countKey: "payments" },
+  { href: "/admin/financials", label: "Financials", icon: BarChart3 },
   { href: "/admin/products", label: "Products", icon: Sprout, countKey: "products" },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/shipping", label: "Shipping", icon: Truck },

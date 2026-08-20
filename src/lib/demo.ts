@@ -321,7 +321,10 @@ export function seedDemoOrders(products: Product[]): Order[] {
     ],
   };
 
-  return [pending, review, paid, processing, shipped, completed];
+  return [pending, review, paid, processing, shipped, completed].map((order) => ({
+    ...order,
+    excludeFromFinancials: true,
+  }));
 }
 
 export async function ensureAdminUser(seedAdmin: () => Promise<User>) {
