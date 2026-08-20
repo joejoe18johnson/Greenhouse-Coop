@@ -8,7 +8,7 @@ import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { NavSearch } from "@/components/layout/nav-search";
-import { AdminNotificationBell } from "@/components/notifications/admin-notification-bell";
+import { AdminNotificationBell, AdminNotificationBellLink } from "@/components/notifications/admin-notification-bell";
 import { NotificationBell, NotificationBellLink } from "@/components/notifications/notification-bell";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
@@ -76,10 +76,14 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <NavSearch className="hidden w-44 md:block lg:w-56" />
           {isAdmin && <AdminNotificationBell adminId={user.id} />}
-          {isCustomer && <NotificationBell userId={user.id} />}
+          {isCustomer && (
+            <div className="hidden sm:block">
+              <NotificationBell userId={user.id} />
+            </div>
+          )}
           {!session && (
             <Button variant="citrus" size="sm" className="hidden gap-1.5 md:inline-flex" asChild>
               <Link href="/login">
@@ -88,12 +92,12 @@ export function Header() {
               </Link>
             </Button>
           )}
-          <Button variant="ghost" size="icon" aria-label="Account" asChild>
+          <Button variant="ghost" size="icon" aria-label="Account" className="hidden lg:inline-flex" asChild>
             <Link href={accountHref}>
               <UserRound className="h-5 w-5" />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Cart" asChild className="relative">
+          <Button variant="ghost" size="icon" aria-label="Cart" asChild className="relative hidden sm:inline-flex">
             <Link href="/cart">
               <ShoppingBag className="h-5 w-5" />
               {count > 0 && (
@@ -103,7 +107,13 @@ export function Header() {
               )}
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen(true)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Open menu"
+            className="inline-flex shrink-0 lg:hidden"
+            onClick={() => setOpen(true)}
+          >
             <Menu className="h-5 w-5" />
           </Button>
         </div>
@@ -153,8 +163,24 @@ export function Header() {
                 </Link>
               );
             })}
+            <Link
+              href={accountHref}
+              onClick={() => setOpen(false)}
+              className={cn(
+                "inline-flex items-center gap-3 rounded-2xl px-3 py-2.5 text-base font-medium",
+                isNavActive(pathname, accountHref)
+                  ? "bg-forest/10 font-semibold text-forest"
+                  : "text-forest/85 hover:bg-forest/5"
+              )}
+            >
+              <UserRound className="h-5 w-5" />
+              {session ? (isAdmin ? "Admin" : "Dashboard") : "Sign in"}
+            </Link>
             {isCustomer && (
               <NotificationBellLink userId={user.id} onNavigate={() => setOpen(false)} />
+            )}
+            {isAdmin && (
+              <AdminNotificationBellLink adminId={user.id} onNavigate={() => setOpen(false)} />
             )}
             <Link
               href="/cart"

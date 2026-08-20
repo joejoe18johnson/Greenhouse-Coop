@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Bell, X } from "lucide-react";
@@ -130,5 +131,33 @@ export function AdminNotificationBell({ adminId }: { adminId: string }) {
         </>
       )}
     </div>
+  );
+}
+
+export function AdminNotificationBellLink({
+  adminId,
+  onNavigate,
+}: {
+  adminId: string;
+  onNavigate?: () => void;
+}) {
+  const { unreadCount } = useAdminNotifications(adminId);
+
+  return (
+    <Link
+      href="/admin"
+      onClick={onNavigate}
+      className="inline-flex items-center gap-3 rounded-2xl px-3 py-2.5 text-base font-medium text-forest/85 hover:bg-forest/5"
+    >
+      <span className="relative">
+        <Bell className="h-5 w-5" />
+        {unreadCount > 0 && (
+          <span className="absolute -right-2 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-citrus px-1 text-[9px] font-bold text-ink">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
+      </span>
+      Admin alerts
+    </Link>
   );
 }
