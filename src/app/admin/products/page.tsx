@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { CATEGORIES } from "@/lib/constants";
 import {
   applyStockStatus,
@@ -42,6 +44,7 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState<Product>(empty);
   const [formStockStatus, setFormStockStatus] = useState<StockStatus>("in-stock");
   const [editing, setEditing] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -63,13 +66,22 @@ export default function AdminProductsPage() {
     }
   }
 
+  function openCreate() {
+    setForm(empty);
+    setFormStockStatus("in-stock");
+    setEditing(false);
+    setDialogOpen(true);
+  }
+
   function startEdit(product: Product) {
     setForm(product);
     setFormStockStatus(getStockStatus(product));
     setEditing(true);
+    setDialogOpen(true);
   }
 
-  function resetForm() {
+  function closeDialog() {
+    setDialogOpen(false);
     setForm(empty);
     setFormStockStatus("in-stock");
     setEditing(false);
@@ -82,7 +94,7 @@ export default function AdminProductsPage() {
     try {
       const id = form.id || slugify(form.name);
       await upsertProduct(applyStockStatus({ ...form, id }, formStockStatus));
-      resetForm();
+      closeDialog();
       refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save product.");
@@ -103,79 +115,111 @@ export default function AdminProductsPage() {
 
   return (
     <div>
-      <h1 className="page-title font-semibold">Products</h1>
-      <p className="mt-2 text-sm text-ink/55">
-        Update stock status inline or when editing a product. Changes apply on the shop immediately.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="page-title font-semibold">Products</h1>
+          <p className="mt-2 text-sm text-ink/55">
+            Update stock status inline or edit a product in the popup. Changes apply on the shop immediately.
+          </p>
+        </div>
+        <Button type="button" onClick={openCreate} className="shrink-0 gap-2">
+          <Plus className="h-4 w-4" />
+          Add product
+        </Button>
+      </div>
+
       {error && <p className="mt-3 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
-      <form onSubmit={save} className="mt-6 grid gap-3 rounded-[24px] bg-white p-6 md:grid-cols-2">
-        <div className="md:col-span-2">
-          <Label>Name</Label>
-          <Input className="mt-1" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-        </div>
-        <div>
-          <Label>Category</Label>
-          <Select className="mt-1" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-            {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-          </Select>
-        </div>
-        <div>
-          <Label>Price BZD</Label>
-          <Input className="mt-1" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} />
-        </div>
-        <div>
-          <Label>Propagation</Label>
-          <Select className="mt-1" value={form.propagationType} onChange={(e) => setForm({ ...form, propagationType: e.target.value as PropagationType })}>
-            <option>Grafted</option>
-            <option>Air-Layered</option>
-            <option>Selective Breeding</option>
-            <option>Seedling</option>
-          </Select>
-        </div>
-        <div>
-          <Label>Size</Label>
-          <Input className="mt-1" value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} />
-        </div>
-        <div>
-          <Label>Stock status</Label>
-          <Select
-            className="mt-1"
-            value={formStockStatus}
-            onChange={(e) => setFormStockStatus(e.target.value as StockStatus)}
-          >
-            {STOCK_STATUS_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
-        </div>
-        <div>
-          <Label>Fruit image path</Label>
-          <Input className="mt-1" value={form.fruitImage} onChange={(e) => setForm({ ...form, fruitImage: e.target.value })} />
-        </div>
-        <div>
-          <Label>Tree size image path</Label>
-          <Input className="mt-1" value={form.plantImage} onChange={(e) => setForm({ ...form, plantImage: e.target.value })} />
-        </div>
-        <div className="md:col-span-2">
-          <Label>Description</Label>
-          <Textarea className="mt-1" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        </div>
-        <div className="md:col-span-2">
-          <Label>Flavor profile</Label>
-          <Textarea className="mt-1" value={form.flavorProfile} onChange={(e) => setForm({ ...form, flavorProfile: e.target.value })} />
-        </div>
-        <Checkbox checked={form.featured} onChange={(checked) => setForm({ ...form, featured: checked })} label="Featured" />
-        <div className="md:col-span-2 flex flex-wrap gap-3">
-          <Button type="submit" disabled={saving}>{saving ? "Saving…" : editing ? "Update product" : "Add product"}</Button>
-          {editing && (
-            <Button type="button" variant="outline" onClick={resetForm}>
-              Cancel
-            </Button>
-          )}
-        </div>
-      </form>
+
+      <Dialog open={dialogOpen} onOpenChange={(open) => (open ? setDialogOpen(true) : closeDialog())}>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+          <DialogTitle className="font-display text-2xl text-forest">
+            {editing ? "Edit product" : "Add product"}
+          </DialogTitle>
+          <DialogDescription className="text-sm text-ink/55">
+            {editing ? `Updating ${form.name || "product"}` : "Create a new catalog item"}
+          </DialogDescription>
+
+          <form onSubmit={save} className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <Label>Name</Label>
+              <Input className="mt-1" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+            </div>
+            <div>
+              <Label>Category</Label>
+              <Select className="mt-1" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
+                {CATEGORIES.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <Label>Price BZD</Label>
+              <Input
+                className="mt-1"
+                type="number"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+              />
+            </div>
+            <div>
+              <Label>Propagation</Label>
+              <Select
+                className="mt-1"
+                value={form.propagationType}
+                onChange={(e) => setForm({ ...form, propagationType: e.target.value as PropagationType })}
+              >
+                <option>Grafted</option>
+                <option>Air-Layered</option>
+                <option>Selective Breeding</option>
+                <option>Seedling</option>
+              </Select>
+            </div>
+            <div>
+              <Label>Size</Label>
+              <Input className="mt-1" value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} />
+            </div>
+            <div>
+              <Label>Stock status</Label>
+              <Select
+                className="mt-1"
+                value={formStockStatus}
+                onChange={(e) => setFormStockStatus(e.target.value as StockStatus)}
+              >
+                {STOCK_STATUS_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div>
+              <Label>Fruit image path</Label>
+              <Input className="mt-1" value={form.fruitImage} onChange={(e) => setForm({ ...form, fruitImage: e.target.value })} />
+            </div>
+            <div>
+              <Label>Tree size image path</Label>
+              <Input className="mt-1" value={form.plantImage} onChange={(e) => setForm({ ...form, plantImage: e.target.value })} />
+            </div>
+            <div className="md:col-span-2">
+              <Label>Description</Label>
+              <Textarea className="mt-1" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            </div>
+            <div className="md:col-span-2">
+              <Label>Flavor profile</Label>
+              <Textarea className="mt-1" value={form.flavorProfile} onChange={(e) => setForm({ ...form, flavorProfile: e.target.value })} />
+            </div>
+            <Checkbox checked={form.featured} onChange={(checked) => setForm({ ...form, featured: checked })} label="Featured" />
+            <div className="md:col-span-2 flex flex-wrap gap-3 pt-2">
+              <Button type="submit" disabled={saving}>
+                {saving ? "Saving…" : editing ? "Update product" : "Add product"}
+              </Button>
+              <Button type="button" variant="outline" onClick={closeDialog}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <div className="mt-8 md:hidden">
         <div className="space-y-3">
@@ -203,8 +247,17 @@ export default function AdminProductsPage() {
                 </Select>
               </div>
               <div className="mt-3 flex gap-4 text-sm">
-                <button className="text-forest" onClick={() => startEdit(p)}>Edit</button>
-                <button className="text-red-600" onClick={() => { void handleDelete(p.id); }}>Delete</button>
+                <button className="text-forest" onClick={() => startEdit(p)}>
+                  Edit
+                </button>
+                <button
+                  className="text-red-600"
+                  onClick={() => {
+                    void handleDelete(p.id);
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
@@ -242,8 +295,17 @@ export default function AdminProductsPage() {
                   </Select>
                 </td>
                 <td className="p-4 text-right">
-                  <button className="mr-3 text-forest" onClick={() => startEdit(p)}>Edit</button>
-                  <button className="text-red-600" onClick={() => { void handleDelete(p.id); }}>Delete</button>
+                  <button className="mr-3 text-forest" onClick={() => startEdit(p)}>
+                    Edit
+                  </button>
+                  <button
+                    className="text-red-600"
+                    onClick={() => {
+                      void handleDelete(p.id);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

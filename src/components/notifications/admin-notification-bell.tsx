@@ -112,11 +112,11 @@ export function AdminNotificationBell({ adminId }: { adminId: string }) {
       {open && (
         <>
           <div
-            className="fixed inset-0 z-40 bg-forest-deep/20 md:hidden"
+            className="fixed inset-0 z-40 bg-forest-deep/20"
             onClick={() => setOpen(false)}
             aria-hidden
           />
-          <div className="fixed inset-x-4 top-20 z-50 md:absolute md:inset-x-auto md:right-0 md:top-full md:mt-2 md:w-[min(100vw-2rem,380px)]">
+          <div className="fixed z-50 top-20 w-[min(calc(100vw-2rem),380px)] left-4 md:left-[17rem] md:max-w-[380px]">
             <NotificationPanel
               notifications={notifications}
               onClose={() => setOpen(false)}

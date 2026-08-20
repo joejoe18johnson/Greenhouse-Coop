@@ -42,7 +42,7 @@ export const ADMIN_PASSWORD = "admin123";
 export const DEMO_CUSTOMER_EMAIL = "customer@greenhousebz.com";
 export const DEMO_CUSTOMER_PASSWORD = "customer123";
 export const DEMO_SEED_VERSION = "v4";
-export const CATALOG_SEED_VERSION = "v11";
+export const CATALOG_SEED_VERSION = "v12";
 
 /** Completed test orders — excluded from admin financials but kept in the database. */
 export const TEST_ORDER_REFERENCES = [
