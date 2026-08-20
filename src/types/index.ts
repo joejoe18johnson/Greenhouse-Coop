@@ -165,6 +165,7 @@ export type OrderStatus =
   | "Processing"
   | "Shipped"
   | "Completed"
+  | "Cancelled"
   | "Refunded";
 
 export interface ShippingInfo {

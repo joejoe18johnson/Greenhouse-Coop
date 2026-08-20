@@ -2,7 +2,7 @@ import type { OrderStatus } from "@/types";
 import type { PaymentContext } from "@/lib/order-deposit";
 import { customerStatusDescription, customerStatusHeadline } from "@/lib/order-status-messages";
 import { cn } from "@/lib/utils";
-import { BellRing, CheckCircle2, Clock3, Package, Truck } from "lucide-react";
+import { BellRing, CheckCircle2, Clock3, Package, Truck, XCircle } from "lucide-react";
 
 const STATUS_STYLE: Record<OrderStatus, { className: string; icon: typeof BellRing }> = {
   "Payment Pending": { className: "bg-citrus/10 text-forest", icon: Clock3 },
@@ -11,6 +11,7 @@ const STATUS_STYLE: Record<OrderStatus, { className: string; icon: typeof BellRi
   Processing: { className: "bg-sky-50 text-sky-900", icon: Package },
   Shipped: { className: "bg-forest/10 text-forest", icon: Truck },
   Completed: { className: "bg-leaf/15 text-forest", icon: CheckCircle2 },
+  Cancelled: { className: "bg-red-50 text-red-800", icon: XCircle },
   Refunded: { className: "bg-red-50 text-red-800", icon: BellRing },
 };
 

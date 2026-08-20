@@ -13,5 +13,7 @@ export const config = {
     "/checkout",
     "/login",
     "/register",
+    "/shop/:path*",
+    "/cart",
   ],
 };

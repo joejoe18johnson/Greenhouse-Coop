@@ -53,6 +53,26 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.subscription.unsubscribe();
   }, [refresh]);
 
+  useEffect(() => {
+    if (!isUsingSupabase() || session?.role !== "admin") return;
+
+    const keepAlive = window.setInterval(() => {
+      void syncAuthSession().then(refresh);
+    }, 4 * 60 * 1000);
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        void syncAuthSession().then(refresh);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      window.clearInterval(keepAlive);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [session?.role, refresh]);
+
   const setSession = useCallback(
     (next: Session | null) => {
       persistSession(next);

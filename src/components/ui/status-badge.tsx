@@ -8,6 +8,7 @@ const STYLES: Record<OrderStatus, string> = {
   Processing: "bg-forest/15 text-forest-dark",
   Shipped: "bg-forest text-cream",
   Completed: "bg-lime/20 text-forest-dark",
+  Cancelled: "bg-red-50 text-red-800",
   Refunded: "bg-ink/10 text-ink/60",
 };
 

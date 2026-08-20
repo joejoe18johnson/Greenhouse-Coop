@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { LogOut, Menu, ShoppingBag, UserRound } from "lucide-react";
+import { LayoutDashboard, LogIn, LogOut, Menu, ShoppingBag, UserRound } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { NavSearch } from "@/components/layout/nav-search";
+import { AdminNotificationBell } from "@/components/notifications/admin-notification-bell";
 import { NotificationBell, NotificationBellLink } from "@/components/notifications/notification-bell";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
@@ -22,14 +23,17 @@ function isNavActive(pathname: string, href: string) {
 function navLinkClass(active: boolean, mobile = false) {
   return cn(
     "inline-flex items-center transition",
-    mobile ? "gap-3 text-lg font-medium" : "relative gap-1.5 pb-1 text-sm font-medium",
-    active
-      ? cn(
-          "font-semibold text-forest",
-          !mobile &&
+    mobile
+      ? "gap-3 rounded-2xl px-3 py-2.5 text-base font-medium"
+      : "relative gap-1.5 pb-1 text-sm font-medium",
+    mobile && (active ? "bg-forest/10 text-forest" : "text-forest/85 hover:bg-forest/5"),
+    !mobile &&
+      (active
+        ? cn(
+            "font-semibold text-forest",
             "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-forest"
-        )
-      : cn("text-ink/70 hover:text-forest", mobile && "text-forest/80")
+          )
+        : "text-ink/70 hover:text-forest")
   );
 }
 
@@ -41,9 +45,17 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const isAdminArea = pathname.startsWith("/admin");
 
+  const isAdmin = session?.role === "admin" && user;
   const isCustomer = session?.role === "customer" && user;
+  const accountHref = session ? (session.role === "admin" ? "/admin" : "/dashboard") : "/login";
 
   if (isAdminArea) return null;
+
+  async function signOut() {
+    await logout();
+    setOpen(false);
+    router.push("/");
+  }
 
   return (
     <header className="sticky top-0 z-40 px-4 pt-[max(1rem,env(safe-area-inset-top))] print:hidden">
@@ -66,9 +78,18 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <NavSearch className="hidden w-44 md:block lg:w-56" />
+          {isAdmin && <AdminNotificationBell adminId={user.id} />}
           {isCustomer && <NotificationBell userId={user.id} />}
+          {!session && (
+            <Button variant="citrus" size="sm" className="hidden gap-1.5 md:inline-flex" asChild>
+              <Link href="/login">
+                <LogIn className="h-4 w-4" />
+                Sign in
+              </Link>
+            </Button>
+          )}
           <Button variant="ghost" size="icon" aria-label="Account" asChild>
-            <Link href={session ? (session.role === "admin" ? "/admin" : "/dashboard") : "/login"}>
+            <Link href={accountHref}>
               <UserRound className="h-5 w-5" />
             </Link>
           </Button>
@@ -89,26 +110,35 @@ export function Header() {
       </div>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent>
-          <Link href="/" className="mb-8 block" onClick={() => setOpen(false)}>
-            <Logo variant="horizontal" iconSize={44} wordmarkVisibility="always" />
+        <SheetContent side="left" inset>
+          <Link href="/" className="mb-6 block pr-10" onClick={() => setOpen(false)}>
+            <Logo variant="horizontal" iconSize={40} wordmarkVisibility="always" />
           </Link>
           <NavSearch className="mb-4" onNavigate={() => setOpen(false)} />
-          {session && (
-            <Button
-              variant="citrus"
-              className="mb-6 w-full"
-              onClick={() => {
-                logout();
-                setOpen(false);
-                router.push("/");
-              }}
-            >
-              <LogOut className="h-4 w-4" />
-              Sign out
+
+          {session ? (
+            <div className="mb-6 space-y-2">
+              <Button variant="citrus" className="w-full gap-2" asChild>
+                <Link href={accountHref} onClick={() => setOpen(false)}>
+                  {isAdmin ? <LayoutDashboard className="h-4 w-4" /> : <UserRound className="h-4 w-4" />}
+                  {isAdmin ? "Admin dashboard" : "My account"}
+                </Link>
+              </Button>
+              <Button variant="outline" className="w-full gap-2" onClick={() => void signOut()}>
+                <LogOut className="h-4 w-4" />
+                Sign out
+              </Button>
+            </div>
+          ) : (
+            <Button variant="citrus" className="mb-6 w-full gap-2" asChild>
+              <Link href="/login" onClick={() => setOpen(false)}>
+                <LogIn className="h-4 w-4" />
+                Sign in / Log in
+              </Link>
             </Button>
           )}
-          <div className="flex flex-col gap-4">
+
+          <div className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => {
               const active = isNavActive(pathname, link.href);
               return (
@@ -123,10 +153,6 @@ export function Header() {
                 </Link>
               );
             })}
-            <Link href={user ? "/dashboard" : "/login"} onClick={() => setOpen(false)} className="inline-flex items-center gap-3 text-lg font-medium">
-              <UserRound className="h-5 w-5" />
-              {user ? "Dashboard" : "Sign in"}
-            </Link>
             {isCustomer && (
               <NotificationBellLink userId={user.id} onNavigate={() => setOpen(false)} />
             )}
@@ -134,8 +160,8 @@ export function Header() {
               href="/cart"
               onClick={() => setOpen(false)}
               className={cn(
-                "inline-flex items-center gap-3 text-lg font-medium",
-                isNavActive(pathname, "/cart") ? "font-semibold text-forest" : "text-forest/80"
+                "inline-flex items-center gap-3 rounded-2xl px-3 py-2.5 text-base font-medium",
+                isNavActive(pathname, "/cart") ? "bg-forest/10 font-semibold text-forest" : "text-forest/85 hover:bg-forest/5"
               )}
             >
               <span className="relative">

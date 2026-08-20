@@ -42,6 +42,22 @@ export default function AdminOrderDetailPage() {
   const dueNow = orderAmountDueNow(order.total, order.payment);
   const financials = invoiceFinancials(order);
   const countsInFinancials = orderCountsInFinancials(order);
+  const isTerminal = ["Completed", "Refunded", "Cancelled"].includes(order.status);
+
+  function cancelOrder() {
+    const current = getOrders().find((entry) => entry.id === id);
+    if (!current) return;
+    if (!window.confirm(`Cancel order ${current.reference}? The customer will see this order as cancelled.`)) {
+      return;
+    }
+    const cancelNote = window.prompt("Optional note for the customer (leave blank for default message):")?.trim();
+    updateOrderStatus(
+      current.id,
+      "Cancelled",
+      cancelNote || "This order was cancelled. Contact us on WhatsApp if you have questions."
+    );
+    refresh();
+  }
 
   return (
     <div className="min-w-0">
@@ -90,6 +106,11 @@ export default function AdminOrderDetailPage() {
               targetId={invoiceId}
               filename={`${order.invoiceNumber}.pdf`}
             />
+          )}
+          {!isTerminal && (
+            <Button variant="outline" className="border-red-200 text-red-700 hover:bg-red-50" onClick={cancelOrder}>
+              Cancel order
+            </Button>
           )}
         </div>
       </div>

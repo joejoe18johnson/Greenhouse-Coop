@@ -12,6 +12,7 @@ export const CUSTOMER_STATUS_HEADLINE: Record<OrderStatus, string> = {
   Processing: "Preparing your order",
   Shipped: "Ready for pickup or in transit",
   Completed: "Order complete",
+  Cancelled: "Order cancelled",
   Refunded: "Order refunded",
 };
 
@@ -25,6 +26,7 @@ export const CUSTOMER_STATUS_DESCRIPTION: Record<OrderStatus, string> = {
   Shipped:
     "Your order has been sent or is ready at the pickup point. Check your fulfillment details below for collection instructions.",
   Completed: "Thank you — your order has been collected. We hope your new trees thrive in your garden.",
+  Cancelled: "This order was cancelled. Contact us on WhatsApp if you have any questions.",
   Refunded: "This order was refunded. Contact us on WhatsApp if you have any questions.",
 };
 
@@ -35,6 +37,7 @@ export const CUSTOMER_TIMELINE_NOTES: Record<OrderStatus, string> = {
   Processing: "Your order is being prepared for pickup or courier.",
   Shipped: "Your order is on its way or ready at the pickup point.",
   Completed: "Order collected — thank you for shopping with Green House Co-Op.",
+  Cancelled: "This order was cancelled.",
   Refunded: "This order was refunded.",
 };
 

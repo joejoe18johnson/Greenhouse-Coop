@@ -77,6 +77,7 @@ export const ORDER_STATUSES = [
   "Processing",
   "Shipped",
   "Completed",
+  "Cancelled",
   "Refunded",
 ] as const;
 
