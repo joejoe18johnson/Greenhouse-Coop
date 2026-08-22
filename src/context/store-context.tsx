@@ -10,6 +10,7 @@ import {
   setSession as persistSession,
   syncAuthSession,
 } from "@/lib/store";
+import { readPersistedCart } from "@/lib/cart-persistence";
 import { createClient } from "@/lib/supabase/client";
 import type { CartItem, Session } from "@/types";
 
@@ -27,7 +28,10 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
   const [session, setSessionState] = useState<Session | null>(null);
-  const [cart, setCartState] = useState<CartItem[]>([]);
+  const [cart, setCartState] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
+    return readPersistedCart().items;
+  });
 
   const refresh = useCallback(() => {
     setSessionState(getSession());
