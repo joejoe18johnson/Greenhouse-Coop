@@ -3,11 +3,11 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Apple, Ban, Minus, Plus, Ruler, ShoppingBag, Sprout, TreeDeciduous } from "lucide-react";
+import { Ban, Minus, Plus, Ruler, ShoppingBag, Sprout } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
-import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
+import { FruitPlantSwap, FruitPlantViewToggle, type FruitPlantView } from "@/components/product/fruit-plant-swap";
 import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { ProductCarousel } from "@/components/product/product-carousel";
 import { PropagationBadge } from "@/components/product/propagation-badge";
@@ -27,7 +27,7 @@ export default function ProductPage() {
   const { add } = useCart();
   const router = useRouter();
   const [qty, setQty] = useState(1);
-  const [view, setView] = useState<"fruit" | "plant">("fruit");
+  const [view, setView] = useState<FruitPlantView>("fruit");
   const showTreeToggle = HOVER_TREE_IMAGES_ENABLED;
 
   const related = useMemo(
@@ -69,16 +69,7 @@ export default function ProductPage() {
             />
           </div>
           {showTreeToggle && (
-            <div className="mt-4 flex justify-center gap-2">
-              <Button size="sm" variant={view === "fruit" ? "default" : "outline"} onClick={() => setView("fruit")}>
-                <Apple className="h-4 w-4" />
-                Fruit
-              </Button>
-              <Button size="sm" variant={view === "plant" ? "default" : "outline"} onClick={() => setView("plant")}>
-                <TreeDeciduous className="h-4 w-4" />
-                Tree size
-              </Button>
-            </div>
+            <FruitPlantViewToggle view={view} onChange={setView} />
           )}
           <TreeImageReferenceNotice className="mt-3" />
         </div>

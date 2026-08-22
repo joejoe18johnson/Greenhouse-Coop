@@ -13,7 +13,6 @@ import { useCart } from "@/hooks/use-cart";
 import { categoryIcon } from "@/lib/icons";
 import { isInStock } from "@/lib/product-badges";
 import { cn, formatBZD } from "@/lib/utils";
-import { HOVER_TREE_IMAGES_ENABLED } from "@/lib/product-images";
 import type { Product } from "@/types";
 
 export function ProductCard({
@@ -57,6 +56,7 @@ export function ProductCard({
             plantImage={product.plantImage}
             alt={product.name}
             className="h-full w-full"
+            compactToggle
           />
         </motion.div>
       </div>
@@ -66,7 +66,9 @@ export function ProductCard({
         <div className="mb-3 flex flex-wrap gap-2">
           <PropagationBadge type={product.propagationType} />
         </div>
-        <h3 className="line-clamp-2 font-display text-xl text-forest-dark sm:text-2xl">{product.name}</h3>
+        <Link href={`/product/${product.id}`} className="block hover:text-forest">
+          <h3 className="line-clamp-2 font-display text-xl text-forest-dark sm:text-2xl">{product.name}</h3>
+        </Link>
         <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink/55">
           <span className="inline-flex items-center gap-1">
             <CategoryIcon className="h-3.5 w-3.5 text-leaf" />
@@ -77,9 +79,6 @@ export function ProductCard({
             {product.size}
           </span>
         </p>
-        {HOVER_TREE_IMAGES_ENABLED && (
-          <p className="mt-1 text-[11px] text-ink/40">Hover or tap to see tree size</p>
-        )}
         <p className="mt-3 font-semibold text-forest">{formatBZD(product.price)}</p>
 
         <Accordion type="single" collapsible className="mt-2">

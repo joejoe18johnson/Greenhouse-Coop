@@ -6,7 +6,6 @@ import bankSeed from "@/data/bank.json";
 import {
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
-  CART_HOLD_MS,
   CATALOG_SEED_VERSION,
   STORAGE_KEYS,
 } from "@/lib/constants";
@@ -15,6 +14,7 @@ import { generateId, generateInvoiceNumber, generateReference, hashPassword } fr
 import { normalizePropagationType } from "@/lib/propagation";
 import { computeOrderTotal } from "@/lib/shipping";
 import { ensureAdminUser } from "@/lib/demo";
+import { readPersistedCart, writePersistedCart } from "@/lib/cart-persistence";
 import { customerTimelineNote } from "@/lib/order-status-messages";
 import { updateStockWaitStatus, isDuplicateStockWait } from "@/lib/stock-wait-requests";
 import type {
@@ -153,7 +153,9 @@ export async function hydrateStore() {
   setItem(STORAGE_KEYS.bank, bank);
   setItem(STORAGE_KEYS.users, [await seedAdmin()]);
   setItem(STORAGE_KEYS.orders, [] as Order[]);
-  setItem(STORAGE_KEYS.cart, { items: [], updatedAt: new Date().toISOString() } as StoredCart);
+  if (!readPersistedCart().items.length) {
+    writePersistedCart({ items: [], updatedAt: new Date().toISOString() });
+  }
   seedCustomerRequestsIfNeeded();
   setItem(STORAGE_KEYS.hydrated, true);
   await ensureAdminUser(seedAdmin);
@@ -218,17 +220,7 @@ export function setSession(session: Session | null) {
 }
 
 export function getStoredCart(): StoredCart {
-  const raw = getItem<StoredCart | CartItem[]>(STORAGE_KEYS.cart, { items: [], updatedAt: new Date().toISOString() });
-  const stored: StoredCart = Array.isArray(raw)
-    ? { items: raw, updatedAt: new Date().toISOString() }
-    : { items: raw.items ?? [], updatedAt: raw.updatedAt ?? new Date().toISOString() };
-
-  if (stored.items.length && Date.now() - new Date(stored.updatedAt).getTime() > CART_HOLD_MS) {
-    const empty = { items: [] as CartItem[], updatedAt: new Date().toISOString() };
-    setItem(STORAGE_KEYS.cart, empty);
-    return empty;
-  }
-  return stored;
+  return readPersistedCart();
 }
 
 export function getCart(): CartItem[] {
@@ -241,10 +233,10 @@ export function getCartUpdatedAt(): string | null {
 }
 
 export function saveCart(next: CartItem[]) {
-  setItem(STORAGE_KEYS.cart, {
+  writePersistedCart({
     items: next,
     updatedAt: new Date().toISOString(),
-  } satisfies StoredCart);
+  });
 }
 
 export function getOrders(): Order[] {

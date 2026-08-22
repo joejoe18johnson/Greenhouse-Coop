@@ -22,6 +22,7 @@ import {
 } from "@/lib/supabase/mappers";
 import { normalizePropagationType } from "@/lib/propagation";
 import { CART_HOLD_MS } from "@/lib/constants";
+import { mergeCartItems, readPersistedCart, writePersistedCart } from "@/lib/cart-persistence";
 import { generateInvoiceNumber, generateReference } from "@/lib/utils";
 import type {
   BankDetails,
@@ -191,6 +192,8 @@ export async function hydrateStore() {
 
   if (session) {
     await loadRemoteCart(session.userId);
+  } else {
+    setCache({ cart: readPersistedCart() });
   }
 }
 
@@ -212,13 +215,29 @@ async function loadRemoteCart(userId: string) {
   const { data, error } = await supabase().from("carts").select("*").eq("user_id", userId).maybeSingle();
   if (error) throw error;
 
-  const cart: StoredCart = data
+  const guestCart = readPersistedCart();
+
+  let cart: StoredCart = data
     ? { items: (data.items as CartItem[]) ?? [], updatedAt: data.updated_at }
     : { items: [], updatedAt: new Date().toISOString() };
+
+  if (guestCart.items.length) {
+    cart = {
+      items: mergeCartItems(cart.items, guestCart.items),
+      updatedAt: new Date().toISOString(),
+    };
+    writePersistedCart({ items: [], updatedAt: cart.updatedAt });
+  }
 
   if (cart.items.length && Date.now() - new Date(cart.updatedAt).getTime() > CART_HOLD_MS) {
     cart.items = [];
     cart.updatedAt = new Date().toISOString();
+    await persistRemoteCart(userId, cart.items);
+    setCache({ cart });
+    return;
+  }
+
+  if (guestCart.items.length) {
     await persistRemoteCart(userId, cart.items);
   }
 
@@ -337,11 +356,16 @@ export function getCartUpdatedAt(): string | null {
 
 export function saveCart(next: CartItem[]) {
   const session = getSession();
+  const stored: StoredCart = { items: next, updatedAt: new Date().toISOString() };
+
   if (session) {
+    setCache({ cart: stored });
     void persistRemoteCart(session.userId, next);
     return;
   }
-  setCache({ cart: { items: next, updatedAt: new Date().toISOString() } });
+
+  setCache({ cart: stored });
+  writePersistedCart(stored);
 }
 
 export function getOrders(): Order[] {
@@ -549,12 +573,18 @@ export function setCustomerRequestStatus(id: string, status: CustomerRequestStat
 }
 
 export async function syncAuthSession() {
-  return refreshSession();
+  const session = await refreshSession();
+  if (session) {
+    await loadRemoteCart(session.userId);
+  } else {
+    setCache({ cart: readPersistedCart() });
+  }
+  return session;
 }
 
 export async function signOutRemote() {
   await supabase().auth.signOut();
-  setCache({ session: null, cart: { items: [], updatedAt: new Date().toISOString() } });
+  setCache({ session: null, cart: readPersistedCart() });
 }
 
 export { createClient };
