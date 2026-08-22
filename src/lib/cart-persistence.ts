@@ -35,5 +35,5 @@ export function mergeCartItems(...groups: CartItem[][]): CartItem[] {
       quantities.set(item.productId, (quantities.get(item.productId) ?? 0) + item.quantity);
     }
   }
-  return [...quantities.entries()].map(([productId, quantity]) => ({ productId, quantity }));
+  return Array.from(quantities.entries()).map(([productId, quantity]) => ({ productId, quantity }));
 }
