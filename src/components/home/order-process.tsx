@@ -5,7 +5,7 @@ import { Banknote, ChevronRight, ClipboardCheck, ShoppingBag, Truck } from "luci
 const STEPS = [
   { icon: ShoppingBag, title: "Choose Trees", text: "Add to cart" },
   { icon: ClipboardCheck, title: "Place Order", text: "Get a reference" },
-  { icon: Banknote, title: "Pay & Proof", text: "Transfer, then WhatsApp" },
+  { icon: Banknote, title: "Pay Your Way", text: "Transfer + WhatsApp, or cash on delivery" },
   { icon: Truck, title: "Collect Or Send", text: "Terminal, local, or courier" },
 ];
 

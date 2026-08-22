@@ -59,9 +59,9 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 px-4 pt-[max(1rem,env(safe-area-inset-top))] print:hidden">
-      <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full glass px-4 py-2 md:px-6">
-        <Link href="/" className="flex items-center">
-          <Logo variant="horizontal" iconSize={44} wordmarkVisibility="always" priority />
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 rounded-full glass px-3 py-2 sm:px-4 md:px-6">
+        <Link href="/" className="flex min-w-0 shrink items-center">
+          <Logo variant="horizontal" iconSize={42} wordmarkVisibility="always" priority />
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
@@ -76,11 +76,15 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
           <NavSearch className="hidden w-44 md:block lg:w-56" />
-          {isAdmin && <AdminNotificationBell adminId={user.id} />}
+          {isAdmin && (
+            <div className="hidden md:block">
+              <AdminNotificationBell adminId={user.id} />
+            </div>
+          )}
           {isCustomer && (
-            <div className="hidden sm:block">
+            <div className="hidden md:block">
               <NotificationBell userId={user.id} />
             </div>
           )}
@@ -92,12 +96,12 @@ export function Header() {
               </Link>
             </Button>
           )}
-          <Button variant="ghost" size="icon" aria-label="Account" className="hidden lg:inline-flex" asChild>
+          <Button variant="ghost" size="icon" aria-label="Account" className="shrink-0" asChild>
             <Link href={accountHref}>
               <UserRound className="h-5 w-5" />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" aria-label="Cart" asChild className="relative hidden sm:inline-flex">
+          <Button variant="ghost" size="icon" aria-label="Cart" asChild className="relative shrink-0">
             <Link href="/cart">
               <ShoppingBag className="h-5 w-5" />
               {count > 0 && (
