@@ -145,9 +145,9 @@ export function ScrollCarousel({
               aria-label={prevLabel}
               disabled={!canPrev}
               onClick={() => scrollByPage(-1)}
-              className="absolute -left-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 shadow-lg sm:inline-flex lg:-left-5"
+              className="absolute left-0 top-1/2 z-10 inline-flex h-10 w-10 -translate-y-1/2 shadow-lg ring-1 ring-forest/10 sm:-left-3 sm:h-12 sm:w-12 lg:-left-5"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
             <Button
               type="button"
@@ -156,64 +156,38 @@ export function ScrollCarousel({
               aria-label={nextLabel}
               disabled={!canNext}
               onClick={() => scrollByPage(1)}
-              className="absolute -right-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 shadow-lg sm:inline-flex lg:-right-5"
+              className="absolute right-0 top-1/2 z-10 inline-flex h-10 w-10 -translate-y-1/2 shadow-lg ring-1 ring-forest/10 sm:-right-3 sm:h-12 sm:w-12 lg:-right-5"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </>
         )}
       </div>
 
       {hasControls && mobileControls && (
-        <div className="mt-5 sm:hidden">
-          <div className="flex items-center justify-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label={prevLabel}
-              disabled={!canPrev}
-              onClick={() => scrollByPage(-1)}
-              className="h-10 w-10 shrink-0 rounded-full"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-
-            <div className="flex min-w-0 flex-1 items-center justify-center gap-0 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {Array.from({ length: pages }).map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Go to slide ${i + 1}`}
-                  aria-current={i === page ? "true" : undefined}
-                  onClick={() => goTo(i)}
-                  className="flex h-9 w-7 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
-                >
-                  <span
-                    className={cn(
-                      "block rounded-full transition-[width,background-color,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                      i === page ? "h-2 w-6 bg-forest opacity-100" : "h-2 w-2 bg-forest/30 opacity-80"
-                    )}
-                  />
-                </button>
-              ))}
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label={nextLabel}
-              disabled={!canNext}
-              onClick={() => scrollByPage(1)}
-              className="h-10 w-10 shrink-0 rounded-full"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+        <div className="mt-3 sm:hidden">
+          <div className="flex items-center justify-center gap-0">
+            {Array.from({ length: pages }).map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={i === page ? "true" : undefined}
+                onClick={() => goTo(i)}
+                className="flex h-9 w-7 shrink-0 items-center justify-center rounded-full active:bg-forest/10"
+              >
+                <span
+                  className={cn(
+                    "block rounded-full transition-[width,background-color,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    i === page ? "h-2 w-6 bg-forest opacity-100" : "h-2 w-2 bg-forest/30 opacity-80"
+                  )}
+                />
+              </button>
+            ))}
           </div>
 
           <p
-            className="mt-2 text-center text-[11px] font-medium tabular-nums tracking-wide text-ink/45 transition-opacity duration-300"
+            className="mt-1.5 text-center text-[11px] font-medium tabular-nums tracking-wide text-ink/45 transition-opacity duration-300"
             aria-live="polite"
           >
             {page + 1} of {pages}
