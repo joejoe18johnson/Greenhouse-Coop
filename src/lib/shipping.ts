@@ -46,16 +46,27 @@ export function recommendBox(
 
 export function isLocalTown(town: string, settings: LocalDeliverySettings) {
   return settings.towns.some(
-    (t) => t.toLowerCase() === town.trim().toLowerCase()
+    (entry) => entry.name.toLowerCase() === town.trim().toLowerCase()
+  );
+}
+
+export function getLocalTownFee(town: string, settings: LocalDeliverySettings) {
+  return (
+    settings.towns.find(
+      (entry) => entry.name.toLowerCase() === town.trim().toLowerCase()
+    )?.fee ?? 0
   );
 }
 
 export function getLocalDeliveryFee(
   subtotal: number,
+  town: string,
   settings: LocalDeliverySettings
 ) {
+  const baseFee = getLocalTownFee(town, settings);
+  if (baseFee === 0) return 0;
   if (subtotal >= settings.freeThreshold) return 0;
-  return settings.fee;
+  return baseFee;
 }
 
 export function getCourierEstimate(
@@ -115,6 +126,7 @@ export function quoteShipping(options: {
       method: "local" as const,
       deliveryFee: getLocalDeliveryFee(
         options.subtotal,
+        options.town,
         options.shipping.localDelivery
       ),
       courierEstimate: 0,

@@ -146,9 +146,13 @@ export interface Courier {
   rates: CourierRate[];
 }
 
-export interface LocalDeliverySettings {
-  towns: string[];
+export interface LocalDeliveryTown {
+  name: string;
   fee: number;
+}
+
+export interface LocalDeliverySettings {
+  towns: LocalDeliveryTown[];
   freeThreshold: number;
   currency: string;
 }

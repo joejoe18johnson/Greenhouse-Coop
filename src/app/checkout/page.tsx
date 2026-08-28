@@ -23,7 +23,8 @@ import { getBankDetails, createOrder } from "@/lib/store";
 import { bankAccounts } from "@/lib/bank";
 import { isLocalTown, computeOrderTotal, getCourierEstimate, quoteShipping } from "@/lib/shipping";
 import { getIdsZoneLabel } from "@/lib/ids-rates";
-import { localDeliveryWaivedText } from "@/lib/shipping-copy";
+import { localDeliveryFeeForTownText, localDeliveryWaivedText } from "@/lib/shipping-copy";
+import { getLocalTownFee } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import {
@@ -274,8 +275,14 @@ export default function CheckoutPage() {
                 {local ? (
                   <p className="mt-4 flex items-start gap-3 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
                     <Truck className="mt-0.5 h-4 w-4 shrink-0" />
-                    Local delivery to {town}. Flat {formatBZD(shipping.localDelivery.fee)}
-                    {subtotal >= shipping.localDelivery.freeThreshold ? localDeliveryWaivedText(shipping) : "."}
+                    Local delivery to {town}.{" "}
+                    {localDeliveryFeeForTownText(shipping, town, subtotal) === "FREE"
+                      ? "FREE"
+                      : `Flat ${localDeliveryFeeForTownText(shipping, town, subtotal)}`}
+                    {getLocalTownFee(town, shipping.localDelivery) > 0 &&
+                    subtotal >= shipping.localDelivery.freeThreshold
+                      ? localDeliveryWaivedText(shipping)
+                      : "."}
                   </p>
                 ) : (
                   <div className="mt-4">

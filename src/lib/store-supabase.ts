@@ -21,6 +21,7 @@ import {
   type ProfileRow,
 } from "@/lib/supabase/mappers";
 import { normalizePropagationType } from "@/lib/propagation";
+import { normalizeShippingSettings } from "@/lib/shipping-settings";
 import { CART_HOLD_MS } from "@/lib/constants";
 import { mergeCartItems, readPersistedCart, writePersistedCart } from "@/lib/cart-persistence";
 import { generateInvoiceNumber, generateReference } from "@/lib/utils";
@@ -42,7 +43,7 @@ import type {
   User,
 } from "@/types";
 
-const defaultShipping = shippingSeed as ShippingSettings;
+const defaultShipping = normalizeShippingSettings(shippingSeed as ShippingSettings);
 const defaultCouriers = couriersSeed as Courier[];
 const defaultIdsRates = idsRatesSeed as IdsRates;
 const defaultBank = bankSeed as BankDetails;
@@ -157,7 +158,7 @@ export async function hydrateStore() {
   if (productError) throw productError;
 
   const products = ((productRows ?? []) as ProductRow[]).map(productFromRow);
-  const shipping = await fetchSetting("shipping", defaultShipping);
+  const shipping = normalizeShippingSettings(await fetchSetting("shipping", defaultShipping));
   const couriers = await fetchSetting("couriers", defaultCouriers);
   const idsRates = await fetchSetting("ids_rates", defaultIdsRates);
   const bank = await fetchSetting("bank", defaultBank);
@@ -293,7 +294,7 @@ async function adminDeleteProduct(id: string) {
 }
 
 export async function reloadCatalogSettings() {
-  const shipping = await fetchSetting("shipping", defaultShipping);
+  const shipping = normalizeShippingSettings(await fetchSetting("shipping", defaultShipping));
   const couriers = await fetchSetting("couriers", defaultCouriers);
   const idsRates = await fetchSetting("ids_rates", defaultIdsRates);
   const bank = await fetchSetting("bank", defaultBank);
@@ -377,12 +378,13 @@ export function saveOrders(next: Order[]) {
 }
 
 export function getShippingSettings(): ShippingSettings {
-  return getCache().shipping ?? defaultShipping;
+  return normalizeShippingSettings(getCache().shipping ?? defaultShipping);
 }
 
 export async function saveShippingSettings(next: ShippingSettings) {
-  setCache({ shipping: next });
-  await adminSaveSetting("shipping", next);
+  const normalized = normalizeShippingSettings(next);
+  setCache({ shipping: normalized });
+  await adminSaveSetting("shipping", normalized);
   await reloadCatalogSettings();
 }
 

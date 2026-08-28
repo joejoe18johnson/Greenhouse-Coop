@@ -12,6 +12,7 @@ import {
 import { getItem, setItem } from "@/lib/storage";
 import { generateId, generateInvoiceNumber, generateReference, hashPassword } from "@/lib/utils";
 import { normalizePropagationType } from "@/lib/propagation";
+import { normalizeShippingSettings } from "@/lib/shipping-settings";
 import { computeOrderTotal } from "@/lib/shipping";
 import { ensureAdminUser } from "@/lib/demo";
 import { readPersistedCart, writePersistedCart } from "@/lib/cart-persistence";
@@ -248,11 +249,11 @@ export function saveOrders(next: Order[]) {
 }
 
 export function getShippingSettings(): ShippingSettings {
-  return getItem<ShippingSettings>(STORAGE_KEYS.shipping, shipping);
+  return normalizeShippingSettings(getItem(STORAGE_KEYS.shipping, shipping));
 }
 
 export function saveShippingSettings(next: ShippingSettings) {
-  setItem(STORAGE_KEYS.shipping, next);
+  setItem(STORAGE_KEYS.shipping, normalizeShippingSettings(next));
 }
 
 export function getCouriers(): Courier[] {
