@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useStore } from "@/context/store-context";
 import { STORE_UPDATED_EVENT } from "@/lib/store-events";
 import { subscribe } from "@/lib/storage";
@@ -8,18 +8,21 @@ import { subscribe } from "@/lib/storage";
 /** Re-run `onUpdate` when the store hydrates or catalog/settings change (same or other tab). */
 export function useStoreSync(onUpdate: () => void) {
   const { ready } = useStore();
+  const onUpdateRef = useRef(onUpdate);
+  onUpdateRef.current = onUpdate;
 
   useEffect(() => {
     if (!ready) return;
-    onUpdate();
-  }, [ready, onUpdate]);
+    onUpdateRef.current();
+  }, [ready]);
 
   useEffect(() => {
-    window.addEventListener(STORE_UPDATED_EVENT, onUpdate);
-    const unsubStorage = subscribe(onUpdate);
+    const handler = () => onUpdateRef.current();
+    window.addEventListener(STORE_UPDATED_EVENT, handler);
+    const unsubStorage = subscribe(handler);
     return () => {
-      window.removeEventListener(STORE_UPDATED_EVENT, onUpdate);
+      window.removeEventListener(STORE_UPDATED_EVENT, handler);
       unsubStorage();
     };
-  }, [onUpdate]);
+  }, []);
 }

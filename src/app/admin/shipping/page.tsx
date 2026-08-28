@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,27 +22,40 @@ export default function AdminShippingPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const dirtyRef = useRef(false);
 
-  useStoreSync(() => {
+  const refresh = useCallback(() => {
+    if (dirtyRef.current) return;
     setSettings(getShippingSettings());
-  });
+  }, []);
+
+  useStoreSync(refresh);
 
   useEffect(() => {
-    if (ready) setSettings(getShippingSettings());
-  }, [ready]);
+    if (ready) refresh();
+  }, [ready, refresh]);
+
+  function markDirty() {
+    dirtyRef.current = true;
+  }
+
+  function replaceSettings(next: ShippingSettings) {
+    markDirty();
+    setSettings(next);
+  }
 
   function updateTown(index: number, patch: Partial<LocalDeliveryTown>) {
     const towns = settings.localDelivery.towns.map((town, i) =>
       i === index ? { ...town, ...patch } : town
     );
-    setSettings({
+    replaceSettings({
       ...settings,
       localDelivery: { ...settings.localDelivery, towns },
     });
   }
 
   function addTown() {
-    setSettings({
+    replaceSettings({
       ...settings,
       localDelivery: {
         ...settings.localDelivery,
@@ -52,7 +65,7 @@ export default function AdminShippingPage() {
   }
 
   function removeTown(index: number) {
-    setSettings({
+    replaceSettings({
       ...settings,
       localDelivery: {
         ...settings.localDelivery,
@@ -81,6 +94,7 @@ export default function AdminShippingPage() {
         throw new Error("Add at least one local delivery area.");
       }
       await saveShippingSettings(cleaned);
+      dirtyRef.current = false;
       setSettings(getShippingSettings());
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -119,6 +133,7 @@ export default function AdminShippingPage() {
                     type="number"
                     min={0}
                     step={1}
+                    inputMode="decimal"
                     value={town.fee}
                     onChange={(e) => updateTown(index, { fee: parseFee(e.target.value) })}
                   />
@@ -154,7 +169,7 @@ export default function AdminShippingPage() {
             min={0}
             value={settings.localDelivery.freeThreshold}
             onChange={(e) =>
-              setSettings({
+              replaceSettings({
                 ...settings,
                 localDelivery: {
                   ...settings.localDelivery,
@@ -174,34 +189,37 @@ export default function AdminShippingPage() {
                 onChange={(e) => {
                   const boxes = [...settings.boxes];
                   boxes[i] = { ...box, name: e.target.value };
-                  setSettings({ ...settings, boxes });
+                  replaceSettings({ ...settings, boxes });
                 }}
               />
               <Input
                 type="number"
+                min={0}
                 value={box.price}
                 onChange={(e) => {
                   const boxes = [...settings.boxes];
-                  boxes[i] = { ...box, price: Number(e.target.value) };
-                  setSettings({ ...settings, boxes });
+                  boxes[i] = { ...box, price: Number(e.target.value) || 0 };
+                  replaceSettings({ ...settings, boxes });
                 }}
               />
               <Input
                 type="number"
+                min={0}
                 value={box.minPlants}
                 onChange={(e) => {
                   const boxes = [...settings.boxes];
-                  boxes[i] = { ...box, minPlants: Number(e.target.value) };
-                  setSettings({ ...settings, boxes });
+                  boxes[i] = { ...box, minPlants: Number(e.target.value) || 0 };
+                  replaceSettings({ ...settings, boxes });
                 }}
               />
               <Input
                 type="number"
+                min={0}
                 value={box.maxPlants}
                 onChange={(e) => {
                   const boxes = [...settings.boxes];
-                  boxes[i] = { ...box, maxPlants: Number(e.target.value) };
-                  setSettings({ ...settings, boxes });
+                  boxes[i] = { ...box, maxPlants: Number(e.target.value) || 0 };
+                  replaceSettings({ ...settings, boxes });
                 }}
               />
             </div>

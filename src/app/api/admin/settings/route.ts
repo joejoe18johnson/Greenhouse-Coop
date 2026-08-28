@@ -34,7 +34,7 @@ export async function PUT(request: Request) {
   }
 
   const db = createServiceClient() ?? auth.supabase;
-  const { error } = await db.from("app_settings").upsert({ key, value });
+  const { error } = await db.from("app_settings").upsert({ key, value }, { onConflict: "key" });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
