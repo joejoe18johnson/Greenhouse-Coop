@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { IdsRateTable } from "@/components/delivery/ids-rate-table";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
@@ -103,12 +104,12 @@ export default function AdminCouriersPage() {
                 {IDS_PACKAGE_TIERS.map((tier) => (
                   <label key={tier} className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
                     <span className="text-ink/70">{idsPackageLabel(tier, idsRates)}</span>
-                    <Input
+                    <NumberInput
                       className="w-full sm:w-28"
-                      type="number"
-                      step="0.01"
+                      allowDecimal
+                      min={0}
                       value={idsRates.zones[zoneId].packages[tier]}
-                      onChange={(e) => updateIdsPackage(zoneId, tier, Number(e.target.value))}
+                      onChange={(fee) => updateIdsPackage(zoneId, tier, fee)}
                     />
                   </label>
                 ))}
@@ -150,14 +151,15 @@ export default function AdminCouriersPage() {
             {ezy.rates.map((rate, ri) => (
               <label key={rate.district} className="text-sm">
                 {rate.district}
-                <Input
+                <NumberInput
                   className="mt-1"
-                  type="number"
+                  min={0}
+                  allowDecimal
                   value={rate.fee}
-                  onChange={(e) => {
+                  onChange={(fee) => {
                     const next = [...couriers];
                     const rates = [...ezy.rates];
-                    rates[ri] = { ...rate, fee: Number(e.target.value) };
+                    rates[ri] = { ...rate, fee };
                     next[ezyIndex] = { ...ezy, rates };
                     setCouriers(next);
                   }}

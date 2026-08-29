@@ -4,17 +4,12 @@ import { Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import { getShippingSettings, saveShippingSettings } from "@/lib/store";
 import { useStore } from "@/context/store-context";
 import { useStoreSync } from "@/hooks/use-store-sync";
 import type { LocalDeliveryTown, ShippingSettings } from "@/types";
-
-function parseFee(value: string) {
-  const fee = Number(value);
-  if (!Number.isFinite(fee) || fee < 0) return 0;
-  return fee;
-}
 
 export default function AdminShippingPage() {
   const { ready } = useStore();
@@ -85,7 +80,7 @@ export default function AdminShippingPage() {
           towns: settings.localDelivery.towns
             .map((town) => ({
               name: town.name.trim(),
-              fee: parseFee(String(town.fee)),
+              fee: Math.max(0, town.fee),
             }))
             .filter((town) => town.name),
         },
@@ -128,14 +123,11 @@ export default function AdminShippingPage() {
                 </div>
                 <div>
                   {index === 0 && <Label className="text-xs text-ink/45">Fee (BZD)</Label>}
-                  <Input
+                  <NumberInput
                     className="mt-1"
-                    type="number"
                     min={0}
-                    step={1}
-                    inputMode="decimal"
                     value={town.fee}
-                    onChange={(e) => updateTown(index, { fee: parseFee(e.target.value) })}
+                    onChange={(fee) => updateTown(index, { fee })}
                   />
                 </div>
                 <div className={index === 0 ? "sm:mt-6" : ""}>
@@ -163,17 +155,16 @@ export default function AdminShippingPage() {
           <p className="mt-1 text-xs text-ink/45">
             Applies to paid local areas only. Towns set to 0 stay free regardless of order size.
           </p>
-          <Input
+          <NumberInput
             className="mt-2 max-w-xs"
-            type="number"
             min={0}
             value={settings.localDelivery.freeThreshold}
-            onChange={(e) =>
+            onChange={(freeThreshold) =>
               replaceSettings({
                 ...settings,
                 localDelivery: {
                   ...settings.localDelivery,
-                  freeThreshold: Math.max(0, Number(e.target.value) || 0),
+                  freeThreshold,
                 },
               })
             }
@@ -192,33 +183,31 @@ export default function AdminShippingPage() {
                   replaceSettings({ ...settings, boxes });
                 }}
               />
-              <Input
-                type="number"
+              <NumberInput
                 min={0}
+                allowDecimal
                 value={box.price}
-                onChange={(e) => {
+                onChange={(price) => {
                   const boxes = [...settings.boxes];
-                  boxes[i] = { ...box, price: Number(e.target.value) || 0 };
+                  boxes[i] = { ...box, price };
                   replaceSettings({ ...settings, boxes });
                 }}
               />
-              <Input
-                type="number"
+              <NumberInput
                 min={0}
                 value={box.minPlants}
-                onChange={(e) => {
+                onChange={(minPlants) => {
                   const boxes = [...settings.boxes];
-                  boxes[i] = { ...box, minPlants: Number(e.target.value) || 0 };
+                  boxes[i] = { ...box, minPlants };
                   replaceSettings({ ...settings, boxes });
                 }}
               />
-              <Input
-                type="number"
+              <NumberInput
                 min={0}
                 value={box.maxPlants}
-                onChange={(e) => {
+                onChange={(maxPlants) => {
                   const boxes = [...settings.boxes];
-                  boxes[i] = { ...box, maxPlants: Number(e.target.value) || 0 };
+                  boxes[i] = { ...box, maxPlants };
                   replaceSettings({ ...settings, boxes });
                 }}
               />

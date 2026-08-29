@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
@@ -154,11 +155,12 @@ export default function AdminProductsPage() {
             </div>
             <div>
               <Label>Price BZD</Label>
-              <Input
+              <NumberInput
                 className="mt-1"
-                type="number"
+                allowDecimal
+                min={0}
                 value={form.price}
-                onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                onChange={(price) => setForm({ ...form, price })}
               />
             </div>
             <div>
@@ -208,7 +210,7 @@ export default function AdminProductsPage() {
               <Label>Flavor profile</Label>
               <Textarea className="mt-1" value={form.flavorProfile} onChange={(e) => setForm({ ...form, flavorProfile: e.target.value })} />
             </div>
-            <Checkbox checked={form.featured} onChange={(checked) => setForm({ ...form, featured: checked })} label="Featured" />
+            <Checkbox checked={form.featured} onChange={(checked) => setForm({ ...form, featured: checked })} label="Featured on homepage" />
             <div className="md:col-span-2 flex flex-wrap gap-3 pt-2">
               <Button type="submit" disabled={saving}>
                 {saving ? "Saving…" : editing ? "Update product" : "Add product"}
