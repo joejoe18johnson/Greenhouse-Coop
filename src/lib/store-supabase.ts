@@ -24,6 +24,9 @@ import { normalizePropagationType } from "@/lib/propagation";
 import { normalizeShippingSettings } from "@/lib/shipping-settings";
 import { CART_HOLD_MS } from "@/lib/constants";
 import { mergeCartItems, readPersistedCart, writePersistedCart } from "@/lib/cart-persistence";
+import {
+  type AdminCreateOrderInput,
+} from "@/lib/admin-order";
 import { generateInvoiceNumber, generateReference } from "@/lib/utils";
 import type {
   BankDetails,
@@ -483,6 +486,32 @@ export function createOrder(
   })();
 
   return order;
+}
+
+export async function createAdminOrder(input: AdminCreateOrderInput): Promise<Order> {
+  const res = await fetch("/api/admin/orders", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  const body = (await res.json().catch(() => ({}))) as {
+    error?: string;
+    order?: Order;
+    customerCreated?: boolean;
+  };
+  if (!res.ok || !body.order) {
+    throw new Error(body.error || "Could not create order.");
+  }
+
+  setCache({ orders: [body.order, ...getOrders()] });
+
+  if (body.customerCreated && getSession()?.role === "admin") {
+    const users = await loadAllUsersForAdmin();
+    setCache({ users });
+  }
+
+  return body.order;
 }
 
 export function updateOrderStatus(id: string, status: OrderStatus, note?: string) {

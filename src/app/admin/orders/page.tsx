@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOrders } from "@/lib/store";
 import { formatBZD } from "@/lib/utils";
@@ -19,8 +21,18 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="min-w-0">
-      <h1 className="page-title font-semibold">Orders</h1>
-      <p className="mt-2 text-sm text-ink/55">{orders.length} total · filter by stage</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="page-title font-semibold">Orders</h1>
+          <p className="mt-2 text-sm text-ink/55">{orders.length} total · filter by stage</p>
+        </div>
+        <Button asChild className="gap-2">
+          <Link href="/admin/orders/new">
+            <Plus className="h-4 w-4" />
+            Create order
+          </Link>
+        </Button>
+      </div>
       <div className="mt-4 flex flex-wrap gap-2">
         {["All", ...ORDER_STATUSES].map((s) => (
           <button

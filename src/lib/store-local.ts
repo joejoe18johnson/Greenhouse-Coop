@@ -18,6 +18,12 @@ import { ensureAdminUser } from "@/lib/demo";
 import { readPersistedCart, writePersistedCart } from "@/lib/cart-persistence";
 import { customerTimelineNote } from "@/lib/order-status-messages";
 import { updateStockWaitStatus, isDuplicateStockWait } from "@/lib/stock-wait-requests";
+import {
+  buildAdminOrderDraft,
+  validateAdminCreateOrderInput,
+  type AdminCreateOrderInput,
+} from "@/lib/admin-order";
+import { ensureOrderCustomerLocal } from "@/lib/ensure-order-customer";
 import type {
   BankDetails,
   CartItem,
@@ -322,6 +328,30 @@ export function createOrder(input: Omit<Order, "id" | "createdAt" | "updatedAt" 
     timeline: [
       { status: input.status, at: now, note: customerTimelineNote(input.status, undefined, input.payment) },
     ],
+  };
+  const orders = getOrders();
+  orders.unshift(order);
+  saveOrders(orders);
+  return order;
+}
+
+export function createAdminOrder(input: AdminCreateOrderInput): Order {
+  validateAdminCreateOrderInput(input);
+  const userId = ensureOrderCustomerLocal(input.customer);
+  const draft = buildAdminOrderDraft({
+    input,
+    userId,
+    products: getProducts(),
+    shipping: getShippingSettings(),
+    couriers: getCouriers(),
+    idsRates: getIdsRates(),
+  });
+  const now = new Date().toISOString();
+  const order: Order = {
+    ...draft,
+    id: generateId("ord"),
+    createdAt: now,
+    updatedAt: now,
   };
   const orders = getOrders();
   orders.unshift(order);
