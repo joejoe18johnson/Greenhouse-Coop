@@ -44,7 +44,6 @@ export function Header() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const isAdminArea = pathname.startsWith("/admin");
-  const isHome = pathname === "/";
 
   const isAdmin = session?.role === "admin" && user;
   const isCustomer = session?.role === "customer" && user;
@@ -125,7 +124,9 @@ export function Header() {
           </div>
         </div>
 
-        {!isHome && <NavSearch className="mt-2 md:hidden" compact />}
+        <div className="mt-4 pb-3 md:hidden">
+          <NavSearch compact />
+        </div>
       </div>
 
       <Sheet open={open} onOpenChange={setOpen}>
