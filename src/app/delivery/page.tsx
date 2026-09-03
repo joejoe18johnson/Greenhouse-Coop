@@ -11,7 +11,6 @@ import { useIdsRates } from "@/hooks/use-ids-rates";
 import { useShippingSettings } from "@/hooks/use-shipping-settings";
 import {
   localDeliveryFeeText,
-  localDeliveryFreeOverText,
   localDeliveryTownsLabel,
 } from "@/lib/shipping-copy";
 import { formatBZD } from "@/lib/utils";
@@ -57,7 +56,6 @@ export default function DeliveryPage() {
         </SectionHeading>
         <p className="mt-3 text-cream/80">{localDeliveryTownsLabel(shipping)}</p>
         <p className="mt-4 text-2xl font-semibold">{localDeliveryFeeText(shipping)}</p>
-        <p className="mt-1 text-cream/75">{localDeliveryFreeOverText(shipping)}</p>
       </section>
       <section className="mt-8 rounded-[28px] bg-white/80 p-5 sm:p-8">
         <SectionHeading icon={Building2}>IDS (Inter District Shipping)</SectionHeading>

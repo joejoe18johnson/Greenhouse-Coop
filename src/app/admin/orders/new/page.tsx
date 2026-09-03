@@ -38,8 +38,8 @@ import {
   type PaymentPlan,
 } from "@/lib/order-deposit";
 import { createAdminOrder } from "@/lib/store";
-import { localDeliveryFeeForTownText, localDeliveryWaivedText } from "@/lib/shipping-copy";
-import { getLocalTownFee, isLocalTown } from "@/lib/shipping";
+import { localDeliveryFeeForTownText } from "@/lib/shipping-copy";
+import { isLocalTown } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import locations from "@/data/locations.json";
@@ -426,14 +426,10 @@ export default function AdminCreateOrderPage() {
                 </div>
                 {local ? (
                   <p className="sm:col-span-2 text-sm text-ink/55">
-                    Local delivery ·{" "}
-                    {localDeliveryFeeForTownText(shipping, customer.town, preview?.subtotal ?? 0) === "FREE"
+                    Local delivery to {customer.town}.{" "}
+                    {localDeliveryFeeForTownText(shipping, customer.town) === "FREE"
                       ? "FREE"
-                      : `Flat ${localDeliveryFeeForTownText(shipping, customer.town, preview?.subtotal ?? 0)}`}
-                    {getLocalTownFee(customer.town, shipping.localDelivery) > 0 &&
-                    (preview?.subtotal ?? 0) >= shipping.localDelivery.freeThreshold
-                      ? localDeliveryWaivedText(shipping)
-                      : null}
+                      : `Flat ${localDeliveryFeeForTownText(shipping, customer.town)}.`}
                   </p>
                 ) : (
                   <div className="sm:col-span-2">

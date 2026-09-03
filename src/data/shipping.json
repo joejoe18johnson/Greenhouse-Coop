@@ -1,11 +1,11 @@
 {
   "localDelivery": {
     "towns": [
-      { "name": "Belmopan", "fee": 5 },
-      { "name": "Roaring Creek", "fee": 5 },
-      { "name": "Camalote", "fee": 5 }
+      { "name": "Belmopan", "fee": 0 },
+      { "name": "Roaring Creek", "fee": 0 },
+      { "name": "Camalote", "fee": 0 }
     ],
-    "freeThreshold": 100,
+    "freeThreshold": 0,
     "currency": "BZD"
   },
   "boxes": [

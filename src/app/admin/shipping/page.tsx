@@ -107,7 +107,7 @@ export default function AdminShippingPage() {
         <div>
           <h2 className="font-semibold text-forest">Local delivery areas</h2>
           <p className="mt-1 text-sm text-ink/55">
-            Set a delivery fee for each local town. Use <strong>0</strong> for free delivery to that area.
+            Set a delivery fee for each local town. Use <strong>0</strong> for free delivery.
           </p>
           <div className="mt-4 space-y-3">
             {settings.localDelivery.towns.map((town, index) => (
@@ -148,27 +148,6 @@ export default function AdminShippingPage() {
             <Plus className="h-4 w-4" />
             Add local area
           </Button>
-        </div>
-
-        <div>
-          <Label>Free delivery over (BZD)</Label>
-          <p className="mt-1 text-xs text-ink/45">
-            Applies to paid local areas only. Towns set to 0 stay free regardless of order size.
-          </p>
-          <NumberInput
-            className="mt-2 max-w-xs"
-            min={0}
-            value={settings.localDelivery.freeThreshold}
-            onChange={(freeThreshold) =>
-              replaceSettings({
-                ...settings,
-                localDelivery: {
-                  ...settings.localDelivery,
-                  freeThreshold,
-                },
-              })
-            }
-          />
         </div>
 
         <div className="space-y-3">

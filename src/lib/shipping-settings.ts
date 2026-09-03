@@ -11,7 +11,7 @@ type LegacyLocalDelivery = {
 const defaultShipping = normalizeShippingSettings(shippingSeed as ShippingSettings);
 
 export function normalizeLocalDelivery(raw: LegacyLocalDelivery): LocalDeliverySettings {
-  const freeThreshold = typeof raw.freeThreshold === "number" ? raw.freeThreshold : 100;
+  const freeThreshold = typeof raw.freeThreshold === "number" ? raw.freeThreshold : 0;
   const currency = raw.currency ?? "BZD";
   const legacyFee = typeof raw.fee === "number" ? raw.fee : 0;
   const towns = raw.towns ?? [];

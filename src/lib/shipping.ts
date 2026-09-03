@@ -59,14 +59,11 @@ export function getLocalTownFee(town: string, settings: LocalDeliverySettings) {
 }
 
 export function getLocalDeliveryFee(
-  subtotal: number,
+  _subtotal: number,
   town: string,
   settings: LocalDeliverySettings
 ) {
-  const baseFee = getLocalTownFee(town, settings);
-  if (baseFee === 0) return 0;
-  if (subtotal >= settings.freeThreshold) return 0;
-  return baseFee;
+  return getLocalTownFee(town, settings);
 }
 
 export function getCourierEstimate(
