@@ -68,6 +68,7 @@ export const STORAGE_KEYS = {
   stockWaitRequests: "stockWaitRequests",
   customerRequests: "customerRequests",
   customerRequestsSeeded: "customerRequestsSeeded",
+  featuredProductOrder: "featuredProductOrder",
 } as const;
 
 export const ORDER_STATUSES = [

@@ -1,18 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductCarousel } from "@/components/product/product-carousel";
-import { useProducts } from "@/hooks/use-products";
+import { useFeaturedProducts } from "@/hooks/use-featured-products";
 
 export function SellingFast() {
-  const products = useProducts();
-  const featured = useMemo(
-    () => products.filter((product) => product.featured),
-    [products]
-  );
+  const featured = useFeaturedProducts();
 
   if (!featured.length) return null;
 

@@ -110,15 +110,33 @@ export async function saveBankDetails(next: Parameters<typeof local.saveBankDeta
   notifyStoreUpdate();
 }
 
+export function getFeaturedProductOrder() {
+  return isRemoteBackend() ? remote.getFeaturedProductOrder() : local.getFeaturedProductOrder();
+}
+
+export async function saveFeaturedProductOrder(next: string[]) {
+  if (isRemoteBackend()) await remote.saveFeaturedProductOrder(next);
+  else local.saveFeaturedProductOrder(next);
+  notifyStoreUpdate();
+}
+
+async function syncFeaturedOrderAfterCatalogChange() {
+  const order = getFeaturedProductOrder();
+  if (isRemoteBackend()) await remote.saveFeaturedProductOrder(order);
+  else local.saveFeaturedProductOrder(order);
+}
+
 export async function upsertProduct(product: Parameters<typeof local.upsertProduct>[0]) {
   if (isRemoteBackend()) await remote.upsertProduct(product);
   else local.upsertProduct(product);
+  await syncFeaturedOrderAfterCatalogChange();
   notifyStoreUpdate();
 }
 
 export async function deleteProduct(id: string) {
   if (isRemoteBackend()) await remote.deleteProduct(id);
   else local.deleteProduct(id);
+  await syncFeaturedOrderAfterCatalogChange();
   notifyStoreUpdate();
 }
 

@@ -215,6 +215,7 @@ export interface DataCache {
   cart: StoredCart;
   stockWaitRequests: StockWaitRequest[];
   customerRequests: CustomerRequest[];
+  featuredProductOrder: string[];
 }
 
 export function createEmptyCache(): DataCache {
@@ -230,6 +231,7 @@ export function createEmptyCache(): DataCache {
     cart: { items: [], updatedAt: new Date().toISOString() },
     stockWaitRequests: [],
     customerRequests: [],
+    featuredProductOrder: [],
   };
 }
 

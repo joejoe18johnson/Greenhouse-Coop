@@ -27,6 +27,7 @@ import { mergeCartItems, readPersistedCart, writePersistedCart } from "@/lib/car
 import {
   type AdminCreateOrderInput,
 } from "@/lib/admin-order";
+import { syncFeaturedProductOrder } from "@/lib/featured-products";
 import { generateInvoiceNumber, generateReference } from "@/lib/utils";
 import type {
   BankDetails,
@@ -167,6 +168,10 @@ export async function hydrateStore() {
   const bank = await fetchSetting("bank", defaultBank);
   const stockWaitRequests = await fetchSetting<StockWaitRequest[]>("stock_wait_requests", []);
   const customerRequests = await loadCustomerRequests();
+  const featuredProductOrder = syncFeaturedProductOrder(
+    await fetchSetting<string[]>("featured_product_order", []),
+    products.length ? products : seedProducts
+  );
 
   setCache({
     products: products.length ? products : seedProducts,
@@ -176,6 +181,7 @@ export async function hydrateStore() {
     bank,
     stockWaitRequests,
     customerRequests,
+    featuredProductOrder,
     orders: [],
     users: [],
   });
@@ -301,7 +307,11 @@ export async function reloadCatalogSettings() {
   const couriers = await fetchSetting("couriers", defaultCouriers);
   const idsRates = await fetchSetting("ids_rates", defaultIdsRates);
   const bank = await fetchSetting("bank", defaultBank);
-  setCache({ shipping, couriers, idsRates, bank });
+  const featuredProductOrder = syncFeaturedProductOrder(
+    await fetchSetting<string[]>("featured_product_order", []),
+    getProducts()
+  );
+  setCache({ shipping, couriers, idsRates, bank, featuredProductOrder });
 }
 
 export async function reloadProductsFromRemote() {
@@ -323,6 +333,16 @@ export async function saveProducts(next: Product[]) {
   setCache({ products: next });
   await adminSaveProducts(next);
   await reloadProductsFromRemote();
+}
+
+export function getFeaturedProductOrder(): string[] {
+  return syncFeaturedProductOrder(getCache().featuredProductOrder ?? [], getProducts());
+}
+
+export async function saveFeaturedProductOrder(next: string[]) {
+  const synced = syncFeaturedProductOrder(next, getProducts());
+  setCache({ featuredProductOrder: synced });
+  await adminSaveSetting("featured_product_order", synced);
 }
 
 export function getProduct(id: string) {

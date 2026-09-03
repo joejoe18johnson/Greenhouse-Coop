@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
@@ -17,7 +17,8 @@ import {
   STOCK_STATUS_OPTIONS,
   type StockStatus,
 } from "@/lib/product-badges";
-import { deleteProduct, getProducts, upsertProduct } from "@/lib/store";
+import { deleteProduct, getFeaturedProductOrder, getProducts, saveFeaturedProductOrder, upsertProduct } from "@/lib/store";
+import { moveFeaturedProduct, sortFeaturedProducts } from "@/lib/featured-products";
 import { useProducts } from "@/hooks/use-products";
 import { formatBZD, slugify } from "@/lib/utils";
 import type { Product, PropagationType } from "@/types";
@@ -49,10 +50,17 @@ export default function AdminProductsPage() {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [query, setQuery] = useState("");
+  const [featuredOrder, setFeaturedOrder] = useState<string[]>([]);
+  const [reordering, setReordering] = useState(false);
+  const [orderSaved, setOrderSaved] = useState(false);
 
   useEffect(() => {
     setProducts(catalog);
   }, [catalog]);
+
+  useEffect(() => {
+    setFeaturedOrder(getFeaturedProductOrder());
+  }, [catalog, products]);
 
   const filteredProducts = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -67,8 +75,31 @@ export default function AdminProductsPage() {
     );
   }, [products, query]);
 
+  const orderedFeatured = useMemo(
+    () => sortFeaturedProducts(products, featuredOrder),
+    [products, featuredOrder]
+  );
+
+  async function moveFeatured(id: string, direction: "up" | "down") {
+    setReordering(true);
+    setOrderSaved(false);
+    try {
+      const next = moveFeaturedProduct(featuredOrder, id, direction);
+      setFeaturedOrder(next);
+      await saveFeaturedProductOrder(next);
+      setOrderSaved(true);
+      setTimeout(() => setOrderSaved(false), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not update featured order.");
+      setFeaturedOrder(getFeaturedProductOrder());
+    } finally {
+      setReordering(false);
+    }
+  }
+
   function refresh() {
     setProducts(getProducts());
+    setFeaturedOrder(getFeaturedProductOrder());
   }
 
   async function setStockStatus(product: Product, status: StockStatus) {
@@ -159,6 +190,70 @@ export default function AdminProductsPage() {
           ? `${filteredProducts.length} of ${products.length} products`
           : `${products.length} products`}
       </p>
+
+      <section className="mt-8 rounded-[24px] bg-white p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-semibold text-forest">Homepage featured order</h2>
+            <p className="mt-1 max-w-2xl text-sm text-ink/55">
+              Control the order of products in the homepage featured carousel. Mark products as{" "}
+              <strong>Featured on homepage</strong> when editing, then arrange them here.
+            </p>
+          </div>
+          {orderSaved && <p className="text-sm text-leaf">Featured order saved.</p>}
+        </div>
+        {orderedFeatured.length ? (
+          <ol className="mt-4 space-y-2">
+            {orderedFeatured.map((product, index) => (
+              <li
+                key={product.id}
+                className="flex items-center gap-3 rounded-[18px] border border-forest/10 bg-cream/40 px-4 py-3"
+              >
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-forest/10 text-sm font-semibold text-forest">
+                  {index + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-forest">{product.name}</p>
+                  <p className="text-xs text-ink/45">{product.category}</p>
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Move ${product.name} up`}
+                    disabled={reordering || index === 0}
+                    onClick={() => void moveFeatured(product.id, "up")}
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Move ${product.name} down`}
+                    disabled={reordering || index === orderedFeatured.length - 1}
+                    onClick={() => void moveFeatured(product.id, "down")}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                  <button
+                    type="button"
+                    className="ml-1 text-sm text-forest"
+                    onClick={() => startEdit(product)}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="mt-4 text-sm text-ink/50">
+            No featured products yet. Edit a product and check <strong>Featured on homepage</strong>.
+          </p>
+        )}
+      </section>
 
       <Dialog open={dialogOpen} onOpenChange={(open) => (open ? setDialogOpen(true) : closeDialog())}>
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">

@@ -3,7 +3,7 @@ import { isSupabaseEnabled } from "@/lib/supabase/config";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createServiceClient } from "@/lib/supabase/service";
 
-const ALLOWED_KEYS = new Set(["shipping", "couriers", "ids_rates", "bank"]);
+const ALLOWED_KEYS = new Set(["shipping", "couriers", "ids_rates", "bank", "featured_product_order"]);
 
 export async function PUT(request: Request) {
   if (!isSupabaseEnabled()) {

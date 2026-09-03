@@ -24,6 +24,7 @@ import {
   type AdminCreateOrderInput,
 } from "@/lib/admin-order";
 import { ensureOrderCustomerLocal } from "@/lib/ensure-order-customer";
+import { syncFeaturedProductOrder } from "@/lib/featured-products";
 import type {
   BankDetails,
   CartItem,
@@ -149,6 +150,12 @@ export async function hydrateStore() {
       setItem(STORAGE_KEYS.orders, normalizeOrders(storedOrders));
     }
     await ensureAdminUser(seedAdmin);
+    if (!getItem<string[] | null>(STORAGE_KEYS.featuredProductOrder, null)) {
+      setItem(
+        STORAGE_KEYS.featuredProductOrder,
+        syncFeaturedProductOrder([], getProducts())
+      );
+    }
     return;
   }
 
@@ -164,6 +171,10 @@ export async function hydrateStore() {
     writePersistedCart({ items: [], updatedAt: new Date().toISOString() });
   }
   seedCustomerRequestsIfNeeded();
+  setItem(
+    STORAGE_KEYS.featuredProductOrder,
+    syncFeaturedProductOrder([], getProducts())
+  );
   setItem(STORAGE_KEYS.hydrated, true);
   await ensureAdminUser(seedAdmin);
 }
@@ -200,6 +211,16 @@ export function getProducts(): Product[] {
 
 export function saveProducts(next: Product[]) {
   setItem(STORAGE_KEYS.products, next);
+}
+
+export function getFeaturedProductOrder(): string[] {
+  const stored = getItem<string[]>(STORAGE_KEYS.featuredProductOrder, []);
+  return syncFeaturedProductOrder(stored, getProducts());
+}
+
+export function saveFeaturedProductOrder(next: string[]) {
+  const synced = syncFeaturedProductOrder(next, getProducts());
+  setItem(STORAGE_KEYS.featuredProductOrder, synced);
 }
 
 export function getProduct(id: string) {
