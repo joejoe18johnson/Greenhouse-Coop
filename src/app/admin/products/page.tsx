@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
@@ -48,10 +48,24 @@ export default function AdminProductsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     setProducts(catalog);
   }, [catalog]);
+
+  const filteredProducts = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const sorted = [...products].sort((a, b) => a.name.localeCompare(b.name));
+    if (!q) return sorted;
+    return sorted.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.propagationType.toLowerCase().includes(q) ||
+        p.id.toLowerCase().includes(q)
+    );
+  }, [products, query]);
 
   function refresh() {
     setProducts(getProducts());
@@ -130,6 +144,21 @@ export default function AdminProductsPage() {
       </div>
 
       {error && <p className="mt-3 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
+
+      <div className="relative mt-6 max-w-md">
+        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-forest/50" />
+        <Input
+          className="pl-11"
+          placeholder="Search products by name, category, or ID…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
+      <p className="mt-2 text-xs text-ink/45">
+        {query.trim()
+          ? `${filteredProducts.length} of ${products.length} products`
+          : `${products.length} products`}
+      </p>
 
       <Dialog open={dialogOpen} onOpenChange={(open) => (open ? setDialogOpen(true) : closeDialog())}>
         <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
@@ -223,9 +252,9 @@ export default function AdminProductsPage() {
         </DialogContent>
       </Dialog>
 
-      <div className="mt-8 md:hidden">
+      <div className="mt-6 md:hidden">
         <div className="space-y-3">
-          {products.map((p) => (
+          {filteredProducts.map((p) => (
             <div key={p.id} className="rounded-[24px] bg-white p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -263,10 +292,15 @@ export default function AdminProductsPage() {
               </div>
             </div>
           ))}
+          {filteredProducts.length === 0 && (
+            <p className="rounded-[24px] bg-white p-6 text-center text-sm text-ink/50">
+              No products match “{query.trim()}”.
+            </p>
+          )}
         </div>
       </div>
 
-      <div className="mt-8 hidden overflow-x-auto rounded-[24px] bg-white md:block">
+      <div className="mt-6 hidden overflow-x-auto rounded-[24px] bg-white md:block">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead className="text-xs text-ink/45">
             <tr>
@@ -278,7 +312,7 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((p) => (
+            {filteredProducts.map((p) => (
               <tr key={p.id} className="border-t border-forest/5">
                 <td className="p-4">{p.name}</td>
                 <td className="p-4">{p.category}</td>
@@ -313,6 +347,9 @@ export default function AdminProductsPage() {
             ))}
           </tbody>
         </table>
+        {filteredProducts.length === 0 && (
+          <p className="p-6 text-center text-sm text-ink/50">No products match “{query.trim()}”.</p>
+        )}
       </div>
     </div>
   );
