@@ -44,6 +44,7 @@ export function Header() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const isAdminArea = pathname.startsWith("/admin");
+  const isHome = pathname === "/";
 
   const isAdmin = session?.role === "admin" && user;
   const isCustomer = session?.role === "customer" && user;
@@ -59,68 +60,72 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 px-4 pt-[max(1rem,env(safe-area-inset-top))] print:hidden">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 rounded-full glass px-3 py-2 sm:px-4 md:px-6">
-        <Link href="/" className="flex min-w-0 shrink items-center">
-          <Logo variant="horizontal" iconSize={42} wordmarkVisibility="always" priority />
-        </Link>
+      <div className="mx-auto max-w-7xl">
+        <div className="flex items-center justify-between gap-2 rounded-full glass px-3 py-2 sm:px-4 md:px-6">
+          <Link href="/" className="flex min-w-0 shrink items-center">
+            <Logo variant="horizontal" iconSize={42} wordmarkVisibility="always" priority />
+          </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
-          {NAV_LINKS.map((link) => {
-            const active = isNavActive(pathname, link.href);
-            return (
-              <Link key={link.href} href={link.href} className={navLinkClass(active)}>
-                <link.icon className="h-3.5 w-3.5" />
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+          <nav className="hidden items-center gap-6 lg:flex">
+            {NAV_LINKS.map((link) => {
+              const active = isNavActive(pathname, link.href);
+              return (
+                <Link key={link.href} href={link.href} className={navLinkClass(active)}>
+                  <link.icon className="h-3.5 w-3.5" />
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
-          <NavSearch className="hidden w-44 md:block lg:w-56" />
-          {isAdmin && (
-            <div className="hidden md:block">
-              <AdminNotificationBell adminId={user.id} />
-            </div>
-          )}
-          {isCustomer && (
-            <div className="hidden md:block">
-              <NotificationBell userId={user.id} />
-            </div>
-          )}
-          {!session && (
-            <Button variant="citrus" size="sm" className="hidden gap-1.5 md:inline-flex" asChild>
-              <Link href="/login">
-                <LogIn className="h-4 w-4" />
-                Sign in
+          <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
+            <NavSearch className="hidden w-44 md:block lg:w-56" />
+            {isAdmin && (
+              <div className="hidden md:block">
+                <AdminNotificationBell adminId={user.id} />
+              </div>
+            )}
+            {isCustomer && (
+              <div className="hidden md:block">
+                <NotificationBell userId={user.id} />
+              </div>
+            )}
+            {!session && (
+              <Button variant="citrus" size="sm" className="hidden gap-1.5 md:inline-flex" asChild>
+                <Link href="/login">
+                  <LogIn className="h-4 w-4" />
+                  Sign in
+                </Link>
+              </Button>
+            )}
+            <Button variant="ghost" size="icon" aria-label="Account" className="shrink-0" asChild>
+              <Link href={accountHref}>
+                <UserRound className="h-5 w-5" />
               </Link>
             </Button>
-          )}
-          <Button variant="ghost" size="icon" aria-label="Account" className="shrink-0" asChild>
-            <Link href={accountHref}>
-              <UserRound className="h-5 w-5" />
-            </Link>
-          </Button>
-          <Button variant="ghost" size="icon" aria-label="Cart" asChild className="relative shrink-0">
-            <Link href="/cart">
-              <ShoppingBag className="h-5 w-5" />
-              {count > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-citrus px-1 text-[10px] font-bold text-ink">
-                  {count > 9 ? "9+" : count}
-                </span>
-              )}
-            </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Open menu"
-            className="inline-flex shrink-0 lg:hidden"
-            onClick={() => setOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+            <Button variant="ghost" size="icon" aria-label="Cart" asChild className="relative shrink-0">
+              <Link href="/cart">
+                <ShoppingBag className="h-5 w-5" />
+                {count > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-citrus px-1 text-[10px] font-bold text-ink">
+                    {count > 9 ? "9+" : count}
+                  </span>
+                )}
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Open menu"
+              className="inline-flex shrink-0 lg:hidden"
+              onClick={() => setOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
+
+        {!isHome && <NavSearch className="mt-2 md:hidden" compact />}
       </div>
 
       <Sheet open={open} onOpenChange={setOpen}>

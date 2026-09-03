@@ -11,9 +11,13 @@ import { cn } from "@/lib/utils";
 export function NavSearch({
   className,
   onNavigate,
+  compact = false,
+  tone = "default",
 }: {
   className?: string;
   onNavigate?: () => void;
+  compact?: boolean;
+  tone?: "default" | "light";
 }) {
   const products = useProducts();
   const router = useRouter();
@@ -57,7 +61,12 @@ export function NavSearch({
           goToShop();
         }}
       >
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-forest/50" />
+        <Search
+          className={cn(
+            "pointer-events-none absolute top-1/2 -translate-y-1/2 text-forest/50",
+            compact ? "left-3 h-3.5 w-3.5" : "left-3.5 h-4 w-4"
+          )}
+        />
         <input
           value={query}
           onChange={(e) => {
@@ -66,7 +75,13 @@ export function NavSearch({
           }}
           onFocus={() => setOpen(true)}
           placeholder="Search trees…"
-          className="h-11 w-full rounded-full border border-forest/15 bg-white/80 pl-10 pr-4 text-base text-ink shadow-sm placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-forest/40 md:text-sm"
+          className={cn(
+            "w-full rounded-full border pl-10 pr-4 shadow-sm focus:outline-none focus:ring-2",
+            tone === "light"
+              ? "border-white/25 bg-white/95 text-ink placeholder:text-ink/45 focus:ring-white/40"
+              : "border-forest/15 bg-white/80 text-ink placeholder:text-ink/40 focus:ring-forest/40",
+            compact ? "h-9 text-sm pl-9" : "h-11 text-base md:text-sm"
+          )}
         />
       </form>
 

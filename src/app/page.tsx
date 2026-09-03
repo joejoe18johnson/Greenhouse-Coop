@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, CalendarDays, CircleHelp, Download, Leaf, MapPin, Sparkles, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { NavSearch } from "@/components/layout/nav-search";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { OrderProcess } from "@/components/home/order-process";
 import { PropagationBenefits } from "@/components/home/propagation-benefits";
@@ -28,14 +29,17 @@ export default function HomePage() {
 
   return (
     <div>
-      <section className="relative mx-auto mt-6 max-w-7xl overflow-hidden rounded-[36px] px-4">
+      <section className="relative mx-auto mt-6 max-w-7xl px-4">
+        <div className="absolute inset-x-4 top-5 z-20 max-w-xl sm:inset-x-8 md:hidden">
+          <NavSearch compact tone="light" />
+        </div>
         <div className="relative min-h-[60vh] overflow-hidden rounded-[36px] sm:min-h-[70vh] md:min-h-[78vh]">
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url(/images/hero-orchard.jpg)" }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-forest-deep/85 via-forest-dark/70 to-transparent" />
-          <div className="relative z-10 flex min-h-[60vh] max-w-3xl flex-col justify-center px-6 py-14 sm:min-h-[70vh] sm:px-8 sm:py-20 md:min-h-[78vh] md:px-16">
+          <div className="relative z-10 flex min-h-[60vh] max-w-3xl flex-col justify-center px-6 pb-14 pt-24 sm:min-h-[70vh] sm:px-8 sm:pb-20 sm:pt-28 md:min-h-[78vh] md:px-16 md:py-14 md:pt-14">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
