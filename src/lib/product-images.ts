@@ -15,6 +15,7 @@ const HOVER_PRODUCT_FILES: Record<string, string> = {
   "sweetsop-red": "sweet-sop-hover-image.png",
   "sweetsop-green": "sweet-sop-hover-image.png",
   papaya: "papaya-hover-image.png",
+  "tropical-black-grape": "tropical-grape-hover-image.jpg",
 };
 
 /** Shared hover files keyed by category */
