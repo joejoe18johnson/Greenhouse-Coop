@@ -125,7 +125,7 @@ export function Header() {
         </div>
 
         <div className="mt-4 pb-3 md:hidden">
-          <NavSearch compact />
+          <NavSearch />
         </div>
       </div>
 

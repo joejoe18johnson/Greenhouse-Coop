@@ -82,14 +82,14 @@ export default function DeliveryPage() {
       <section className="mt-8 rounded-[28px] bg-white/80 p-5 sm:p-8">
         <SectionHeading icon={Package}>Nursery shipping boxes</SectionHeading>
         <p className="mt-3 text-sm text-ink/60">
-          Box size is picked from your cart. IDS estimates map nursery boxes to IDS package tiers (Small through XL).
+          Box size is picked from your cart. IDS estimates map nursery boxes to IDS package tiers (Small through XL). Nursery packing is included for now.
         </p>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {shipping.boxes.map((box) => (
             <div key={box.id} className="rounded-2xl bg-cream p-5">
               <p className="font-semibold text-forest">{box.name}</p>
               <p className="text-sm text-ink/60">{box.description}</p>
-              <p className="mt-2">{formatBZD(box.price)} nursery packing fee</p>
+              <p className="mt-2 text-sm text-leaf">Packing included</p>
             </div>
           ))}
         </div>

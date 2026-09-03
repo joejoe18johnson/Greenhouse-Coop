@@ -40,7 +40,7 @@ export const FAQS = [
     id: "boxes",
     question: "How are shipping boxes chosen?",
     answer:
-      "You do not pick a box. At checkout we recommend 1, 2, 3, or 4 sq.ft boxes from the number of plants in your cart. Local Belmopan-area deliveries include packing. Courier orders add the nursery box fee to your order; courier office shipping is paid separately when you collect.",
+      "You do not pick a box. At checkout we recommend 1, 2, 3, or 4 sq.ft boxes from the number of plants in your cart. Nursery packing is included for now. Courier office shipping is paid separately when you collect.",
   },
 ];
 

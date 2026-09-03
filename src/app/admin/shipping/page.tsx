@@ -151,7 +151,10 @@ export default function AdminShippingPage() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="font-semibold text-forest">Box pricing</h2>
+          <h2 className="font-semibold text-forest">Box sizes</h2>
+          <p className="mt-1 text-xs text-ink/45">
+            Used for courier estimates. Packing fees are not charged right now.
+          </p>
           {settings.boxes.map((box, i) => (
             <div key={box.id} className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
               <Input

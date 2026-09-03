@@ -142,7 +142,7 @@ export function quoteShipping(options: {
       box,
       options.idsRates
     ),
-    boxFee: box.total,
+    boxFee: 0,
     box,
     localEligible: local,
   };
