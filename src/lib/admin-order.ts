@@ -10,6 +10,7 @@ import type {
   OrderStatus,
   PaymentInfo,
   Product,
+  ShippingInfo,
   ShippingSettings,
 } from "@/types";
 
@@ -32,9 +33,14 @@ export interface AdminCreateOrderInput {
   paymentMethod: PaymentInfo["method"];
   paymentPlan?: PaymentInfo["paymentPlan"];
   customerNotes?: string;
+  codMeetingLocation?: string;
   /** When set, overrides the default status from payment method. */
   initialStatus?: OrderStatus;
   adminNote?: string;
+}
+
+export interface AdminEditOrderInput extends AdminCreateOrderInput {
+  editNote?: string;
 }
 
 export function defaultAdminOrderStatus(input: AdminCreateOrderInput): OrderStatus {
@@ -42,15 +48,42 @@ export function defaultAdminOrderStatus(input: AdminCreateOrderInput): OrderStat
   return input.paymentMethod === "cod" ? "Processing" : "Payment Pending";
 }
 
-export function buildAdminOrderDraft(options: {
+function quoteShippingMethod(town: string, shipping: ShippingSettings) {
+  const local = shipping.localDelivery.towns.some(
+    (entry) => entry.name.toLowerCase() === town.trim().toLowerCase()
+  );
+  return local ? "local" : "courier";
+}
+
+function buildPaymentForInput(
+  input: AdminCreateOrderInput,
+  status: OrderStatus,
+  existing?: PaymentInfo
+): PaymentInfo {
+  if (input.paymentMethod === "cod") {
+    return { method: "cod" };
+  }
+
+  return {
+    method: "bank-transfer",
+    proofChannel: existing?.proofChannel ?? "whatsapp",
+    paymentPlan: input.paymentPlan ?? existing?.paymentPlan ?? "deposit",
+    reviewedAt: existing?.reviewedAt ?? (status === "Paid" ? new Date().toISOString() : undefined),
+    reviewedBy: existing?.reviewedBy ?? (status === "Paid" ? "admin" : undefined),
+    rejectionReason: existing?.rejectionReason,
+    proofDataUrl: existing?.proofDataUrl,
+    proofFileName: existing?.proofFileName,
+  };
+}
+
+function computeAdminOrderContent(options: {
   input: AdminCreateOrderInput;
-  userId: string;
   products: Product[];
   shipping: ShippingSettings;
   couriers: Courier[];
   idsRates?: IdsRates;
-}): Omit<Order, "id" | "createdAt" | "updatedAt"> {
-  const { input, userId, products, shipping, couriers, idsRates } = options;
+}) {
+  const { input, products, shipping, couriers, idsRates } = options;
   const catalog = new Map(products.map((product) => [product.id, product]));
 
   const lineItems = input.items
@@ -92,16 +125,49 @@ export function buildAdminOrderDraft(options: {
     deliveryFee: quote.deliveryFee,
     boxFee: quote.boxFee,
   });
+
+  const shippingInfo: ShippingInfo = {
+    firstName,
+    lastName,
+    email: input.customer.email?.trim() || "",
+    phone: input.customer.phone.trim(),
+    district,
+    town,
+    village: input.wantsDelivery ? input.customer.village?.trim() || "" : "",
+    fullAddress: input.wantsDelivery ? input.customer.fullAddress.trim() : PICKUP_LOCATION,
+    method: quote.method,
+    codMeetingLocation:
+      input.paymentMethod === "cod" && !input.wantsDelivery && input.codMeetingLocation?.trim()
+        ? input.codMeetingLocation.trim()
+        : undefined,
+    courierId: quote.method === "courier" ? courier?.id : undefined,
+    courierName: quote.method === "courier" ? courier?.name : undefined,
+  };
+
+  return {
+    items: lineItems,
+    subtotal,
+    deliveryFee: quote.deliveryFee,
+    boxFee: quote.boxFee,
+    courierEstimate: quote.courierEstimate,
+    total,
+    boxRecommendation: quote.box,
+    shipping: shippingInfo,
+  };
+}
+
+export function buildAdminOrderDraft(options: {
+  input: AdminCreateOrderInput;
+  userId: string;
+  products: Product[];
+  shipping: ShippingSettings;
+  couriers: Courier[];
+  idsRates?: IdsRates;
+}): Omit<Order, "id" | "createdAt" | "updatedAt"> {
+  const { input, userId, products, shipping, couriers, idsRates } = options;
+  const content = computeAdminOrderContent({ input, products, shipping, couriers, idsRates });
   const status = defaultAdminOrderStatus(input);
-  const payment: PaymentInfo =
-    input.paymentMethod === "cod"
-      ? { method: "cod" }
-      : {
-          method: "bank-transfer",
-          proofChannel: "whatsapp",
-          paymentPlan: input.paymentPlan ?? "deposit",
-          ...(status === "Paid" ? { reviewedAt: new Date().toISOString(), reviewedBy: "admin" } : {}),
-        };
+  const payment = buildPaymentForInput(input, status);
   const now = new Date().toISOString();
   const timelineNote =
     input.adminNote?.trim() ||
@@ -112,38 +178,64 @@ export function buildAdminOrderDraft(options: {
     invoiceNumber: generateInvoiceNumber(),
     invoiceIssuedAt: ["Paid", "Processing", "Shipped", "Completed"].includes(status) ? now : undefined,
     userId,
-    items: lineItems,
-    subtotal,
-    deliveryFee: quote.deliveryFee,
-    boxFee: quote.boxFee,
-    courierEstimate: quote.courierEstimate,
-    total,
-    boxRecommendation: quote.box,
+    ...content,
     status,
-    shipping: {
-      firstName,
-      lastName,
-      email: input.customer.email?.trim() || "",
-      phone: input.customer.phone.trim(),
-      district,
-      town,
-      village: input.wantsDelivery ? input.customer.village?.trim() || "" : "",
-      fullAddress: input.wantsDelivery ? input.customer.fullAddress.trim() : PICKUP_LOCATION,
-      method: quote.method,
-      courierId: quote.method === "courier" ? courier?.id : undefined,
-      courierName: quote.method === "courier" ? courier?.name : undefined,
-    },
     payment,
     customerNotes: input.customerNotes?.trim() || undefined,
     timeline: [{ status, at: now, note: timelineNote }],
   };
 }
 
-function quoteShippingMethod(town: string, shipping: ShippingSettings) {
-  const local = shipping.localDelivery.towns.some(
-    (entry) => entry.name.toLowerCase() === town.trim().toLowerCase()
-  );
-  return local ? "local" : "courier";
+export function orderToAdminEditInput(order: Order): AdminEditOrderInput {
+  return {
+    customer: {
+      userId: order.userId,
+      customerName: `${order.shipping.firstName} ${order.shipping.lastName}`.trim(),
+      phone: order.shipping.phone,
+      email: order.shipping.email,
+      district: order.shipping.district,
+      town: order.shipping.town,
+      village: order.shipping.village,
+      fullAddress: order.shipping.method === "pickup" ? "" : order.shipping.fullAddress,
+    },
+    items: order.items.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+    wantsDelivery: order.shipping.method !== "pickup",
+    courierId: order.shipping.courierId,
+    paymentMethod: order.payment.method,
+    paymentPlan: order.payment.paymentPlan,
+    customerNotes: order.customerNotes,
+    codMeetingLocation: order.shipping.codMeetingLocation,
+  };
+}
+
+export function orderItemsToQuantities(order: Order) {
+  return Object.fromEntries(order.items.map((item) => [item.productId, item.quantity]));
+}
+
+export function buildAdminOrderUpdate(options: {
+  existing: Order;
+  input: AdminEditOrderInput;
+  products: Product[];
+  shipping: ShippingSettings;
+  couriers: Courier[];
+  idsRates?: IdsRates;
+}): Order {
+  const { existing, input, products, shipping, couriers, idsRates } = options;
+  const content = computeAdminOrderContent({ input, products, shipping, couriers, idsRates });
+  const payment = buildPaymentForInput(input, existing.status, existing.payment);
+  const now = new Date().toISOString();
+  const editNote =
+    input.editNote?.trim() ||
+    "Order details updated by admin. Totals and fulfillment may have changed — check your invoice.";
+
+  return {
+    ...existing,
+    ...content,
+    payment,
+    customerNotes: input.customerNotes?.trim() || undefined,
+    updatedAt: now,
+    timeline: [...existing.timeline, { status: "Updated", at: now, note: editNote }],
+  };
 }
 
 export function validateAdminCreateOrderInput(input: AdminCreateOrderInput) {
@@ -159,4 +251,20 @@ export function validateAdminCreateOrderInput(input: AdminCreateOrderInput) {
   if (!input.items.some((item) => item.quantity > 0)) {
     throw new Error("Add at least one tree to the order.");
   }
+}
+
+export function validateAdminEditOrderInput(input: AdminEditOrderInput) {
+  validateAdminCreateOrderInput(input);
+}
+
+/** Build a preview draft when editing — preserves identity fields from the existing order. */
+export function buildAdminOrderEditPreview(options: {
+  existing: Order;
+  input: AdminEditOrderInput;
+  products: Product[];
+  shipping: ShippingSettings;
+  couriers: Courier[];
+  idsRates?: IdsRates;
+}): Order {
+  return buildAdminOrderUpdate(options);
 }

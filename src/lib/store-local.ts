@@ -20,8 +20,11 @@ import { customerTimelineNote } from "@/lib/order-status-messages";
 import { updateStockWaitStatus, isDuplicateStockWait } from "@/lib/stock-wait-requests";
 import {
   buildAdminOrderDraft,
+  buildAdminOrderUpdate,
   validateAdminCreateOrderInput,
+  validateAdminEditOrderInput,
   type AdminCreateOrderInput,
+  type AdminEditOrderInput,
 } from "@/lib/admin-order";
 import { ensureOrderCustomerLocal } from "@/lib/ensure-order-customer";
 import { syncFeaturedProductOrder } from "@/lib/featured-products";
@@ -378,6 +381,23 @@ export function createAdminOrder(input: AdminCreateOrderInput): Order {
   orders.unshift(order);
   saveOrders(orders);
   return order;
+}
+
+export function updateAdminOrder(orderId: string, input: AdminEditOrderInput): Order {
+  validateAdminEditOrderInput(input);
+  const existing = getOrders().find((order) => order.id === orderId);
+  if (!existing) throw new Error("Order not found.");
+
+  const updated = buildAdminOrderUpdate({
+    existing,
+    input,
+    products: getProducts(),
+    shipping: getShippingSettings(),
+    couriers: getCouriers(),
+    idsRates: getIdsRates(),
+  });
+  updateOrder(updated);
+  return updated;
 }
 
 export function updateOrderStatus(id: string, status: OrderStatus, note?: string) {

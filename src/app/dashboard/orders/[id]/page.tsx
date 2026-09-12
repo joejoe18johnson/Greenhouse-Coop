@@ -23,7 +23,8 @@ import {
   isCashOnDelivery,
   paymentMethodLabel,
 } from "@/lib/order-deposit";
-import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
+import { PAYMENT_NOTICE, COURIER_ESTIMATE_NOTICE, PICKUP_LOCATION } from "@/lib/constants";
+import { pickupAddressLine } from "@/lib/shipping";
 import { STORE_UPDATED_EVENT } from "@/lib/store-events";
 
 export default function OrderDetailPage() {
@@ -128,6 +129,13 @@ export default function OrderDetailPage() {
       {order.shipping.method === "courier" && courierEstimate > 0 && !awaitingPay && (
         <p className="mt-6 rounded-2xl bg-leaf/10 px-4 py-3 text-sm text-forest print:hidden">
           Approx. {formatBZD(courierEstimate)} at {order.shipping.courierName || "courier"} when you collect. {COURIER_ESTIMATE_NOTICE}
+        </p>
+      )}
+      {order.shipping.method === "pickup" && !awaitingPay && (
+        <p className="mt-6 rounded-2xl bg-leaf/10 px-4 py-3 text-sm text-forest print:hidden">
+          {order.shipping.codMeetingLocation?.trim()
+            ? pickupAddressLine(order.shipping)
+            : `Collect at ${PICKUP_LOCATION}. We will confirm when your order is ready.`}
         </p>
       )}
       {order.customerNotes && (

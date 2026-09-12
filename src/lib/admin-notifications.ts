@@ -71,9 +71,12 @@ function orderMessage(status: OrderStatus | string, order: Order, note?: string)
 
   const customer = getUsers().find((u) => u.id === order.userId);
   const name = customer ? `${customer.firstName} ${customer.lastName}` : "Customer";
+  const meet = order.shipping.codMeetingLocation?.trim();
   const fulfillment =
     order.shipping.method === "pickup"
-      ? "pickup"
+      ? meet
+        ? `pickup · meet at ${meet}`
+        : "pickup"
       : order.shipping.method === "local"
         ? `local delivery · ${order.shipping.town}`
         : `courier · ${order.shipping.town}`;

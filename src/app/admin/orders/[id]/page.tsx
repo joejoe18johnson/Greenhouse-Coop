@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, Mail, MapPin, MessageSquare, Phone, UserRound } from "lucide-react";
+import { ArrowLeft, Mail, MapPin, MessageSquare, Pencil, Phone, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -76,6 +76,12 @@ export default function AdminOrderDetailPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button variant="outline" asChild>
+            <Link href={`/admin/orders/${order.id}/edit`}>
+              <Pencil className="h-4 w-4" />
+              Edit order
+            </Link>
+          </Button>
           {order.status === "Payment Pending" || order.status === "Payment Review" ? (
             <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
               Confirm deposit
@@ -219,7 +225,11 @@ export default function AdminOrderDetailPage() {
             <MapPin className="h-4 w-4" /> Fulfillment
           </h2>
           <p className="mt-3 font-medium">{fulfillmentLabel(order.shipping)}</p>
-          <p className="mt-2">{order.shipping.fullAddress}</p>
+          <p className="mt-2">
+            {order.shipping.method === "pickup" && order.shipping.codMeetingLocation?.trim()
+              ? `Belmopan Bus Terminal (default) · customer prefers: ${order.shipping.codMeetingLocation.trim()}`
+              : order.shipping.fullAddress}
+          </p>
           {order.shipping.method !== "pickup" && (
             <p>{order.shipping.village ? `${order.shipping.village}, ` : ""}{order.shipping.town}, {order.shipping.district}</p>
           )}

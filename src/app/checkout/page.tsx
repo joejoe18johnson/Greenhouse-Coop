@@ -54,6 +54,7 @@ export default function CheckoutPage() {
   const [fullAddress, setFullAddress] = useState(user?.addresses[0]?.fullAddress || "");
   const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
   const [customerNotes, setCustomerNotes] = useState("");
+  const [codMeetingLocation, setCodMeetingLocation] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentInfo["method"]>("bank-transfer");
   const [paymentPlan, setPaymentPlan] = useState<PaymentPlan>("deposit");
   const [error, setError] = useState("");
@@ -92,6 +93,10 @@ export default function CheckoutPage() {
       setPaymentMethod("bank-transfer");
     }
   }, [codAvailable, paymentMethod]);
+
+  useEffect(() => {
+    if (!isCod || wantsDelivery) setCodMeetingLocation("");
+  }, [isCod, wantsDelivery]);
   const paymentContext: PaymentInfo = isCod
     ? { method: "cod" }
     : { method: "bank-transfer", paymentPlan };
@@ -165,6 +170,10 @@ export default function CheckoutPage() {
           village: wantsDelivery ? village : "",
           fullAddress: wantsDelivery ? fullAddress : PICKUP_LOCATION,
           method,
+          codMeetingLocation:
+            isCod && !wantsDelivery && codMeetingLocation.trim()
+              ? codMeetingLocation.trim()
+              : undefined,
           courierId: method === "courier" ? courier?.id : undefined,
           courierName: method === "courier" ? courier?.name : undefined,
         },
@@ -234,10 +243,29 @@ export default function CheckoutPage() {
             </div>
 
             {!wantsDelivery ? (
-              <p className="mt-4 flex items-start gap-3 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
-                <Store className="mt-0.5 h-4 w-4 shrink-0" />
-                {PICKUP_NOTE}
-              </p>
+              <>
+                <p className="mt-4 flex items-start gap-3 rounded-2xl bg-leaf/10 p-4 text-sm text-forest">
+                  <Store className="mt-0.5 h-4 w-4 shrink-0" />
+                  {PICKUP_NOTE}
+                </p>
+                {isCod && (
+                  <div className="mt-4">
+                    <Label htmlFor="cod-meeting-location">Preferred meet location in Belmopan (optional)</Label>
+                    <p className="mt-1 text-xs text-ink/50">
+                      We normally meet at the Belmopan Bus Terminal. If that does not work for you, tell us where in
+                      Belmopan you would prefer to meet and pay in cash.
+                    </p>
+                    <Input
+                      id="cod-meeting-location"
+                      className="mt-2"
+                      value={codMeetingLocation}
+                      onChange={(e) => setCodMeetingLocation(e.target.value)}
+                      placeholder="e.g. Near Brodies, Ring Road, Maya Mound"
+                      maxLength={200}
+                    />
+                  </div>
+                )}
+              </>
             ) : (
               <>
                 <div className="mt-6 grid gap-4 md:grid-cols-2">

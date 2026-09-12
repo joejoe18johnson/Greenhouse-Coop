@@ -26,6 +26,7 @@ import { CART_HOLD_MS } from "@/lib/constants";
 import { mergeCartItems, readPersistedCart, writePersistedCart } from "@/lib/cart-persistence";
 import {
   type AdminCreateOrderInput,
+  type AdminEditOrderInput,
 } from "@/lib/admin-order";
 import { syncFeaturedProductOrder } from "@/lib/featured-products";
 import { generateInvoiceNumber, generateReference } from "@/lib/utils";
@@ -531,6 +532,22 @@ export async function createAdminOrder(input: AdminCreateOrderInput): Promise<Or
     setCache({ users });
   }
 
+  return body.order;
+}
+
+export async function updateAdminOrder(orderId: string, input: AdminEditOrderInput): Promise<Order> {
+  const res = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  const body = (await res.json().catch(() => ({}))) as { error?: string; order?: Order };
+  if (!res.ok || !body.order) {
+    throw new Error(body.error || "Could not update order.");
+  }
+
+  setCache({ orders: getOrders().map((order) => (order.id === orderId ? body.order! : order)) });
   return body.order;
 }
 

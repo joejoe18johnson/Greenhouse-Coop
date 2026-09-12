@@ -1,6 +1,6 @@
 import { BRAND } from "@/lib/constants";
 import { bankAccounts } from "@/lib/bank";
-import { fulfillmentLabel } from "@/lib/shipping";
+import { fulfillmentLabel, pickupAddressLine } from "@/lib/shipping";
 import {
   getPaymentPlan,
   isCashOnDelivery,
@@ -22,7 +22,9 @@ function fulfillmentLine(order: Order) {
 }
 
 function addressLine(order: Order) {
-  if (order.shipping.method === "pickup") return "Belmopan Bus Terminal";
+  if (order.shipping.method === "pickup") {
+    return pickupAddressLine(order.shipping) || "Belmopan Bus Terminal";
+  }
   const parts = [order.shipping.fullAddress, order.shipping.village, order.shipping.town, order.shipping.district]
     .filter(Boolean);
   return parts.join(", ");

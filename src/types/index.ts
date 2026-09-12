@@ -182,6 +182,8 @@ export interface ShippingInfo {
   village: string;
   fullAddress: string;
   method: "local" | "courier" | "pickup";
+  /** COD pickup — customer prefers to meet here in Belmopan if the bus terminal is not convenient. */
+  codMeetingLocation?: string;
   courierId?: string;
   courierName?: string;
 }

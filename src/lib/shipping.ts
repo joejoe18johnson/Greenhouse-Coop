@@ -151,10 +151,27 @@ export function quoteShipping(options: {
 export function fulfillmentLabel(shipping: {
   method: "local" | "courier" | "pickup";
   courierName?: string;
+  codMeetingLocation?: string;
 }) {
-  if (shipping.method === "pickup") return "Collection at Belmopan Bus Terminal";
+  if (shipping.method === "pickup") {
+    const meet = shipping.codMeetingLocation?.trim();
+    if (meet) return `Collection in Belmopan · meet at ${meet}`;
+    return "Collection at Belmopan Bus Terminal";
+  }
   if (shipping.method === "local") return "Local delivery";
   return shipping.courierName
     ? `${shipping.courierName} · office-to-office`
     : "Courier · office-to-office";
+}
+
+export function pickupAddressLine(shipping: {
+  method: "local" | "courier" | "pickup";
+  codMeetingLocation?: string;
+}) {
+  if (shipping.method !== "pickup") return "";
+  const meet = shipping.codMeetingLocation?.trim();
+  if (meet) {
+    return `Belmopan Bus Terminal (default) · customer prefers: ${meet}`;
+  }
+  return "Belmopan Bus Terminal";
 }

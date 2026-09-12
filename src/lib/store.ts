@@ -166,6 +166,17 @@ export async function createAdminOrder(input: Parameters<typeof local.createAdmi
   return order;
 }
 
+export async function updateAdminOrder(
+  orderId: string,
+  input: Parameters<typeof local.updateAdminOrder>[1]
+) {
+  const order = isRemoteBackend()
+    ? await remote.updateAdminOrder(orderId, input)
+    : local.updateAdminOrder(orderId, input);
+  notifyStoreUpdate();
+  return order;
+}
+
 export function updateOrderStatus(
   id: string,
   status: Parameters<typeof local.updateOrderStatus>[1],
