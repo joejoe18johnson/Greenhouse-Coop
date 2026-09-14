@@ -365,10 +365,12 @@ export async function reloadAdminUsers() {
   return users;
 }
 
-export async function deleteUser(userId: string) {
+export async function deleteUser(userId: string, confirmCode: string) {
   const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}`, {
     method: "DELETE",
     credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ confirmCode }),
   });
   const body = (await res.json().catch(() => ({}))) as { error?: string; id?: string };
   if (!res.ok) {

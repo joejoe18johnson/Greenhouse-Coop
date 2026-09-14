@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Trash2, UserPlus, Users } from "lucide-react";
+import {
+  DeleteCustomerDialog,
+  type DeleteCustomerTarget,
+} from "@/components/admin/delete-customer-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/context/store-context";
@@ -14,8 +18,9 @@ export default function AdminCustomersPage() {
   const { ready } = useStore();
   const [users, setUsers] = useState(() => getUsers().filter((user) => user.role === "customer"));
   const [orders, setOrders] = useState(getOrders);
-  const [error, setError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<DeleteCustomerTarget | null>(null);
 
   const refresh = useCallback(() => {
     setUsers(getUsers().filter((user) => user.role === "customer"));
@@ -39,23 +44,30 @@ export default function AdminCustomersPage() {
 
   const newUserCount = useMemo(() => sortedUsers.filter((user) => isNewUser(user)).length, [sortedUsers]);
 
-  async function handleDelete(userId: string, name: string, orderCount: number) {
-    setError("");
-    const message =
-      orderCount > 0
-        ? `Delete ${name}? This permanently removes their account and ${orderCount} order${orderCount === 1 ? "" : "s"}.`
-        : `Delete ${name}? This permanently removes their account.`;
-    if (!window.confirm(message)) return;
+  function openDeleteDialog(userId: string, name: string, orderCount: number) {
+    setDeleteError("");
+    setDeleteTarget({ id: userId, name, orderCount });
+  }
 
-    setDeletingId(userId);
+  function closeDeleteDialog() {
+    if (deletingId) return;
+    setDeleteTarget(null);
+    setDeleteError("");
+  }
+
+  async function handleConfirmDelete(confirmCode: string) {
+    if (!deleteTarget) return;
+    setDeleteError("");
+    setDeletingId(deleteTarget.id);
     try {
-      await deleteUser(userId);
+      await deleteUser(deleteTarget.id, confirmCode);
       if (isUsingSupabase()) {
         await reloadAdminUsers();
       }
       refresh();
+      setDeleteTarget(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not delete user.");
+      setDeleteError(err instanceof Error ? err.message : "Could not delete user.");
     } finally {
       setDeletingId(null);
     }
@@ -83,8 +95,6 @@ export default function AdminCustomersPage() {
           Refresh list
         </Button>
       </div>
-
-      {error && <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>}
 
       <div className="mt-6 space-y-3">
         {sortedUsers.map((user) => {
@@ -125,7 +135,9 @@ export default function AdminCustomersPage() {
                   size="sm"
                   className="border-red-200 text-red-700 hover:bg-red-50"
                   disabled={deletingId === user.id}
-                  onClick={() => void handleDelete(user.id, `${user.firstName} ${user.lastName}`.trim(), theirs.length)}
+                  onClick={() =>
+                    openDeleteDialog(user.id, `${user.firstName} ${user.lastName}`.trim(), theirs.length)
+                  }
                 >
                   <Trash2 className="h-4 w-4" />
                   {deletingId === user.id ? "Deleting…" : "Delete"}
@@ -136,6 +148,17 @@ export default function AdminCustomersPage() {
         })}
         {sortedUsers.length === 0 && <p className="text-ink/50">No customer accounts yet.</p>}
       </div>
+
+      <DeleteCustomerDialog
+        target={deleteTarget}
+        open={Boolean(deleteTarget)}
+        deleting={Boolean(deletingId)}
+        error={deleteError}
+        onOpenChange={(open) => {
+          if (!open) closeDeleteDialog();
+        }}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

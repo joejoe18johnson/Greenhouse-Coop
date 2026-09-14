@@ -44,9 +44,9 @@ export async function reloadAdminUsers() {
   return local.getUsers();
 }
 
-export async function deleteUser(userId: string) {
-  if (isRemoteBackend()) await remote.deleteUser(userId);
-  else local.deleteUser(userId);
+export async function deleteUser(userId: string, confirmCode: string) {
+  if (isRemoteBackend()) await remote.deleteUser(userId, confirmCode);
+  else local.deleteUser(userId, confirmCode);
   notifyStoreUpdate();
 }
 
