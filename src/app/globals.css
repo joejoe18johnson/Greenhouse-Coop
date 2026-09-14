@@ -124,6 +124,21 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Logo mark is ~1000×707 — height-only sizing keeps proportions on mobile. */
+  .invoice-logo {
+    height: 2.5rem;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  @media (min-width: 640px) {
+    .invoice-logo {
+      height: 3rem;
+    }
+  }
+
   .invoice-capture {
     border-radius: 0 !important;
     box-shadow: none !important;

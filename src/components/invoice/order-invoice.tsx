@@ -89,9 +89,9 @@ export function OrderInvoice({
           <img
             src="/logos/logo-mark.png"
             alt=""
-            width={48}
-            height={48}
-            className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
+            width={1000}
+            height={707}
+            className="invoice-logo shrink-0"
             crossOrigin="anonymous"
           />
           <div className="min-w-0">
