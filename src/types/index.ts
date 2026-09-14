@@ -14,6 +14,8 @@ export interface Product {
   featured: boolean;
   limitedSupply?: boolean;
   veryRare?: boolean;
+  /** Nursery count for limited / very rare items — caps cart qty and decrements on order. */
+  availableQuantity?: number;
   certified?: boolean;
   inStock?: boolean;
 }
@@ -218,6 +220,8 @@ export interface Order {
   /** Approximate fee the customer pays at the courier office — not charged by Greenhouse Co-Op. */
   courierEstimate: number;
   total: number;
+  /** Whole-BZD loyalty discount applied (10% off, rounded down). */
+  loyaltyDiscount?: number;
   boxRecommendation: BoxRecommendation;
   status: OrderStatus;
   shipping: ShippingInfo;

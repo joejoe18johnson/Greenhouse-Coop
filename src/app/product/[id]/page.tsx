@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Ban, Minus, Plus, Ruler, ShoppingBag, Sprout } from "lucide-react";
@@ -14,6 +14,11 @@ import { PropagationBadge } from "@/components/product/propagation-badge";
 import { ProductBadges } from "@/components/product/product-badges";
 import { StockWaitForm } from "@/components/product/stock-wait-form";
 import { useCart } from "@/hooks/use-cart";
+import {
+  canAddToCart,
+  limitedQuantityLabel,
+  maxCartQuantity,
+} from "@/lib/product-quantity";
 import { useProducts } from "@/hooks/use-products";
 import { categoryIcon } from "@/lib/icons";
 import { isInStock } from "@/lib/product-badges";
@@ -24,7 +29,7 @@ export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const products = useProducts();
   const product = products.find((p) => p.id === id);
-  const { add } = useCart();
+  const { add, items: cartItems } = useCart();
   const router = useRouter();
   const [qty, setQty] = useState(1);
   const [view, setView] = useState<FruitPlantView>("fruit");
@@ -39,6 +44,16 @@ export default function ProductPage() {
   );
   const CategoryIcon = product ? categoryIcon(product.category) : Sprout;
   const available = product ? isInStock(product) : false;
+
+  const cartQty = product ? cartItems.find((item) => item.product.id === product.id)?.quantity ?? 0 : 0;
+  const maxTotal = product ? maxCartQuantity(product) : 1;
+  const maxAdd = product ? Math.max(0, maxTotal - cartQty) : 0;
+  const quantityLabel = product ? limitedQuantityLabel(product) : null;
+  const canAddMore = product ? canAddToCart(product, cartQty, qty) : false;
+
+  useEffect(() => {
+    if (maxAdd > 0) setQty((current) => Math.min(current, maxAdd));
+  }, [maxAdd, product?.id]);
 
   if (!product) {
     return (
@@ -102,9 +117,19 @@ export default function ProductPage() {
             </div>
           )}
           {!available && <StockWaitForm product={product} />}
-          {available && product.veryRare && (
+          {available && quantityLabel && (
+            <p className="mt-4 rounded-2xl border border-citrus/40 bg-citrus/10 px-4 py-3 text-sm font-medium text-forest">
+              {quantityLabel} — order soon before they&apos;re gone.
+            </p>
+          )}
+          {available && !quantityLabel && (product.veryRare || product.limitedSupply) && (
             <p className="mt-4 rounded-2xl border border-forest/20 bg-forest/5 px-4 py-3 text-sm text-ink/80">
-              This is a very rare nursery variety with limited availability. Message us on WhatsApp if you would like to be notified when stock returns.
+              Limited nursery stock — message us on WhatsApp if you need help placing your order.
+            </p>
+          )}
+          {available && maxAdd === 0 && cartQty > 0 && (
+            <p className="mt-4 rounded-2xl border border-forest/20 bg-forest/5 px-4 py-3 text-sm text-forest">
+              You already have the maximum available ({cartQty}) in your cart.
             </p>
           )}
           <p className="mt-6 leading-relaxed text-ink/70">{product.description}</p>
@@ -115,21 +140,43 @@ export default function ProductPage() {
           <div className="mt-6 space-y-3">
             <div className="flex items-center gap-3">
               <div className="flex items-center rounded-full border border-forest/15 bg-white">
-                <button className="grid h-11 w-11 place-items-center" onClick={() => setQty((n) => Math.max(1, n - 1))} aria-label="Decrease quantity">
+                <button
+                  className="grid h-11 w-11 place-items-center disabled:opacity-40"
+                  disabled={qty <= 1}
+                  onClick={() => setQty((n) => Math.max(1, n - 1))}
+                  aria-label="Decrease quantity"
+                >
                   <Minus className="h-4 w-4" />
                 </button>
                 <span className="w-8 text-center font-semibold">{qty}</span>
-                <button className="grid h-11 w-11 place-items-center" onClick={() => setQty((n) => n + 1)} aria-label="Increase quantity">
+                <button
+                  className="grid h-11 w-11 place-items-center disabled:opacity-40"
+                  disabled={qty >= maxAdd}
+                  onClick={() => setQty((n) => Math.min(maxAdd, n + 1))}
+                  aria-label="Increase quantity"
+                >
                   <Plus className="h-4 w-4" />
                 </button>
               </div>
+              {maxAdd > 0 && maxAdd < maxTotal && (
+                <p className="text-xs text-ink/50">Max {maxAdd} more ({maxTotal} total available)</p>
+              )}
             </div>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <Button size="lg" className="w-full" disabled={!available} onClick={() => add(product.id, qty)}>
+              <Button size="lg" className="w-full" disabled={!available || !canAddMore} onClick={() => add(product.id, qty)}>
                 <ShoppingBag className="h-4 w-4" />
-                {available ? "Add to Cart" : "Out of Stock"}
+                {!available ? "Out of Stock" : !canAddMore ? "Max in cart" : "Add to Cart"}
               </Button>
-              <Button size="lg" variant="outline" className="w-full" disabled={!available} onClick={() => { add(product.id, qty); router.push("/cart"); }}>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full"
+                disabled={!available || !canAddMore}
+                onClick={() => {
+                  add(product.id, qty);
+                  router.push("/cart");
+                }}
+              >
                 Buy now
               </Button>
             </div>

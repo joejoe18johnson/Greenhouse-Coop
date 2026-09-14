@@ -37,7 +37,8 @@ import {
   formatOrderBalance,
   type PaymentPlan,
 } from "@/lib/order-deposit";
-import { createAdminOrder } from "@/lib/store";
+import { createAdminOrder, getOrders } from "@/lib/store";
+import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { localDeliveryFeeForTownText } from "@/lib/shipping-copy";
 import { isLocalTown } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
@@ -161,6 +162,7 @@ export default function AdminCreateOrderPage() {
         shipping,
         couriers,
         idsRates,
+        orders: customer.userId ? getOrders() : [],
       });
     } catch {
       return null;
@@ -560,6 +562,9 @@ export default function AdminCreateOrderPage() {
                   ? [{ label: "Local delivery", value: formatBZD(preview.deliveryFee) }]
                   : []),
                 ...(preview.boxFee > 0 ? [{ label: "Box", value: formatBZD(preview.boxFee) }] : []),
+                ...((preview.loyaltyDiscount ?? 0) > 0
+                  ? [{ label: LOYALTY_DISCOUNT_LABEL, value: `−${formatBZD(preview.loyaltyDiscount!)}` }]
+                  : []),
               ]}
               total={formatBZD(preview.total)}
               depositDue={!isCod ? formatAmountDueNow(preview.total, paymentContext) : undefined}

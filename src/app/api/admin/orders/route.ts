@@ -6,7 +6,15 @@ import {
 } from "@/lib/admin-order";
 import { splitCustomerName } from "@/lib/split-customer-name";
 import { normalizeShippingSettings } from "@/lib/shipping-settings";
-import { orderToRow, productFromRow, type ProductRow } from "@/lib/supabase/mappers";
+import {
+  orderFromRow,
+  orderToRow,
+  productFromRow,
+  productToRow,
+  type OrderRow,
+  type ProductRow,
+} from "@/lib/supabase/mappers";
+import { applyOrderToProductInventory } from "@/lib/product-quantity";
 import { isSupabaseEnabled } from "@/lib/supabase/config";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -166,6 +174,14 @@ export async function POST(request: Request) {
     if (productError) throw productError;
 
     const products = ((productRows ?? []) as ProductRow[]).map(productFromRow);
+
+    const { data: customerOrderRows, error: customerOrdersError } = await db
+      .from("orders")
+      .select("*")
+      .eq("user_id", customerResult.userId);
+    if (customerOrdersError) throw customerOrdersError;
+    const customerOrders = ((customerOrderRows ?? []) as OrderRow[]).map(orderFromRow);
+
     const draft = buildAdminOrderDraft({
       input: body,
       userId: customerResult.userId,
@@ -173,6 +189,7 @@ export async function POST(request: Request) {
       shipping: normalizeShippingSettings(shipping),
       couriers,
       idsRates,
+      orders: customerOrders,
     });
 
     const now = new Date().toISOString();
@@ -185,6 +202,18 @@ export async function POST(request: Request) {
 
     const { error: insertError } = await db.from("orders").insert(orderToRow(order));
     if (insertError) throw insertError;
+
+    for (const item of order.items) {
+      const product = products.find((entry) => entry.id === item.productId);
+      if (!product) continue;
+      const updated = applyOrderToProductInventory(product, item.quantity);
+      if (!updated) continue;
+      const { error: productError } = await db
+        .from("products")
+        .update(productToRow(updated))
+        .eq("id", updated.id);
+      if (productError) throw productError;
+    }
 
     return NextResponse.json({
       ok: true,

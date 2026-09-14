@@ -4,6 +4,7 @@ import { useStore } from "@/context/store-context";
 import { getCartUpdatedAt, getProduct } from "@/lib/store";
 import { CART_HOLD_MS } from "@/lib/constants";
 import { isInStock } from "@/lib/product-badges";
+import { canAddToCart, clampCartQuantity } from "@/lib/product-quantity";
 import type { CartItem, Product } from "@/types";
 
 export function useCart() {
@@ -26,17 +27,25 @@ export function useCart() {
     if (!product || !isInStock(product)) return;
     const next = [...cart];
     const existing = next.find((i) => i.productId === productId);
+    const currentQty = existing?.quantity ?? 0;
+    if (!canAddToCart(product, currentQty, quantity)) {
+      const capped = clampCartQuantity(product, currentQty + quantity);
+      if (capped <= currentQty) return;
+      quantity = capped - currentQty;
+    }
     if (existing) existing.quantity += quantity;
     else next.push({ productId, quantity });
     setCart(next);
   }
 
   function setQty(productId: string, quantity: number) {
+    const product = getProduct(productId);
     if (quantity <= 0) {
       setCart(cart.filter((i) => i.productId !== productId));
       return;
     }
-    setCart(cart.map((i) => (i.productId === productId ? { ...i, quantity } : i)));
+    const clamped = product ? clampCartQuantity(product, quantity) : quantity;
+    setCart(cart.map((i) => (i.productId === productId ? { ...i, quantity: clamped } : i)));
   }
 
   function remove(productId: string) {

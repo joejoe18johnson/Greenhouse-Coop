@@ -1,6 +1,7 @@
 import { PICKUP_LOCATION } from "@/lib/constants";
 import { customerTimelineNote } from "@/lib/order-status-messages";
 import { splitCustomerName } from "@/lib/split-customer-name";
+import { applyLoyaltyDiscountToTotal, isLoyaltyDiscountEligible } from "@/lib/loyalty-discount";
 import { computeOrderTotal, quoteShipping } from "@/lib/shipping";
 import { generateInvoiceNumber, generateReference } from "@/lib/utils";
 import type {
@@ -82,6 +83,9 @@ function computeAdminOrderContent(options: {
   shipping: ShippingSettings;
   couriers: Courier[];
   idsRates?: IdsRates;
+  userId?: string;
+  orders?: Order[];
+  excludeOrderId?: string;
 }) {
   const { input, products, shipping, couriers, idsRates } = options;
   const catalog = new Map(products.map((product) => [product.id, product]));
@@ -120,11 +124,18 @@ function computeAdminOrderContent(options: {
     shipping,
     idsRates,
   });
-  const total = computeOrderTotal({
+  const baseTotal = computeOrderTotal({
     subtotal,
     deliveryFee: quote.deliveryFee,
     boxFee: quote.boxFee,
   });
+  const eligible =
+    options.userId && options.orders
+      ? isLoyaltyDiscountEligible(options.userId, options.orders, {
+          excludeOrderId: options.excludeOrderId,
+        })
+      : false;
+  const { total, loyaltyDiscount } = applyLoyaltyDiscountToTotal(baseTotal, eligible);
 
   const shippingInfo: ShippingInfo = {
     firstName,
@@ -151,6 +162,7 @@ function computeAdminOrderContent(options: {
     boxFee: quote.boxFee,
     courierEstimate: quote.courierEstimate,
     total,
+    loyaltyDiscount: loyaltyDiscount || undefined,
     boxRecommendation: quote.box,
     shipping: shippingInfo,
   };
@@ -163,9 +175,18 @@ export function buildAdminOrderDraft(options: {
   shipping: ShippingSettings;
   couriers: Courier[];
   idsRates?: IdsRates;
+  orders?: Order[];
 }): Omit<Order, "id" | "createdAt" | "updatedAt"> {
-  const { input, userId, products, shipping, couriers, idsRates } = options;
-  const content = computeAdminOrderContent({ input, products, shipping, couriers, idsRates });
+  const { input, userId, products, shipping, couriers, idsRates, orders } = options;
+  const content = computeAdminOrderContent({
+    input,
+    products,
+    shipping,
+    couriers,
+    idsRates,
+    userId,
+    orders,
+  });
   const status = defaultAdminOrderStatus(input);
   const payment = buildPaymentForInput(input, status);
   const now = new Date().toISOString();
@@ -219,9 +240,19 @@ export function buildAdminOrderUpdate(options: {
   shipping: ShippingSettings;
   couriers: Courier[];
   idsRates?: IdsRates;
+  orders?: Order[];
 }): Order {
-  const { existing, input, products, shipping, couriers, idsRates } = options;
-  const content = computeAdminOrderContent({ input, products, shipping, couriers, idsRates });
+  const { existing, input, products, shipping, couriers, idsRates, orders } = options;
+  const content = computeAdminOrderContent({
+    input,
+    products,
+    shipping,
+    couriers,
+    idsRates,
+    userId: existing.userId,
+    orders,
+    excludeOrderId: existing.id,
+  });
   const payment = buildPaymentForInput(input, existing.status, existing.payment);
   const now = new Date().toISOString();
   const editNote =
@@ -265,6 +296,7 @@ export function buildAdminOrderEditPreview(options: {
   shipping: ShippingSettings;
   couriers: Courier[];
   idsRates?: IdsRates;
+  orders?: Order[];
 }): Order {
   return buildAdminOrderUpdate(options);
 }

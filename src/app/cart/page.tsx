@@ -6,6 +6,7 @@ import { ArrowRight, Clock, Minus, Package, Plus, ShoppingBag, Sprout, Trash2 } 
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useCart } from "@/hooks/use-cart";
+import { canAddToCart, limitedQuantityLabel } from "@/lib/product-quantity";
 import { useShippingSettings } from "@/hooks/use-shipping-settings";
 import { localDeliveryBlurb } from "@/lib/shipping-copy";
 import { formatBZD } from "@/lib/utils";
@@ -59,7 +60,10 @@ export default function CartPage() {
       ) : (
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
           <div className="space-y-4">
-            {items.map(({ product, quantity }) => (
+            {items.map(({ product, quantity }) => {
+              const quantityLabel = limitedQuantityLabel(product);
+              const canIncrease = canAddToCart(product, quantity, 1);
+              return (
               <div key={product.id} className="rounded-[24px] bg-white/80 p-4">
                 <div className="flex items-start gap-4">
                   <div className="relative h-20 w-20 shrink-0">
@@ -71,6 +75,9 @@ export default function CartPage() {
                     </Link>
                     <p className="text-sm text-ink/50">{product.category}</p>
                     <p className="text-sm font-medium">{formatBZD(product.price)}</p>
+                    {quantityLabel && (
+                      <p className="mt-1 text-xs font-medium text-citrus">{quantityLabel}</p>
+                    )}
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between gap-3 border-t border-forest/10 pt-4">
@@ -79,7 +86,12 @@ export default function CartPage() {
                       <Minus className="h-3.5 w-3.5" />
                     </button>
                     <span className="w-8 text-center text-sm font-medium">{quantity}</span>
-                    <button className="grid h-11 w-11 place-items-center" onClick={() => setQty(product.id, quantity + 1)} aria-label="Increase quantity">
+                    <button
+                      className="grid h-11 w-11 place-items-center disabled:opacity-40"
+                      disabled={!canIncrease}
+                      onClick={() => setQty(product.id, quantity + 1)}
+                      aria-label="Increase quantity"
+                    >
                       <Plus className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -88,7 +100,8 @@ export default function CartPage() {
                   </button>
                 </div>
               </div>
-            ))}
+            );
+            })}
             <InventoryNotice />
           </div>
           <aside className="h-fit rounded-[28px] bg-forest-dark p-6 text-cream">

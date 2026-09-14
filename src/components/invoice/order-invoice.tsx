@@ -8,6 +8,7 @@ import {
   orderAmountDueNow,
   paymentMethodLabel,
 } from "@/lib/order-deposit";
+import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { formatBZD } from "@/lib/utils";
 import type { BankDetails, Order } from "@/types";
 
@@ -193,7 +194,25 @@ export function OrderInvoice({
             <span>Subtotal</span>
             <span className="tabular-nums">{formatBZD(order.subtotal)}</span>
           </div>
-          <div className="flex justify-between text-ink/60">
+          {order.deliveryFee > 0 && (
+            <div className="flex justify-between text-ink/60">
+              <span>Local delivery</span>
+              <span className="tabular-nums">{formatBZD(order.deliveryFee)}</span>
+            </div>
+          )}
+          {order.boxFee > 0 && (
+            <div className="flex justify-between text-ink/60">
+              <span>Box</span>
+              <span className="tabular-nums">{formatBZD(order.boxFee)}</span>
+            </div>
+          )}
+          {(order.loyaltyDiscount ?? 0) > 0 && (
+            <div className="flex justify-between text-leaf">
+              <span>{LOYALTY_DISCOUNT_LABEL}</span>
+              <span className="tabular-nums">−{formatBZD(order.loyaltyDiscount!)}</span>
+            </div>
+          )}
+          <div className="flex justify-between font-medium text-forest-dark">
             <span>Order total</span>
             <span className="tabular-nums">{formatBZD(order.total)}</span>
           </div>

@@ -14,6 +14,7 @@ import { invoiceFinancials, isDemoOrder, isKnownTestOrder, orderCountsInFinancia
 import { getBankDetails, getOrders, getUsers, updateOrder, updateOrderStatus } from "@/lib/store";
 import { fulfillmentLabel } from "@/lib/shipping";
 import { formatOrderBalance, formatOrderDeposit, isCashOnDelivery, orderAmountDueNow } from "@/lib/order-deposit";
+import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { formatBZD } from "@/lib/utils";
 import { COURIER_ESTIMATE_NOTICE, ORDER_STATUSES } from "@/lib/constants";
 import type { OrderStatus } from "@/types";
@@ -261,6 +262,11 @@ export default function AdminOrderDetailPage() {
             ))}
             {order.deliveryFee > 0 && <li>Local delivery — {formatBZD(order.deliveryFee)}</li>}
             {order.boxFee > 0 && <li>Box — {formatBZD(order.boxFee)}</li>}
+            {(order.loyaltyDiscount ?? 0) > 0 && (
+              <li className="text-leaf">
+                {LOYALTY_DISCOUNT_LABEL} — −{formatBZD(order.loyaltyDiscount!)}
+              </li>
+            )}
           </ul>
           <p className="mt-4 font-semibold">Order total {formatBZD(order.total)}</p>
           <p className="mt-1 text-sm text-forest">

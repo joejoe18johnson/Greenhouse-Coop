@@ -28,6 +28,7 @@ import {
 } from "@/lib/admin-order";
 import { ensureOrderCustomerLocal } from "@/lib/ensure-order-customer";
 import { syncFeaturedProductOrder } from "@/lib/featured-products";
+import { reserveInventoryForOrder } from "@/lib/inventory";
 import type {
   BankDetails,
   CartItem,
@@ -356,6 +357,7 @@ export function createOrder(input: Omit<Order, "id" | "createdAt" | "updatedAt" 
   const orders = getOrders();
   orders.unshift(order);
   saveOrders(orders);
+  reserveInventoryForOrder(order.items, getProduct, upsertProduct);
   return order;
 }
 
@@ -369,6 +371,7 @@ export function createAdminOrder(input: AdminCreateOrderInput): Order {
     shipping: getShippingSettings(),
     couriers: getCouriers(),
     idsRates: getIdsRates(),
+    orders: getOrders(),
   });
   const now = new Date().toISOString();
   const order: Order = {
@@ -380,6 +383,7 @@ export function createAdminOrder(input: AdminCreateOrderInput): Order {
   const orders = getOrders();
   orders.unshift(order);
   saveOrders(orders);
+  reserveInventoryForOrder(order.items, getProduct, upsertProduct);
   return order;
 }
 
@@ -395,6 +399,7 @@ export function updateAdminOrder(orderId: string, input: AdminEditOrderInput): O
     shipping: getShippingSettings(),
     couriers: getCouriers(),
     idsRates: getIdsRates(),
+    orders: getOrders(),
   });
   updateOrder(updated);
   return updated;

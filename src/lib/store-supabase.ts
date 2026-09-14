@@ -29,6 +29,7 @@ import {
   type AdminEditOrderInput,
 } from "@/lib/admin-order";
 import { syncFeaturedProductOrder } from "@/lib/featured-products";
+import { reserveInventoryForOrder } from "@/lib/inventory";
 import { generateInvoiceNumber, generateReference } from "@/lib/utils";
 import type {
   BankDetails,
@@ -501,6 +502,10 @@ export function createOrder(
   orders.unshift(order);
   setCache({ orders });
 
+  reserveInventoryForOrder(order.items, getProduct, (product) => {
+    void upsertProduct(product);
+  });
+
   void (async () => {
     const { error } = await supabase().from("orders").insert(orderToRow(order));
     if (error) console.error("Failed to create order:", error);
@@ -526,6 +531,9 @@ export async function createAdminOrder(input: AdminCreateOrderInput): Promise<Or
   }
 
   setCache({ orders: [body.order, ...getOrders()] });
+  reserveInventoryForOrder(body.order.items, getProduct, (product) => {
+    void upsertProduct(product);
+  });
 
   if (body.customerCreated && getSession()?.role === "admin") {
     const users = await loadAllUsersForAdmin();

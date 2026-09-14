@@ -79,6 +79,14 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     if (productError) throw productError;
 
     const products = ((productRows ?? []) as ProductRow[]).map(productFromRow);
+
+    const { data: customerOrderRows, error: customerOrdersError } = await db
+      .from("orders")
+      .select("*")
+      .eq("user_id", existing.userId);
+    if (customerOrdersError) throw customerOrdersError;
+    const customerOrders = ((customerOrderRows ?? []) as OrderRow[]).map(orderFromRow);
+
     const order: Order = buildAdminOrderUpdate({
       existing,
       input: body,
@@ -86,6 +94,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       shipping: normalizeShippingSettings(shipping),
       couriers,
       idsRates,
+      orders: customerOrders,
     });
 
     const { error: updateError } = await db.from("orders").update(orderToRow(order)).eq("id", params.id);

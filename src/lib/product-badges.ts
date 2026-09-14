@@ -1,5 +1,6 @@
 import type { Product } from "@/types";
 import { SHORT_SUPPLY_IDS } from "@/lib/constants";
+import { productQuantityCap } from "@/lib/product-quantity";
 
 export type ProductBadgeKind =
   | "out-of-stock"
@@ -13,7 +14,10 @@ export type ProductBadge = {
 };
 
 export function isInStock(product: Product) {
-  return product.inStock !== false;
+  if (product.inStock === false) return false;
+  const cap = productQuantityCap(product);
+  if (cap !== undefined && cap <= 0) return false;
+  return true;
 }
 
 export type StockStatus = "in-stock" | "out-of-stock" | "limited" | "very-rare";
@@ -41,7 +45,13 @@ export function applyStockStatus(product: Product, status: StockStatus): Product
     case "very-rare":
       return { ...product, inStock: true, veryRare: true, limitedSupply: false };
     default:
-      return { ...product, inStock: true, limitedSupply: false, veryRare: false };
+      return {
+        ...product,
+        inStock: true,
+        limitedSupply: false,
+        veryRare: false,
+        availableQuantity: undefined,
+      };
   }
 }
 

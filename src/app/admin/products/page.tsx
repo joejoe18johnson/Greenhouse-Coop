@@ -37,6 +37,7 @@ const empty: Product = {
   featured: false,
   limitedSupply: false,
   veryRare: false,
+  availableQuantity: undefined,
   inStock: true,
 };
 
@@ -139,7 +140,13 @@ export default function AdminProductsPage() {
     setError("");
     try {
       const id = form.id || slugify(form.name);
-      await upsertProduct(applyStockStatus({ ...form, id }, formStockStatus));
+      const next = applyStockStatus({ ...form, id }, formStockStatus);
+      if (formStockStatus !== "limited" && formStockStatus !== "very-rare") {
+        next.availableQuantity = undefined;
+      } else if (next.availableQuantity !== undefined && next.availableQuantity <= 0) {
+        next.inStock = false;
+      }
+      await upsertProduct(next);
       closeDialog();
       refresh();
     } catch (err) {
@@ -318,6 +325,21 @@ export default function AdminProductsPage() {
                 ))}
               </Select>
             </div>
+            {(formStockStatus === "limited" || formStockStatus === "very-rare") && (
+              <div>
+                <Label>Available quantity</Label>
+                <NumberInput
+                  className="mt-1"
+                  min={0}
+                  value={form.availableQuantity ?? 0}
+                  onChange={(availableQuantity) => setForm({ ...form, availableQuantity })}
+                />
+                <p className="mt-1 text-xs text-ink/50">
+                  How many of this tree are at the nursery right now. Customers cannot add more than this to their cart.
+                  Set to 0 for sold out.
+                </p>
+              </div>
+            )}
             <div>
               <Label>Fruit image path</Label>
               <Input className="mt-1" value={form.fruitImage} onChange={(e) => setForm({ ...form, fruitImage: e.target.value })} />

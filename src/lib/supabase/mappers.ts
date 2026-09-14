@@ -28,6 +28,7 @@ export interface ProductRow {
   featured: boolean;
   limited_supply: boolean;
   very_rare: boolean;
+  available_quantity?: number | null;
   certified: boolean;
   in_stock: boolean;
 }
@@ -65,6 +66,7 @@ export interface OrderRow {
   box_fee: number;
   courier_estimate: number;
   total: number;
+  loyalty_discount?: number;
   box_recommendation: Order["boxRecommendation"];
   status: Order["status"];
   shipping: Order["shipping"];
@@ -91,6 +93,10 @@ export function productFromRow(row: ProductRow): Product {
     featured: row.featured,
     limitedSupply: row.limited_supply,
     veryRare: row.very_rare,
+    availableQuantity:
+      row.available_quantity === null || row.available_quantity === undefined
+        ? undefined
+        : Number(row.available_quantity),
     certified: row.certified,
     inStock: row.in_stock,
   };
@@ -111,6 +117,7 @@ export function productToRow(product: Product): ProductRow {
     featured: product.featured,
     limited_supply: product.limitedSupply ?? false,
     very_rare: product.veryRare ?? false,
+    available_quantity: product.availableQuantity ?? null,
     certified: product.certified ?? false,
     in_stock: product.inStock ?? true,
   };
@@ -168,6 +175,8 @@ export function orderFromRow(row: OrderRow): Order {
     boxFee: Number(row.box_fee),
     courierEstimate: Number(row.courier_estimate),
     total: Number(row.total),
+    loyaltyDiscount:
+      Number(row.loyalty_discount ?? 0) > 0 ? Number(row.loyalty_discount) : undefined,
     boxRecommendation: row.box_recommendation,
     status: row.status,
     shipping: row.shipping,
@@ -193,6 +202,7 @@ export function orderToRow(order: Order): Omit<OrderRow, "created_at" | "updated
     box_fee: order.boxFee,
     courier_estimate: order.courierEstimate,
     total: order.total,
+    loyalty_discount: order.loyaltyDiscount ?? 0,
     box_recommendation: order.boxRecommendation,
     status: order.status,
     shipping: order.shipping,

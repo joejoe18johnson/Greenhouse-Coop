@@ -9,6 +9,7 @@ import { CustomerNotificationToasts } from "@/components/notifications/customer-
 import { AdminNotificationToasts } from "@/components/notifications/admin-notification-toasts";
 import { StockWaitAlertToasts } from "@/components/notifications/stock-wait-alert-toasts";
 import { WhatsAppWidget } from "@/components/support/whatsapp-widget";
+import { LoyaltyDiscountDialog } from "@/components/loyalty/loyalty-discount-dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { usePathname } from "next/navigation";
 
@@ -50,6 +51,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
       </motion.main>
       <Footer />
       <WhatsAppWidget />
+      <LoyaltyDiscountDialog />
       <GlobalToasts />
     </>
   );
