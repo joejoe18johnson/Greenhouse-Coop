@@ -267,6 +267,12 @@ export default function AdminOrderDetailPage() {
                 {LOYALTY_DISCOUNT_LABEL} — −{formatBZD(order.loyaltyDiscount!)}
               </li>
             )}
+            {(order.invoiceDiscount ?? 0) > 0 && (
+              <li className="text-leaf">
+                {order.invoiceDiscountNote || "Custom pricing adjustment"} — −
+                {formatBZD(order.invoiceDiscount!)}
+              </li>
+            )}
           </ul>
           <p className="mt-4 font-semibold">Order total {formatBZD(order.total)}</p>
           <p className="mt-1 text-sm text-forest">

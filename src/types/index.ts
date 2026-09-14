@@ -222,6 +222,10 @@ export interface Order {
   total: number;
   /** Whole-BZD loyalty discount applied (10% off, rounded down). */
   loyaltyDiscount?: number;
+  /** Admin-set flat discount on the invoice (e.g. volume pricing for large orders). */
+  invoiceDiscount?: number;
+  /** Label shown on the invoice for invoiceDiscount. */
+  invoiceDiscountNote?: string;
   boxRecommendation: BoxRecommendation;
   status: OrderStatus;
   shipping: ShippingInfo;

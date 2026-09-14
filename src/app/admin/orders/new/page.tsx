@@ -6,14 +6,14 @@ import { useMemo, useState, useEffect } from "react";
 import {
   ArrowLeft,
   Banknote,
-  Minus,
-  Plus,
   Search,
   Store,
   Truck,
   UserCheck,
   UserPlus,
 } from "lucide-react";
+import { AdminInvoicePricing } from "@/components/admin/admin-invoice-pricing";
+import { AdminOrderLinePicker } from "@/components/admin/admin-order-line-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,7 +26,9 @@ import { useIdsRates } from "@/hooks/use-ids-rates";
 import { useProducts } from "@/hooks/use-products";
 import { useShippingSettings } from "@/hooks/use-shipping-settings";
 import {
+  adminOrderReceiptRows,
   buildAdminOrderDraft,
+  buildAdminOrderLineItems,
   defaultAdminOrderStatus,
   validateAdminCreateOrderInput,
   type AdminCreateOrderInput,
@@ -38,7 +40,6 @@ import {
   type PaymentPlan,
 } from "@/lib/order-deposit";
 import { createAdminOrder, getOrders } from "@/lib/store";
-import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { localDeliveryFeeForTownText } from "@/lib/shipping-copy";
 import { isLocalTown } from "@/lib/shipping";
 import { formatBZD } from "@/lib/utils";
@@ -47,6 +48,7 @@ import locations from "@/data/locations.json";
 import type { PaymentInfo } from "@/types";
 
 type LineQty = Record<string, number>;
+type LinePrices = Record<string, number | undefined>;
 
 const emptyCustomer = {
   userId: "" as string | undefined,
@@ -70,6 +72,9 @@ export default function AdminCreateOrderPage() {
   const [productQuery, setProductQuery] = useState("");
   const [customer, setCustomer] = useState(emptyCustomer);
   const [quantities, setQuantities] = useState<LineQty>({});
+  const [linePrices, setLinePrices] = useState<LinePrices>({});
+  const [invoiceDiscount, setInvoiceDiscount] = useState(0);
+  const [invoiceDiscountNote, setInvoiceDiscountNote] = useState("");
   const [wantsDelivery, setWantsDelivery] = useState(true);
   const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
   const [paymentMethod, setPaymentMethod] = useState<PaymentInfo["method"]>("cod");
@@ -93,16 +98,6 @@ export default function AdminCreateOrderPage() {
     );
   }, [directory, directoryQuery]);
 
-  const filteredProducts = useMemo(() => {
-    const q = productQuery.trim().toLowerCase();
-    const list = [...products].sort((a, b) => a.name.localeCompare(b.name));
-    if (!q) return list;
-    return list.filter(
-      (product) =>
-        product.name.toLowerCase().includes(q) || product.category.toLowerCase().includes(q)
-    );
-  }, [products, productQuery]);
-
   const towns = locations.districts.find((d) => d.name === customer.district)?.towns ?? [];
   const local = isLocalTown(customer.town, shipping.localDelivery);
   const courierOnly = wantsDelivery && !local;
@@ -114,11 +109,8 @@ export default function AdminCreateOrderPage() {
   }, [courierOnly, paymentMethod]);
 
   const selectedItems = useMemo(
-    () =>
-      Object.entries(quantities)
-        .filter(([, qty]) => qty > 0)
-        .map(([productId, quantity]) => ({ productId, quantity })),
-    [quantities]
+    () => buildAdminOrderLineItems(quantities, linePrices),
+    [quantities, linePrices]
   );
 
   const draftInput = useMemo<AdminCreateOrderInput>(
@@ -129,6 +121,8 @@ export default function AdminCreateOrderPage() {
         email: customer.email || undefined,
       },
       items: selectedItems,
+      invoiceDiscount: invoiceDiscount > 0 ? invoiceDiscount : undefined,
+      invoiceDiscountNote: invoiceDiscountNote || undefined,
       wantsDelivery,
       courierId,
       paymentMethod,
@@ -140,6 +134,8 @@ export default function AdminCreateOrderPage() {
     [
       customer,
       selectedItems,
+      invoiceDiscount,
+      invoiceDiscountNote,
       wantsDelivery,
       courierId,
       paymentMethod,
@@ -191,6 +187,11 @@ export default function AdminCreateOrderPage() {
       if (qty === 0) {
         const copy = { ...prev };
         delete copy[productId];
+        setLinePrices((prices) => {
+          const nextPrices = { ...prices };
+          delete nextPrices[productId];
+          return nextPrices;
+        });
         return copy;
       }
       return { ...prev, [productId]: qty };
@@ -301,59 +302,24 @@ export default function AdminCreateOrderPage() {
             </div>
           </section>
 
-          <section className="rounded-[28px] bg-white p-6">
-            <h2 className="font-display text-2xl text-forest">Trees</h2>
-            <div className="relative mt-4">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/35" />
-              <Input
-                className="pl-9"
-                placeholder="Search catalog"
-                value={productQuery}
-                onChange={(e) => setProductQuery(e.target.value)}
-              />
-            </div>
-            <div className="mt-4 max-h-[420px] space-y-2 overflow-y-auto pr-1">
-              {filteredProducts.map((product) => {
-                const qty = quantities[product.id] ?? 0;
-                return (
-                  <div
-                    key={product.id}
-                    className="flex items-center justify-between gap-3 rounded-[18px] border border-forest/8 bg-cream/30 px-4 py-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="font-medium text-forest">{product.name}</p>
-                      <p className="text-xs text-ink/45">
-                        {product.category} · {formatBZD(product.price)}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => setQty(product.id, qty - 1)}
-                        aria-label={`Decrease ${product.name}`}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="w-6 text-center text-sm font-semibold tabular-nums">{qty}</span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => setQty(product.id, qty + 1)}
-                        aria-label={`Increase ${product.name}`}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+          <AdminOrderLinePicker
+            products={products}
+            quantities={quantities}
+            linePrices={linePrices}
+            productQuery={productQuery}
+            onProductQueryChange={setProductQuery}
+            onQuantityChange={setQty}
+            onLinePriceChange={(productId, price) =>
+              setLinePrices((prev) => ({ ...prev, [productId]: price }))
+            }
+          />
+
+          <AdminInvoicePricing
+            invoiceDiscount={invoiceDiscount}
+            invoiceDiscountNote={invoiceDiscountNote}
+            onInvoiceDiscountChange={setInvoiceDiscount}
+            onInvoiceDiscountNoteChange={setInvoiceDiscountNote}
+          />
 
           <section className="rounded-[28px] bg-white p-6">
             <h2 className="flex items-center gap-2 font-display text-2xl text-forest">
@@ -556,16 +522,7 @@ export default function AdminCreateOrderPage() {
                 quantity: item.quantity,
                 amount: formatBZD(item.price * item.quantity),
               }))}
-              rows={[
-                { label: "Subtotal", value: formatBZD(preview.subtotal) },
-                ...(preview.deliveryFee > 0
-                  ? [{ label: "Local delivery", value: formatBZD(preview.deliveryFee) }]
-                  : []),
-                ...(preview.boxFee > 0 ? [{ label: "Box", value: formatBZD(preview.boxFee) }] : []),
-                ...((preview.loyaltyDiscount ?? 0) > 0
-                  ? [{ label: LOYALTY_DISCOUNT_LABEL, value: `−${formatBZD(preview.loyaltyDiscount!)}` }]
-                  : []),
-              ]}
+              rows={adminOrderReceiptRows(preview)}
               total={formatBZD(preview.total)}
               depositDue={!isCod ? formatAmountDueNow(preview.total, paymentContext) : undefined}
               balanceDue={!isCod ? formatOrderBalance(preview.total) : undefined}

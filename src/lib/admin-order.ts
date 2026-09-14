@@ -3,7 +3,8 @@ import { customerTimelineNote } from "@/lib/order-status-messages";
 import { splitCustomerName } from "@/lib/split-customer-name";
 import { applyLoyaltyDiscountToTotal, isLoyaltyDiscountEligible } from "@/lib/loyalty-discount";
 import { computeOrderTotal, quoteShipping } from "@/lib/shipping";
-import { generateInvoiceNumber, generateReference } from "@/lib/utils";
+import { formatBZD, generateInvoiceNumber, generateReference } from "@/lib/utils";
+import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import type {
   Courier,
   IdsRates,
@@ -26,9 +27,19 @@ export interface AdminOrderCustomerInput {
   fullAddress: string;
 }
 
+export interface AdminOrderLineItem {
+  productId: string;
+  quantity: number;
+  /** Override catalog unit price on the invoice. */
+  price?: number;
+}
+
 export interface AdminCreateOrderInput {
   customer: AdminOrderCustomerInput;
-  items: { productId: string; quantity: number }[];
+  items: AdminOrderLineItem[];
+  /** Flat BZD discount applied after loyalty (large-order / custom pricing). */
+  invoiceDiscount?: number;
+  invoiceDiscountNote?: string;
   wantsDelivery: boolean;
   courierId?: string;
   paymentMethod: PaymentInfo["method"];
@@ -95,10 +106,14 @@ function computeAdminOrderContent(options: {
     .map((item) => {
       const product = catalog.get(item.productId);
       if (!product) throw new Error(`Unknown product: ${item.productId}`);
+      const unitPrice =
+        item.price !== undefined && item.price >= 0
+          ? Math.round(item.price * 100) / 100
+          : product.price;
       return {
         productId: product.id,
         name: product.name,
-        price: product.price,
+        price: unitPrice,
         quantity: item.quantity,
       };
     });
@@ -135,7 +150,10 @@ function computeAdminOrderContent(options: {
           excludeOrderId: options.excludeOrderId,
         })
       : false;
-  const { total, loyaltyDiscount } = applyLoyaltyDiscountToTotal(baseTotal, eligible);
+  const { total: afterLoyalty, loyaltyDiscount } = applyLoyaltyDiscountToTotal(baseTotal, eligible);
+  const invoiceDiscount = Math.max(0, Math.floor(input.invoiceDiscount ?? 0));
+  const total = Math.max(0, afterLoyalty - invoiceDiscount);
+  const discountNote = input.invoiceDiscountNote?.trim();
 
   const shippingInfo: ShippingInfo = {
     firstName,
@@ -163,6 +181,9 @@ function computeAdminOrderContent(options: {
     courierEstimate: quote.courierEstimate,
     total,
     loyaltyDiscount: loyaltyDiscount || undefined,
+    invoiceDiscount: invoiceDiscount > 0 ? invoiceDiscount : undefined,
+    invoiceDiscountNote:
+      invoiceDiscount > 0 ? discountNote || "Custom pricing adjustment" : undefined,
     boxRecommendation: quote.box,
     shipping: shippingInfo,
   };
@@ -219,7 +240,13 @@ export function orderToAdminEditInput(order: Order): AdminEditOrderInput {
       village: order.shipping.village,
       fullAddress: order.shipping.method === "pickup" ? "" : order.shipping.fullAddress,
     },
-    items: order.items.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+    items: order.items.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      price: item.price,
+    })),
+    invoiceDiscount: order.invoiceDiscount,
+    invoiceDiscountNote: order.invoiceDiscountNote,
     wantsDelivery: order.shipping.method !== "pickup",
     courierId: order.shipping.courierId,
     paymentMethod: order.payment.method,
@@ -231,6 +258,26 @@ export function orderToAdminEditInput(order: Order): AdminEditOrderInput {
 
 export function orderItemsToQuantities(order: Order) {
   return Object.fromEntries(order.items.map((item) => [item.productId, item.quantity]));
+}
+
+export function orderLinePricesFromOrder(order: Order) {
+  return Object.fromEntries(order.items.map((item) => [item.productId, item.price]));
+}
+
+export function buildAdminOrderLineItems(
+  quantities: Record<string, number>,
+  linePrices: Record<string, number | undefined>
+): AdminOrderLineItem[] {
+  return Object.entries(quantities)
+    .filter(([, quantity]) => quantity > 0)
+    .map(([productId, quantity]) => {
+      const item: AdminOrderLineItem = { productId, quantity };
+      const price = linePrices[productId];
+      if (price !== undefined && price >= 0) {
+        item.price = price;
+      }
+      return item;
+    });
 }
 
 export function buildAdminOrderUpdate(options: {
@@ -282,10 +329,52 @@ export function validateAdminCreateOrderInput(input: AdminCreateOrderInput) {
   if (!input.items.some((item) => item.quantity > 0)) {
     throw new Error("Add at least one tree to the order.");
   }
+  for (const item of input.items) {
+    if (item.price !== undefined && item.price < 0) {
+      throw new Error("Line prices cannot be negative.");
+    }
+  }
+  if ((input.invoiceDiscount ?? 0) < 0) {
+    throw new Error("Invoice discount cannot be negative.");
+  }
 }
 
 export function validateAdminEditOrderInput(input: AdminEditOrderInput) {
   validateAdminCreateOrderInput(input);
+}
+
+export function adminOrderReceiptRows(
+  order: Pick<
+    Order,
+    | "subtotal"
+    | "deliveryFee"
+    | "boxFee"
+    | "loyaltyDiscount"
+    | "invoiceDiscount"
+    | "invoiceDiscountNote"
+    | "shipping"
+  >
+) {
+  return [
+    { label: "Subtotal", value: formatBZD(order.subtotal) },
+    ...(order.deliveryFee > 0
+      ? [{ label: "Local delivery", value: formatBZD(order.deliveryFee) }]
+      : order.shipping.method === "pickup"
+        ? [{ label: "Delivery", value: "Collect" }]
+        : []),
+    ...(order.boxFee > 0 ? [{ label: "Box", value: formatBZD(order.boxFee) }] : []),
+    ...((order.loyaltyDiscount ?? 0) > 0
+      ? [{ label: LOYALTY_DISCOUNT_LABEL, value: `−${formatBZD(order.loyaltyDiscount!)}` }]
+      : []),
+    ...((order.invoiceDiscount ?? 0) > 0
+      ? [
+          {
+            label: order.invoiceDiscountNote || "Custom pricing adjustment",
+            value: `−${formatBZD(order.invoiceDiscount!)}`,
+          },
+        ]
+      : []),
+  ];
 }
 
 /** Build a preview draft when editing — preserves identity fields from the existing order. */

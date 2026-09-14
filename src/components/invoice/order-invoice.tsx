@@ -212,6 +212,12 @@ export function OrderInvoice({
               <span className="tabular-nums">−{formatBZD(order.loyaltyDiscount!)}</span>
             </div>
           )}
+          {(order.invoiceDiscount ?? 0) > 0 && (
+            <div className="flex justify-between text-leaf">
+              <span>{order.invoiceDiscountNote || "Custom pricing adjustment"}</span>
+              <span className="tabular-nums">−{formatBZD(order.invoiceDiscount!)}</span>
+            </div>
+          )}
           <div className="flex justify-between font-medium text-forest-dark">
             <span>Order total</span>
             <span className="tabular-nums">{formatBZD(order.total)}</span>
