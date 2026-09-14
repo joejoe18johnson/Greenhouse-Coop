@@ -7,6 +7,7 @@ import { Ban, Minus, Plus, Ruler, ShoppingBag, Sprout } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
+import { LimitedQuantityCallout } from "@/components/product/limited-quantity-callout";
 import { FruitPlantSwap, FruitPlantViewToggle, type FruitPlantView } from "@/components/product/fruit-plant-swap";
 import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { ProductCarousel } from "@/components/product/product-carousel";
@@ -96,6 +97,9 @@ export default function ProductPage() {
           </p>
           <h1 className="page-title mt-2">{product.name}</h1>
           <p className="mt-4 text-2xl font-semibold text-forest sm:text-3xl">{formatBZD(product.price)}</p>
+          {available && quantityLabel && (
+            <LimitedQuantityCallout product={product} prominent className="mt-4" />
+          )}
           <div className="mt-5 flex flex-wrap gap-2">
             <PropagationBadge type={product.propagationType} />
             <Badge className="inline-flex items-center gap-1 bg-cream-dark text-ink/70">
@@ -117,11 +121,6 @@ export default function ProductPage() {
             </div>
           )}
           {!available && <StockWaitForm product={product} />}
-          {available && quantityLabel && (
-            <p className="mt-4 rounded-2xl border border-citrus/40 bg-citrus/10 px-4 py-3 text-sm font-medium text-forest">
-              {quantityLabel} — order soon before they&apos;re gone.
-            </p>
-          )}
           {available && !quantityLabel && (product.veryRare || product.limitedSupply) && (
             <p className="mt-4 rounded-2xl border border-forest/20 bg-forest/5 px-4 py-3 text-sm text-ink/80">
               Limited nursery stock — message us on WhatsApp if you need help placing your order.
@@ -132,11 +131,6 @@ export default function ProductPage() {
               You already have the maximum available ({cartQty}) in your cart.
             </p>
           )}
-          <p className="mt-6 leading-relaxed text-ink/70">{product.description}</p>
-          <div className="mt-6 rounded-[24px] bg-forest-deep p-6 text-cream">
-            <p className="text-sm font-semibold text-lime-bright">Flavor Profile</p>
-            <p className="mt-3 leading-relaxed text-cream/85">{product.flavorProfile}</p>
-          </div>
           <div className="mt-6 space-y-3">
             <div className="flex items-center gap-3">
               <div className="flex items-center rounded-full border border-forest/15 bg-white">
@@ -180,6 +174,11 @@ export default function ProductPage() {
                 Buy now
               </Button>
             </div>
+          </div>
+          <p className="mt-6 leading-relaxed text-ink/70">{product.description}</p>
+          <div className="mt-6 rounded-[24px] bg-forest-deep p-6 text-cream">
+            <p className="text-sm font-semibold text-lime-bright">Flavor Profile</p>
+            <p className="mt-3 leading-relaxed text-cream/85">{product.flavorProfile}</p>
           </div>
           <InventoryNotice className="mt-8" />
         </div>

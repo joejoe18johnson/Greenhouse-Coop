@@ -341,6 +341,15 @@ export function updateUser(user: User) {
   saveUsers(getUsers().map((u) => (u.id === user.id ? user : u)));
 }
 
+export function deleteUser(userId: string) {
+  const user = getUsers().find((entry) => entry.id === userId);
+  if (!user) throw new Error("User not found.");
+  if (user.role === "admin") throw new Error("Admin accounts cannot be deleted.");
+
+  saveUsers(getUsers().filter((entry) => entry.id !== userId));
+  saveOrders(getOrders().filter((order) => order.userId !== userId));
+}
+
 export function createOrder(input: Omit<Order, "id" | "createdAt" | "updatedAt" | "timeline" | "invoiceNumber" | "reference"> & { reference?: string }) {
   const now = new Date().toISOString();
   const order: Order = {

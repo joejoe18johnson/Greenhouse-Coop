@@ -8,10 +8,12 @@ import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
 import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { PropagationBadge } from "@/components/product/propagation-badge";
 import { Button } from "@/components/ui/button";
+import { LimitedQuantityCallout } from "@/components/product/limited-quantity-callout";
 import { ProductBadges } from "@/components/product/product-badges";
 import { useCart } from "@/hooks/use-cart";
 import { categoryIcon } from "@/lib/icons";
 import { isInStock } from "@/lib/product-badges";
+import { hasQuantityCap } from "@/lib/product-quantity";
 import { cn, formatBZD } from "@/lib/utils";
 import type { Product } from "@/types";
 
@@ -27,6 +29,7 @@ export function ProductCard({
   const { add } = useCart();
   const CategoryIcon = categoryIcon(product.category);
   const available = isInStock(product);
+  const showQuantity = available && hasQuantityCap(product);
 
   return (
     <motion.article
@@ -62,6 +65,10 @@ export function ProductCard({
       </div>
       <TreeImageReferenceNotice className="px-5 pb-1" />
 
+      {showQuantity && inCarousel && (
+        <LimitedQuantityCallout product={product} prominent className="mx-4 mt-2" />
+      )}
+
       <div className="px-5 pb-5 pt-2">
         <div className="mb-3 flex flex-wrap gap-2">
           <PropagationBadge type={product.propagationType} />
@@ -80,6 +87,10 @@ export function ProductCard({
           </span>
         </p>
         <p className="mt-3 font-semibold text-forest">{formatBZD(product.price)}</p>
+
+        {showQuantity && !inCarousel && (
+          <LimitedQuantityCallout product={product} className="mt-3" />
+        )}
 
         <Accordion type="single" collapsible className="mt-2">
           <AccordionItem value="flavor" className="border-none">

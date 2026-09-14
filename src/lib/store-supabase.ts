@@ -359,6 +359,28 @@ export function saveUsers(next: User[]) {
   setCache({ users: next });
 }
 
+export async function reloadAdminUsers() {
+  const users = await loadAllUsersForAdmin();
+  setCache({ users });
+  return users;
+}
+
+export async function deleteUser(userId: string) {
+  const res = await fetch(`/api/admin/users/${encodeURIComponent(userId)}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  const body = (await res.json().catch(() => ({}))) as { error?: string; id?: string };
+  if (!res.ok) {
+    throw new Error(body.error || "Could not delete user.");
+  }
+
+  setCache({
+    users: getUsers().filter((user) => user.id !== userId),
+    orders: getOrders().filter((order) => order.userId !== userId),
+  });
+}
+
 export function getSession(): Session | null {
   return getCache().session;
 }

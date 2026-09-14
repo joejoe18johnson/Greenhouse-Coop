@@ -35,6 +35,21 @@ export function saveUsers(next: Parameters<typeof local.saveUsers>[0]) {
   return local.saveUsers(next);
 }
 
+export async function reloadAdminUsers() {
+  if (isRemoteBackend()) {
+    const users = await remote.reloadAdminUsers();
+    notifyStoreUpdate();
+    return users;
+  }
+  return local.getUsers();
+}
+
+export async function deleteUser(userId: string) {
+  if (isRemoteBackend()) await remote.deleteUser(userId);
+  else local.deleteUser(userId);
+  notifyStoreUpdate();
+}
+
 export function getSession() {
   return isRemoteBackend() ? remote.getSession() : local.getSession();
 }
