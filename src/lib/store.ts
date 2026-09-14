@@ -260,8 +260,15 @@ export async function setStockWaitRequestStatus(
 }
 
 export async function syncAuthSession() {
-  if (isRemoteBackend()) return remote.syncAuthSession();
-  return local.getSession();
+  const session = isRemoteBackend() ? await remote.syncAuthSession() : local.getSession();
+  notifyStoreUpdate();
+  return session;
+}
+
+export async function reloadOrders() {
+  const orders = isRemoteBackend() ? await remote.reloadOrders() : local.getOrders();
+  notifyStoreUpdate();
+  return orders;
 }
 
 export async function signOutRemote() {

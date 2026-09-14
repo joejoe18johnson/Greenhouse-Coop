@@ -36,7 +36,7 @@ export function LoyaltyDiscountDialog() {
     if (getItem(keys.promoSeen, false)) return;
     setMode("promo");
     setOpen(true);
-  }, [ready, user, loyalty.eligible, pathname]);
+  }, [ready, user, loyalty.eligible, loyalty.lifetimeSpend, pathname]);
 
   function dismiss() {
     if (!user) return;
@@ -64,15 +64,14 @@ export function LoyaltyDiscountDialog() {
           <DialogDescription className="mt-3 text-center text-sm leading-relaxed text-ink/70">
             {mode === "unlocked" ? (
               <>
-                Thank you for being a loyal Greenhouse Co-Op customer. You&apos;ve spent over{" "}
-                {formatBZD(LOYALTY_SPEND_THRESHOLD)} with us, so every order from now on gets an automatic{" "}
+                Thank you for being a loyal Greenhouse Co-Op customer. You qualify for our automatic{" "}
                 <strong>10% discount</strong> — rounded down to the nearest whole dollar on your invoice.
               </>
             ) : (
               <>
-                After {formatBZD(LOYALTY_SPEND_THRESHOLD)} in completed orders on your account, you unlock an automatic{" "}
-                <strong>10% discount on every invoice</strong> (totals round down to whole dollars — e.g. $18.55 becomes
-                $18).
+                After {formatBZD(LOYALTY_SPEND_THRESHOLD)} in paid orders on your account — or on any single order of{" "}
+                {formatBZD(LOYALTY_SPEND_THRESHOLD)}+ — you unlock an automatic{" "}
+                <strong>10% discount on every invoice</strong> (totals round down to whole dollars).
               </>
             )}
           </DialogDescription>

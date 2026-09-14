@@ -189,13 +189,7 @@ export async function hydrateStore() {
   });
 
   const session = await refreshSession();
-
-  const { data: orderRows, error: orderError } = await client
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false });
-  if (orderError) throw orderError;
-  setCache({ orders: ((orderRows ?? []) as OrderRow[]).map(orderFromRow) });
+  await reloadOrders();
 
   if (session?.role === "admin") {
     const users = await loadAllUsersForAdmin();
@@ -416,6 +410,16 @@ export function saveCart(next: CartItem[]) {
 
   setCache({ cart: stored });
   writePersistedCart(stored);
+}
+
+export async function reloadOrders() {
+  const { data: orderRows, error: orderError } = await supabase()
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (orderError) throw orderError;
+  setCache({ orders: ((orderRows ?? []) as OrderRow[]).map(orderFromRow) });
+  return getOrders();
 }
 
 export function getOrders(): Order[] {
@@ -675,9 +679,9 @@ export function setCustomerRequestStatus(id: string, status: CustomerRequestStat
 export async function syncAuthSession() {
   const session = await refreshSession();
   if (session) {
-    await loadRemoteCart(session.userId);
+    await Promise.all([loadRemoteCart(session.userId), reloadOrders()]);
   } else {
-    setCache({ cart: readPersistedCart() });
+    setCache({ cart: readPersistedCart(), orders: [] });
   }
   return session;
 }

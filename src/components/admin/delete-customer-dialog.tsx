@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  DELETE_USER_CONFIRMATION_PHRASE,
+  verifyDeleteUserConfirmation,
+} from "@/lib/admin-delete-code";
 
 export type DeleteCustomerTarget = {
   id: string;
@@ -26,12 +30,13 @@ export function DeleteCustomerDialog({
   deleting: boolean;
   error?: string;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (confirmCode: string) => void;
+  onConfirm: (confirmPhrase: string) => void;
 }) {
-  const [confirmCode, setConfirmCode] = useState("");
+  const [confirmPhrase, setConfirmPhrase] = useState("");
+  const confirmed = verifyDeleteUserConfirmation(confirmPhrase);
 
   useEffect(() => {
-    if (!open) setConfirmCode("");
+    if (!open) setConfirmPhrase("");
   }, [open]);
 
   if (!target) return null;
@@ -52,24 +57,25 @@ export function DeleteCustomerDialog({
               {target.orderCount > 0
                 ? ` and ${target.orderCount} order${target.orderCount === 1 ? "" : "s"}`
                 : ""}
-              . Type the admin delete code to confirm.
+              . Please confirm delete by typing &quot;{DELETE_USER_CONFIRMATION_PHRASE}&quot; in the box
+              below.
             </DialogDescription>
           </div>
         </div>
 
         <div className="mt-4">
-          <Label htmlFor="admin-delete-code">Delete confirmation code</Label>
+          <Label htmlFor="admin-delete-confirm">Confirmation</Label>
           <Input
-            id="admin-delete-code"
-            className="mt-1 font-mono tracking-wide"
-            value={confirmCode}
-            onChange={(e) => setConfirmCode(e.target.value)}
-            placeholder="Enter code"
+            id="admin-delete-confirm"
+            className="mt-1 font-mono"
+            value={confirmPhrase}
+            onChange={(e) => setConfirmPhrase(e.target.value)}
+            placeholder={DELETE_USER_CONFIRMATION_PHRASE}
             autoComplete="off"
             disabled={deleting}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && confirmCode.trim()) {
-                onConfirm(confirmCode.trim());
+              if (e.key === "Enter" && confirmed) {
+                onConfirm(confirmPhrase.trim());
               }
             }}
           />
@@ -84,8 +90,8 @@ export function DeleteCustomerDialog({
           <Button
             type="button"
             className="bg-red-600 hover:bg-red-700"
-            disabled={deleting || !confirmCode.trim()}
-            onClick={() => onConfirm(confirmCode.trim())}
+            disabled={deleting || !confirmed}
+            onClick={() => onConfirm(confirmPhrase.trim())}
           >
             {deleting ? "Deleting…" : "Permanently delete"}
           </Button>

@@ -5,13 +5,14 @@ import { getOrders } from "@/lib/store";
 import {
   getCustomerLifetimeSpend,
   isLoyaltyDiscountEligible,
+  isLoyaltyDiscountEligibleForCheckout,
   LOYALTY_SPEND_THRESHOLD,
   loyaltySpendRemaining,
 } from "@/lib/loyalty-discount";
 import { useStore } from "@/context/store-context";
 import { useStoreSync } from "@/hooks/use-store-sync";
 
-export function useLoyaltyDiscount(userId?: string) {
+export function useLoyaltyDiscount(userId?: string, currentBaseTotal?: number) {
   const { ready } = useStore();
   const [tick, setTick] = useState(0);
 
@@ -32,11 +33,16 @@ export function useLoyaltyDiscount(userId?: string) {
     const orders = getOrders();
     const lifetimeSpend = getCustomerLifetimeSpend(userId, orders);
 
+    const eligible =
+      currentBaseTotal !== undefined
+        ? isLoyaltyDiscountEligibleForCheckout(userId, orders, currentBaseTotal)
+        : isLoyaltyDiscountEligible(userId, orders);
+
     return {
-      eligible: isLoyaltyDiscountEligible(userId, orders),
+      eligible,
       lifetimeSpend,
       remaining: loyaltySpendRemaining(lifetimeSpend),
       threshold: LOYALTY_SPEND_THRESHOLD,
     };
-  }, [ready, userId, tick]);
+  }, [ready, userId, currentBaseTotal, tick]);
 }

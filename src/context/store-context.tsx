@@ -6,6 +6,7 @@ import {
   getSession,
   hydrateStore,
   isUsingSupabase,
+  reloadOrders,
   saveCart,
   setSession as persistSession,
   syncAuthSession,
@@ -58,24 +59,25 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   useEffect(() => {
-    if (!isUsingSupabase() || session?.role !== "admin") return;
+    if (!isUsingSupabase() || !session) return;
 
-    const keepAlive = window.setInterval(() => {
-      void syncAuthSession().then(refresh);
-    }, 4 * 60 * 1000);
+    const resync = () => {
+      void Promise.all([syncAuthSession(), reloadOrders()]).then(refresh);
+    };
+
+    const keepAlive =
+      session.role === "admin" ? window.setInterval(resync, 4 * 60 * 1000) : undefined;
 
     const onVisible = () => {
-      if (document.visibilityState === "visible") {
-        void syncAuthSession().then(refresh);
-      }
+      if (document.visibilityState === "visible") resync();
     };
     document.addEventListener("visibilitychange", onVisible);
 
     return () => {
-      window.clearInterval(keepAlive);
+      if (keepAlive) window.clearInterval(keepAlive);
       document.removeEventListener("visibilitychange", onVisible);
     };
-  }, [session?.role, refresh]);
+  }, [session, refresh]);
 
   const setSession = useCallback(
     (next: Session | null) => {

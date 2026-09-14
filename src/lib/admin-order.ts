@@ -1,7 +1,10 @@
 import { PICKUP_LOCATION } from "@/lib/constants";
 import { customerTimelineNote } from "@/lib/order-status-messages";
 import { splitCustomerName } from "@/lib/split-customer-name";
-import { applyLoyaltyDiscountToTotal, isLoyaltyDiscountEligible } from "@/lib/loyalty-discount";
+import {
+  applyLoyaltyDiscountToTotal,
+  isLoyaltyDiscountEligibleForCheckout,
+} from "@/lib/loyalty-discount";
 import { computeOrderTotal, quoteShipping } from "@/lib/shipping";
 import { formatBZD, generateInvoiceNumber, generateReference } from "@/lib/utils";
 import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
@@ -146,7 +149,7 @@ function computeAdminOrderContent(options: {
   });
   const eligible =
     options.userId && options.orders
-      ? isLoyaltyDiscountEligible(options.userId, options.orders, {
+      ? isLoyaltyDiscountEligibleForCheckout(options.userId, options.orders, baseTotal, {
           excludeOrderId: options.excludeOrderId,
         })
       : false;

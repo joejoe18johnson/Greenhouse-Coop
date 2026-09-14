@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { adminDeleteCodeConfigured, verifyAdminDeleteCode } from "@/lib/admin-delete-code";
+import { verifyDeleteUserConfirmation } from "@/lib/admin-delete-code";
 import { isSupabaseEnabled } from "@/lib/supabase/config";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -21,20 +21,13 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     return NextResponse.json({ error: "You cannot delete your own account." }, { status: 400 });
   }
 
-  if (!adminDeleteCodeConfigured()) {
-    return NextResponse.json(
-      {
-        error:
-          "Customer deletion is disabled until ADMIN_USER_DELETE_CODE is set in server environment variables.",
-      },
-      { status: 503 }
-    );
-  }
-
   const body = (await request.json().catch(() => ({}))) as { confirmCode?: unknown };
   const confirmCode = typeof body.confirmCode === "string" ? body.confirmCode : "";
-  if (!verifyAdminDeleteCode(confirmCode)) {
-    return NextResponse.json({ error: "Incorrect delete confirmation code." }, { status: 403 });
+  if (!verifyDeleteUserConfirmation(confirmCode)) {
+    return NextResponse.json(
+      { error: 'Type "DeleteUser" exactly to confirm deletion.' },
+      { status: 403 }
+    );
   }
 
   const serviceDb = createServiceClient();

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { LoyaltyStatusBanner } from "@/components/loyalty/loyalty-status-banner";
 import { useAuth } from "@/hooks/use-auth";
 import { getOrders, updateUser } from "@/lib/store";
 import { formatBZD, generateId } from "@/lib/utils";
@@ -46,6 +47,8 @@ export default function DashboardPage() {
           Sign out
         </Button>
       </div>
+
+      <LoyaltyStatusBanner userId={user.id} className="mt-8" />
 
       <Tabs defaultValue="orders" className="mt-10">
         <TabsList>

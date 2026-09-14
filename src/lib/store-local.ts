@@ -3,7 +3,7 @@ import shippingSeed from "@/data/shipping.json";
 import couriersSeed from "@/data/couriers.json";
 import idsRatesSeed from "@/data/ids-rates.json";
 import bankSeed from "@/data/bank.json";
-import { verifyAdminDeleteCodeClient } from "@/lib/admin-delete-code";
+import { verifyDeleteUserConfirmation } from "@/lib/admin-delete-code";
 import {
   ADMIN_EMAIL,
   ADMIN_PASSWORD,
@@ -343,8 +343,8 @@ export function updateUser(user: User) {
 }
 
 export function deleteUser(userId: string, confirmCode: string) {
-  if (!verifyAdminDeleteCodeClient(confirmCode)) {
-    throw new Error("Incorrect delete confirmation code.");
+  if (!verifyDeleteUserConfirmation(confirmCode)) {
+    throw new Error('Type "DeleteUser" exactly to confirm deletion.');
   }
 
   const user = getUsers().find((entry) => entry.id === userId);

@@ -21,6 +21,7 @@ import { useIdsRates } from "@/hooks/use-ids-rates";
 import { useShippingSettings } from "@/hooks/use-shipping-settings";
 import { getBankDetails, createOrder, getProduct } from "@/lib/store";
 import { validateCartQuantities } from "@/lib/product-quantity";
+import { LoyaltyStatusBanner } from "@/components/loyalty/loyalty-status-banner";
 import { useLoyaltyDiscount } from "@/hooks/use-loyalty-discount";
 import {
   applyLoyaltyDiscountToTotal,
@@ -91,7 +92,7 @@ export default function CheckoutPage() {
     deliveryFee: quote.deliveryFee,
     boxFee: quote.boxFee,
   });
-  const loyalty = useLoyaltyDiscount(user?.id);
+  const loyalty = useLoyaltyDiscount(user?.id, baseTotal);
   const { total, loyaltyDiscount } = applyLoyaltyDiscountToTotal(baseTotal, loyalty.eligible);
   const codAvailable = method !== "courier";
   const isCod = paymentMethod === "cod";
@@ -217,12 +218,7 @@ export default function CheckoutPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 pb-32 sm:px-6 lg:pb-12">
       <h1 className="page-title">Checkout</h1>
-      {loyalty.eligible && (
-        <p className="mt-4 rounded-2xl border border-leaf/30 bg-leaf/10 px-4 py-3 text-sm text-forest">
-          Your exclusive <strong>10% customer discount</strong> is applied below. Invoice totals round down to whole
-          dollars.
-        </p>
-      )}
+      <LoyaltyStatusBanner userId={user.id} currentBaseTotal={baseTotal} className="mt-4" />
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="order-2 space-y-8 lg:order-1">
           <section className="rounded-[28px] bg-white/80 p-6">
