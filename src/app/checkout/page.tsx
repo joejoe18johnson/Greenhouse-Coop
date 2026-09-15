@@ -48,8 +48,6 @@ export default function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
   const router = useRouter();
   const shipping = useShippingSettings();
-  const couriers = useCouriers().filter((c) => c.active);
-  const idsRateTable = useIdsRates();
   const bank = getBankDetails();
 
   const [wantsDelivery, setWantsDelivery] = useState(true);
@@ -57,7 +55,6 @@ export default function CheckoutPage() {
   const [town, setTown] = useState(user?.addresses[0]?.town || "Belmopan");
   const [village, setVillage] = useState(user?.addresses[0]?.village || "");
   const [fullAddress, setFullAddress] = useState(user?.addresses[0]?.fullAddress || "");
-  const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
   const [customerNotes, setCustomerNotes] = useState("");
   const [codMeetingLocation, setCodMeetingLocation] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentInfo["method"]>("bank-transfer");
@@ -69,7 +66,6 @@ export default function CheckoutPage() {
   const towns = locations.districts.find((d) => d.name === district)?.towns || [];
   const local = isLocalTown(town, shipping.localDelivery);
   const method = !wantsDelivery ? "pickup" : local ? "local" : "courier";
-  const courier = couriers.find((c) => c.id === courierId);
   const plantCount = items.reduce((sum, i) => sum + i.quantity, 0);
   const quote = useMemo(
     () =>
@@ -79,11 +75,9 @@ export default function CheckoutPage() {
         town,
         district,
         method,
-        courier,
         shipping,
-        idsRates: idsRateTable,
       }),
-    [plantCount, subtotal, town, district, method, courier, shipping, idsRateTable]
+    [plantCount, subtotal, town, district, method, shipping]
   );
   const baseTotal = computeOrderTotal({
     subtotal,
@@ -172,7 +166,7 @@ export default function CheckoutPage() {
         subtotal,
         deliveryFee: quote.deliveryFee,
         boxFee: quote.boxFee,
-        courierEstimate: quote.courierEstimate,
+        courierEstimate: 0,
         total,
         loyaltyDiscount: loyaltyDiscount || undefined,
         boxRecommendation: quote.box,
@@ -191,8 +185,7 @@ export default function CheckoutPage() {
             isCod && !wantsDelivery && codMeetingLocation.trim()
               ? codMeetingLocation.trim()
               : undefined,
-          courierId: method === "courier" ? courier?.id : undefined,
-          courierName: method === "courier" ? courier?.name : undefined,
+          courierName: method === "courier" ? "Shipping company" : undefined,
         },
         payment: isCod
           ? { method: "cod" }
@@ -326,47 +319,7 @@ export default function CheckoutPage() {
                       : `Flat ${localDeliveryFeeForTownText(shipping, town)}.`}
                   </p>
                 ) : (
-                  <div className="mt-4">
-                    <p className="flex items-start gap-3 rounded-2xl border border-citrus/30 bg-citrus/10 p-4 text-sm text-ink/75">
-                      <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
-                      <span>
-                        Couriers usually work <strong>office-to-office</strong>. Your trees go to the courier office in your area — not door-to-door. You pay courier shipping directly at their office when you collect. We show approximate rates below to help you plan.
-                      </span>
-                    </p>
-                    <Label className="mt-4 block">Courier</Label>
-                    <div className="mt-2 grid gap-3">
-                      {couriers.map((c) => {
-                        const estimate = getCourierEstimate(c, district, quote.box, idsRateTable);
-                        const zone =
-                          c.rateModel === "ids" || c.id === "ids"
-                            ? getIdsZoneLabel(district, idsRateTable)
-                            : district;
-                        return (
-                        <Radio
-                          key={c.id}
-                          name="courier"
-                          checked={courierId === c.id}
-                          onChange={() => setCourierId(c.id)}
-                          className={`rounded-2xl border p-4 ${courierId === c.id ? "border-forest bg-forest/5" : "border-forest/10"}`}
-                          label={
-                            <span className="flex items-start gap-3">
-                              <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
-                              <span>
-                                <span className="block font-semibold text-forest">{c.name}</span>
-                                <span className="text-sm text-ink/60">{c.notes}</span>
-                                <span className="mt-1 block text-sm text-forest">
-                                  Approx. {formatBZD(estimate)} at courier · {zone}
-                                  {(c.rateModel === "ids" || c.id === "ids") && quote.box.label ? ` · ${quote.box.label}` : ""}
-                                </span>
-                                <span className="mt-0.5 block text-[11px] text-ink/45">Paid at courier office, not in your order total</span>
-                              </span>
-                            </span>
-                          }
-                        />
-                        );
-                      })}
-                    </div>
-                  </div>
+                  <CourierShippingNote className="mt-4" town={town} district={district} />
                 )}
               </>
             )}
