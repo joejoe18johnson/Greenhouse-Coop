@@ -18,7 +18,10 @@ export const INVENTORY_NOTICE =
   "Plant Availability Is Subject To Seasonal Supply And Nursery Stock Levels. If An Item Becomes Unavailable After Your Order Is Placed, Greenhouse Co-Op Will Contact You With Alternative Options Or Issue A Full Refund For The Unavailable Item.";
 
 export const COURIER_ESTIMATE_NOTICE =
-  "Courier Shipping Is Paid Directly At The Courier Office When You Collect Your Trees. IDS Uses Published Package Rates — Central And Northern Districts Share The Same Price. Amounts Shown Are Approximate Guides Only.";
+  "Courier shipping is paid directly at the shipping company when you collect your trees — not in your Greenhouse Co-Op order total.";
+
+export const SHIPPING_COURIER_NOTICE =
+  "Outside our local delivery areas, we send trees through shipping companies such as IDS and EZY Courier. Couriers usually work office-to-office — you collect at their office in your area and pay shipping there. Message us on WhatsApp to find out how much shipping will cost for your order.";
 
 export const PAYMENT_NOTICE =
   "Place your order first to receive a 6-character reference number. Transfer the amount shown (50% deposit or full payment — your choice), include that reference in the bank transfer notes, then send your payment screenshot on WhatsApp with the same reference.";
