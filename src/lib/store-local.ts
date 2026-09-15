@@ -421,6 +421,9 @@ export function updateAdminOrder(orderId: string, input: AdminEditOrderInput): O
 
 export function updateOrderStatus(id: string, status: OrderStatus, note?: string) {
   const orders = getOrders();
+  const existing = orders.find((order) => order.id === id);
+  if (existing?.status === status) return existing;
+
   const issuedStatuses: OrderStatus[] = ["Paid", "Processing", "Shipped", "Completed"];
   const next = orders.map((order) => {
     if (order.id !== id) return order;

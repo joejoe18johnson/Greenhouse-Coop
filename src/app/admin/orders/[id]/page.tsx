@@ -16,8 +16,9 @@ import { fulfillmentLabel } from "@/lib/shipping";
 import { formatOrderBalance, formatOrderDeposit, isCashOnDelivery, orderAmountDueNow } from "@/lib/order-deposit";
 import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { formatBZD } from "@/lib/utils";
-import { COURIER_ESTIMATE_NOTICE, ORDER_STATUSES } from "@/lib/constants";
-import type { OrderStatus } from "@/types";
+import { AdminFulfillmentStepper } from "@/components/admin/admin-fulfillment-stepper";
+import { nextFulfillmentStatus } from "@/lib/admin-fulfillment";
+import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 
 export default function AdminOrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +27,7 @@ export default function AdminOrderDetailPage() {
   const customer = order ? getUsers().find((u) => u.id === order.userId) : null;
   const bank = getBankDetails();
   const [reason, setReason] = useState("");
+  const [advancing, setAdvancing] = useState(false);
 
   if (!order) return <p>Order not found.</p>;
 
@@ -44,6 +46,18 @@ export default function AdminOrderDetailPage() {
   const financials = invoiceFinancials(order);
   const countsInFinancials = orderCountsInFinancials(order);
   const isTerminal = ["Completed", "Refunded", "Cancelled"].includes(order.status);
+
+  function advanceFulfillment() {
+    const current = getOrders().find((entry) => entry.id === id);
+    if (!current) return;
+    const nextStatus = nextFulfillmentStatus(current);
+    if (!nextStatus) return;
+
+    setAdvancing(true);
+    updateOrderStatus(current.id, nextStatus);
+    refresh();
+    setAdvancing(false);
+  }
 
   function cancelOrder() {
     const current = getOrders().find((entry) => entry.id === id);
@@ -83,31 +97,6 @@ export default function AdminOrderDetailPage() {
               Edit order
             </Link>
           </Button>
-          {order.status === "Payment Pending" || order.status === "Payment Review" ? (
-            <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
-              Confirm deposit
-            </Button>
-          ) : null}
-          {order.status === "Paid" && (
-            <Button onClick={() => { updateOrderStatus(order.id, "Processing"); refresh(); }}>
-              Fulfill order
-            </Button>
-          )}
-          {isCod && order.status === "Processing" && (
-            <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
-              Confirm cash received
-            </Button>
-          )}
-          {order.status === "Processing" && (
-            <Button onClick={() => { updateOrderStatus(order.id, "Shipped"); refresh(); }}>
-              Mark as sent
-            </Button>
-          )}
-          {order.status === "Shipped" && (
-            <Button onClick={() => { updateOrderStatus(order.id, "Completed"); refresh(); }}>
-              Complete
-            </Button>
-          )}
           {invoiceReady && (
             <DownloadInvoiceButton
               targetId={invoiceId}
@@ -176,18 +165,8 @@ export default function AdminOrderDetailPage() {
         )}
       </div>
 
-      <div className="mt-6 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:flex-wrap md:overflow-visible [&::-webkit-scrollbar]:hidden print:hidden">
-        {ORDER_STATUSES.map((status) => (
-          <Button
-            key={status}
-            size="sm"
-            variant={order.status === status ? "default" : "outline"}
-            onClick={() => { updateOrderStatus(order.id, status as OrderStatus); refresh(); }}
-            className="shrink-0"
-          >
-            {status}
-          </Button>
-        ))}
+      <div className="mt-6 print:hidden">
+        <AdminFulfillmentStepper order={order} onAdvance={advanceFulfillment} advancing={advancing} />
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2 print:hidden">
@@ -301,13 +280,6 @@ export default function AdminOrderDetailPage() {
               <p className="mt-2 text-sm font-medium text-forest">
                 Collect {formatBZD(order.total)} in cash when the order is handed off.
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {order.status !== "Paid" && order.status !== "Completed" && (
-                  <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
-                    Confirm cash received
-                  </Button>
-                )}
-              </div>
             </>
           ) : (
             <>
@@ -321,21 +293,35 @@ export default function AdminOrderDetailPage() {
               ? `Expecting ${formatBZD(dueNow)} in full`
               : `Expecting ${formatOrderDeposit(order.total)} deposit · ${formatOrderBalance(order.total)} due at pickup`}
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Button onClick={() => { updateOrderStatus(order.id, "Paid"); refresh(); }}>
-              Confirm deposit
-            </Button>
-            <Button variant="outline" onClick={() => {
-              updateOrder({ ...order, status: "Payment Pending", payment: { ...order.payment, rejectionReason: reason } });
-              updateOrderStatus(
-                order.id,
-                "Payment Pending",
-                reason || "We could not verify your deposit. Please contact us or resubmit proof on WhatsApp."
-              );
-              refresh();
-            }}>Reject</Button>
-          </div>
-          <Textarea className="mt-3" placeholder="Rejection reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+          {(order.status === "Payment Pending" || order.status === "Payment Review") && (
+            <div className="mt-4 space-y-3">
+              <p className="text-xs text-ink/50">
+                Use the fulfillment step above to confirm payment, or reject below if proof is invalid.
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  updateOrder({
+                    ...order,
+                    payment: { ...order.payment, rejectionReason: reason },
+                  });
+                  updateOrderStatus(
+                    order.id,
+                    "Payment Pending",
+                    reason || "We could not verify your deposit. Please contact us or resubmit proof on WhatsApp."
+                  );
+                  refresh();
+                }}
+              >
+                Reject payment proof
+              </Button>
+              <Textarea
+                placeholder="Rejection reason (optional)"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </div>
+          )}
             </>
           )}
         </div>

@@ -590,6 +590,9 @@ export async function updateAdminOrder(orderId: string, input: AdminEditOrderInp
 export function updateOrderStatus(id: string, status: OrderStatus, note?: string) {
   const issuedStatuses: OrderStatus[] = ["Paid", "Processing", "Shipped", "Completed"];
   const orders = getOrders();
+  const existing = orders.find((order) => order.id === id);
+  if (existing?.status === status) return existing;
+
   const next = orders.map((order) => {
     if (order.id !== id) return order;
     const now = new Date().toISOString();
