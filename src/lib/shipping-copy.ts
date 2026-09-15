@@ -41,7 +41,7 @@ export function localDeliveryHomeBlurb(settings: ShippingSettings) {
 }
 
 export function checkoutDeliverySummary(settings: ShippingSettings) {
-  return `You can collect centrally at the Belmopan Bus Terminal if you do not want delivery. Local delivery is ${localDeliveryFeeSummary(settings)} to ${localDeliveryTownsList(settings)}. All other locations ship with IDS or EZY Courier. Couriers usually work office-to-office: collect at the courier office in your area, not at your door. Courier shipping is paid directly at the courier office. For IDS, Central and Northern districts (Cayo, Belize, Orange Walk, Corozal) share the same package rates; Stann Creek and Toledo use South rates. We show approximate IDS package estimates at checkout based on how many plants you order.`;
+  return `You can collect centrally at the Belmopan Bus Terminal if you do not want delivery. Local delivery is ${localDeliveryFeeSummary(settings)} to ${localDeliveryTownsList(settings)}. All other locations ship through courier companies such as IDS and EZY — you pay shipping at their office when you collect. Message us on WhatsApp to find out how much shipping will cost for your order.`;
 }
 
 /** @deprecated use checkoutDeliverySummary */

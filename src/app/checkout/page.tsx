@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Building2, CircleCheck, Landmark, MessageSquare, Store, Truck, Banknote } from "lucide-react";
+import { CircleCheck, Landmark, MessageSquare, Store, Truck, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,9 +16,8 @@ import { OrderReceipt } from "@/components/checkout/order-receipt";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/hooks/use-cart";
-import { useCouriers } from "@/hooks/use-couriers";
-import { useIdsRates } from "@/hooks/use-ids-rates";
 import { useShippingSettings } from "@/hooks/use-shipping-settings";
+import { CourierShippingNote } from "@/components/delivery/courier-shipping-note";
 import { getBankDetails, createOrder, getProduct } from "@/lib/store";
 import { validateCartQuantities } from "@/lib/product-quantity";
 import { LoyaltyStatusBanner } from "@/components/loyalty/loyalty-status-banner";
@@ -28,11 +27,10 @@ import {
   LOYALTY_DISCOUNT_LABEL,
 } from "@/lib/loyalty-discount";
 import { bankAccounts } from "@/lib/bank";
-import { isLocalTown, computeOrderTotal, getCourierEstimate, quoteShipping } from "@/lib/shipping";
-import { getIdsZoneLabel } from "@/lib/ids-rates";
+import { isLocalTown, computeOrderTotal, quoteShipping } from "@/lib/shipping";
 import { localDeliveryFeeForTownText } from "@/lib/shipping-copy";
 import { formatBZD } from "@/lib/utils";
-import { COURIER_ESTIMATE_NOTICE, PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
+import { PAYMENT_NOTICE, PICKUP_LOCATION, PICKUP_NOTE } from "@/lib/constants";
 import {
   COD_NOTICE,
   DEPOSIT_NOTICE,

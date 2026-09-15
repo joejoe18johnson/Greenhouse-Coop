@@ -37,10 +37,10 @@ export const FAQS = [
       "Most grafted citrus and avocado trees ship around 2–3 ft. Mangoes are often 3–4 ft. Check the listed size on each product card.",
   },
   {
-    id: "boxes",
-    question: "How are shipping boxes chosen?",
+    id: "courier-shipping",
+    question: "How does courier shipping work?",
     answer:
-      "You do not pick a box. At checkout we recommend 1, 2, 3, or 4 sq.ft boxes from the number of plants in your cart. Nursery packing is included for now. Courier office shipping is paid separately when you collect.",
+      "For areas outside local delivery, we ship through companies such as IDS and EZY Courier. You pay shipping directly at their office when you collect — not on your Greenhouse Co-Op order. Message us on WhatsApp with your town and order details to get a shipping quote.",
   },
 ];
 
@@ -52,6 +52,16 @@ export function whatsappLink(message?: string) {
     "Hello Greenhouse Co-Op, I have a question about fruit trees.";
   const number = BRAND.whatsapp.replace(/\D/g, "");
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+}
+
+export function whatsappShippingQuoteLink(town?: string, district?: string) {
+  const place =
+    town?.trim() && district?.trim()
+      ? `${town.trim()}, ${district.trim()}`
+      : town?.trim() || district?.trim() || "my area";
+  return whatsappLink(
+    `Hello Greenhouse Co-Op, I'd like a shipping quote for my order to ${place}.`
+  );
 }
 
 export function whatsappPaymentLink(reference: string, amount: string, kind: "deposit" | "balance" | "full" = "deposit") {
