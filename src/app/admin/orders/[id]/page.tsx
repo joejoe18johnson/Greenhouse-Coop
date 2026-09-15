@@ -17,7 +17,7 @@ import { formatOrderBalance, formatOrderDeposit, isCashOnDelivery, orderAmountDu
 import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { formatBZD } from "@/lib/utils";
 import { AdminFulfillmentStepper } from "@/components/admin/admin-fulfillment-stepper";
-import { nextFulfillmentStatus } from "@/lib/admin-fulfillment";
+import { canShowFulfillmentStepper, nextFulfillmentStatus } from "@/lib/admin-fulfillment";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 
 export default function AdminOrderDetailPage() {
@@ -165,9 +165,11 @@ export default function AdminOrderDetailPage() {
         )}
       </div>
 
-      <div className="mt-6 print:hidden">
-        <AdminFulfillmentStepper order={order} onAdvance={advanceFulfillment} advancing={advancing} />
-      </div>
+      {canShowFulfillmentStepper(order) && (
+        <div className="mt-6 print:hidden">
+          <AdminFulfillmentStepper order={order} onAdvance={advanceFulfillment} advancing={advancing} />
+        </div>
+      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2 print:hidden">
         <div className="rounded-[24px] bg-white p-6 text-sm">

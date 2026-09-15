@@ -3,8 +3,8 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  FULFILLMENT_STEPS,
   fulfillmentStepIndex,
-  fulfillmentStepsForOrder,
   isFulfillmentComplete,
   isFulfillmentTerminal,
   nextFulfillmentAction,
@@ -21,7 +21,6 @@ export function AdminFulfillmentStepper({
   onAdvance: () => void;
   advancing?: boolean;
 }) {
-  const steps = fulfillmentStepsForOrder(order);
   const currentIndex = fulfillmentStepIndex(order);
   const nextStep = nextFulfillmentAction(order);
   const terminal = isFulfillmentTerminal(order);
@@ -40,64 +39,57 @@ export function AdminFulfillmentStepper({
     <div className="rounded-[24px] bg-white p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm font-semibold text-forest">Fulfillment</p>
-        {complete && (
+        {complete ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-leaf/15 px-3 py-1 text-xs font-semibold text-leaf">
             <Check className="h-3.5 w-3.5" />
-            Done
+            Complete
           </span>
+        ) : (
+          <span className="text-xs font-medium text-ink/45">Active</span>
         )}
       </div>
 
-      <ol className="mt-4 flex flex-col gap-0 sm:flex-row sm:items-start">
-        {steps.map((step, index) => {
-          const done = currentIndex >= 0 && index < currentIndex;
-          const active = index === currentIndex;
-          const upcoming = currentIndex >= 0 && index > currentIndex;
+      <ol className="mt-4 grid gap-4 sm:grid-cols-3">
+        {FULFILLMENT_STEPS.map((step, index) => {
+          const done = currentIndex >= 0 && (complete ? index <= currentIndex : index < currentIndex);
+          const active = !complete && index === currentIndex;
+          const waiting = order.status === "Paid" && index === 0;
+          const upcoming = currentIndex >= 0 ? index > currentIndex : index > 0;
 
           return (
             <li
               key={step.status}
               className={cn(
-                "flex min-w-0 flex-1 items-start gap-3 sm:flex-col sm:items-stretch sm:gap-2",
-                index > 0 && "sm:border-l sm:border-forest/10 sm:pl-4"
+                "rounded-[18px] border px-4 py-3",
+                done && "border-leaf/30 bg-leaf/5",
+                (active || waiting) && "border-forest/25 bg-forest/5",
+                upcoming && !waiting && "border-forest/10 bg-cream/40"
               )}
             >
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-3">
                 <span
                   className={cn(
                     "grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold",
                     done && "bg-leaf text-cream",
-                    active && "bg-forest text-cream ring-4 ring-forest/15",
-                    upcoming && "border-2 border-forest/15 bg-cream text-ink/35",
-                    currentIndex < 0 && index === 0 && "bg-forest text-cream ring-4 ring-forest/15"
+                    (active || waiting) && "bg-forest text-cream ring-4 ring-forest/15",
+                    upcoming && !waiting && "border-2 border-forest/15 bg-cream text-ink/35"
                   )}
-                  aria-hidden
                 >
                   {done ? <Check className="h-4 w-4" /> : index + 1}
                 </span>
-                <div className="min-w-0 sm:hidden">
+                <div>
                   <p
                     className={cn(
-                      "text-sm font-medium",
-                      (done || active) && "text-forest",
-                      upcoming && "text-ink/40"
+                      "text-sm font-semibold",
+                      (done || active || waiting) && "text-forest",
+                      upcoming && !waiting && "text-ink/40"
                     )}
                   >
                     {step.label}
                   </p>
+                  {done && <p className="text-xs text-leaf">Done</p>}
+                  {(active || waiting) && !done && <p className="text-xs text-forest/70">Current step</p>}
                 </div>
-              </div>
-              <div className="hidden min-w-0 sm:block">
-                <p
-                  className={cn(
-                    "text-sm font-medium",
-                    (done || active) && "text-forest",
-                    upcoming && "text-ink/40"
-                  )}
-                >
-                  {step.label}
-                </p>
-                <p className="mt-0.5 text-xs text-ink/45">{step.status}</p>
               </div>
             </li>
           );
@@ -116,7 +108,9 @@ export function AdminFulfillmentStepper({
       )}
 
       {complete && (
-        <p className="mt-4 text-sm text-ink/55">All fulfillment steps are complete for this order.</p>
+        <p className="mt-4 text-sm text-ink/55">
+          This order is complete and no longer active in fulfillment.
+        </p>
       )}
     </div>
   );

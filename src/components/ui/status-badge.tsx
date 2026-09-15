@@ -1,3 +1,4 @@
+import { fulfillmentStatusLabel } from "@/lib/admin-fulfillment";
 import { cn } from "@/lib/utils";
 import type { OrderStatus } from "@/types";
 
@@ -12,7 +13,14 @@ const STYLES: Record<OrderStatus, string> = {
   Refunded: "bg-ink/10 text-ink/60",
 };
 
-export function StatusBadge({ status }: { status: OrderStatus | string }) {
+export function StatusBadge({
+  status,
+  friendly = true,
+}: {
+  status: OrderStatus | string;
+  friendly?: boolean;
+}) {
+  const label = friendly ? fulfillmentStatusLabel(status) : status;
   return (
     <span
       className={cn(
@@ -20,7 +28,7 @@ export function StatusBadge({ status }: { status: OrderStatus | string }) {
         STYLES[status as OrderStatus] ?? "bg-forest/10 text-forest"
       )}
     >
-      {status}
+      {label}
     </span>
   );
 }

@@ -25,7 +25,7 @@ export default function AdminHomePage() {
   const financials = summarizeFinancials(orders);
   const pendingPay = orders.filter((o) => o.status === "Payment Review" || o.status === "Payment Pending");
   const toFulfill = orders.filter((o) => o.status === "Paid" || o.status === "Processing");
-  const sent = orders.filter((o) => o.status === "Shipped" || o.status === "Completed");
+  const sent = orders.filter((o) => o.status === "Shipped");
   const shortSupply = products.filter((p) => (SHORT_SUPPLY_IDS as readonly string[]).includes(p.id));
 
   const stats: { label: string; value: string; icon: LucideIcon; href: string }[] = [
@@ -102,7 +102,7 @@ export default function AdminHomePage() {
             <Link href="/admin/orders" className="text-sm text-forest">Orders</Link>
           </div>
           <div className="mt-4 space-y-2 text-sm">
-            {[...toFulfill, ...sent.filter((o) => o.status === "Shipped")].slice(0, 6).map((o) => (
+            {[...toFulfill, ...sent].slice(0, 6).map((o) => (
               <Link key={o.id} href={`/admin/orders/${o.id}`} className="block rounded-xl p-3 hover:bg-cream">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <span className="min-w-0">
@@ -115,7 +115,7 @@ export default function AdminHomePage() {
                 </div>
               </Link>
             ))}
-            {toFulfill.length === 0 && sent.filter((o) => o.status === "Shipped").length === 0 && (
+            {toFulfill.length === 0 && sent.length === 0 && (
               <p className="text-ink/50">Nothing to fulfill right now.</p>
             )}
           </div>

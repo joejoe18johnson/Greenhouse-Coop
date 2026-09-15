@@ -1,3 +1,4 @@
+import { isFulfillmentActive } from "@/lib/admin-fulfillment";
 import { getOrders, getProducts, getCustomerRequests } from "@/lib/store";
 import { SHORT_SUPPLY_IDS } from "@/lib/constants";
 import { pendingCustomerRequests } from "@/lib/customer-requests";
@@ -17,9 +18,7 @@ export function getAdminCounts(): AdminCounts {
   const payments = orders.filter(
     (order) => order.status === "Payment Review" || order.status === "Payment Pending"
   ).length;
-  const ordersAttention = orders.filter(
-    (order) => order.status === "Paid" || order.status === "Processing"
-  ).length;
+  const ordersAttention = orders.filter((order) => isFulfillmentActive(order)).length;
   const outOfStock = products.filter(
     (product) => product.inStock === false && (SHORT_SUPPLY_IDS as readonly string[]).includes(product.id)
   ).length;
