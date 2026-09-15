@@ -3,6 +3,31 @@ import { limitedQuantityLabel, productQuantityCap } from "@/lib/product-quantity
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
 
+/** Compact top-corner badge for product cards. */
+export function LimitedQuantityBadge({
+  product,
+  className,
+}: {
+  product: Product;
+  className?: string;
+}) {
+  const cap = productQuantityCap(product);
+  if (cap === undefined || cap <= 0) return null;
+
+  return (
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center rounded-xl bg-citrus px-2.5 py-1.5 text-ink shadow-md ring-2 ring-citrus/40",
+        className
+      )}
+      title={`Only ${cap} left in nursery`}
+    >
+      <span className="font-display text-lg font-bold leading-none tabular-nums">{cap}</span>
+      <span className="mt-0.5 text-[8px] font-bold uppercase tracking-wide">left</span>
+    </div>
+  );
+}
+
 export function LimitedQuantityCallout({
   product,
   prominent = false,

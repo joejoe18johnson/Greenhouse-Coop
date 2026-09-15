@@ -8,7 +8,7 @@ import { FruitPlantSwap } from "@/components/product/fruit-plant-swap";
 import { TreeImageReferenceNotice } from "@/components/product/tree-image-reference-notice";
 import { PropagationBadge } from "@/components/product/propagation-badge";
 import { Button } from "@/components/ui/button";
-import { LimitedQuantityCallout } from "@/components/product/limited-quantity-callout";
+import { LimitedQuantityBadge } from "@/components/product/limited-quantity-callout";
 import { ProductBadges } from "@/components/product/product-badges";
 import { useCart } from "@/hooks/use-cart";
 import { categoryIcon } from "@/lib/icons";
@@ -43,6 +43,9 @@ export function ProductCard({
       )}
     >
       <ProductBadges product={product} overlay />
+      {showQuantity && (
+        <LimitedQuantityBadge product={product} className="absolute right-4 top-3 z-10" />
+      )}
       <div className="relative mx-auto mt-4 aspect-square w-full max-w-[14rem] sm:max-w-[16rem] md:h-64 md:max-w-[16rem]">
         {!available && (
           <div className="pointer-events-none absolute inset-0 z-[1] rounded-[24px] bg-white/45" aria-hidden />
@@ -65,10 +68,6 @@ export function ProductCard({
       </div>
       <TreeImageReferenceNotice className="px-5 pb-1" />
 
-      {showQuantity && inCarousel && (
-        <LimitedQuantityCallout product={product} prominent className="mx-4 mt-2" />
-      )}
-
       <div className="px-5 pb-5 pt-2">
         <div className="mb-3 flex flex-wrap gap-2">
           <PropagationBadge type={product.propagationType} />
@@ -87,10 +86,6 @@ export function ProductCard({
           </span>
         </p>
         <p className="mt-3 font-semibold text-forest">{formatBZD(product.price)}</p>
-
-        {showQuantity && !inCarousel && (
-          <LimitedQuantityCallout product={product} className="mt-3" />
-        )}
 
         <Accordion type="single" collapsible className="mt-2">
           <AccordionItem value="flavor" className="border-none">
