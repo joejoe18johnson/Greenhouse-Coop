@@ -28,6 +28,7 @@ export default function AdminOrderDetailPage() {
   const bank = getBankDetails();
   const [reason, setReason] = useState("");
   const [advancing, setAdvancing] = useState(false);
+  const [statusError, setStatusError] = useState("");
 
   if (!order) return <p>Order not found.</p>;
 
@@ -47,31 +48,42 @@ export default function AdminOrderDetailPage() {
   const countsInFinancials = orderCountsInFinancials(order);
   const isTerminal = ["Completed", "Refunded", "Cancelled"].includes(order.status);
 
-  function advanceFulfillment() {
+  async function advanceFulfillment() {
     const current = getOrders().find((entry) => entry.id === id);
     if (!current) return;
     const nextStatus = nextFulfillmentStatus(current);
     if (!nextStatus) return;
 
+    setStatusError("");
     setAdvancing(true);
-    updateOrderStatus(current.id, nextStatus);
-    refresh();
-    setAdvancing(false);
+    try {
+      await updateOrderStatus(current.id, nextStatus);
+      refresh();
+    } catch (err) {
+      setStatusError(err instanceof Error ? err.message : "Could not update order status.");
+    } finally {
+      setAdvancing(false);
+    }
   }
 
-  function cancelOrder() {
+  async function cancelOrder() {
     const current = getOrders().find((entry) => entry.id === id);
     if (!current) return;
     if (!window.confirm(`Cancel order ${current.reference}? The customer will see this order as cancelled.`)) {
       return;
     }
     const cancelNote = window.prompt("Optional note for the customer (leave blank for default message):")?.trim();
-    updateOrderStatus(
-      current.id,
-      "Cancelled",
-      cancelNote || "This order was cancelled. Contact us on WhatsApp if you have questions."
-    );
-    refresh();
+    setStatusError("");
+    try {
+      await updateOrderStatus(
+        current.id,
+        "Cancelled",
+        cancelNote || "This order was cancelled. Contact us on WhatsApp if you have questions."
+      );
+      refresh();
+    } catch (err) {
+      setStatusError(err instanceof Error ? err.message : "Could not cancel order.");
+    }
   }
 
   return (
@@ -165,9 +177,13 @@ export default function AdminOrderDetailPage() {
         )}
       </div>
 
+      {statusError && (
+        <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600 print:hidden">{statusError}</p>
+      )}
+
       {canShowFulfillmentStepper(order) && (
         <div className="mt-6 print:hidden">
-          <AdminFulfillmentStepper order={order} onAdvance={advanceFulfillment} advancing={advancing} />
+          <AdminFulfillmentStepper order={order} onAdvance={() => void advanceFulfillment()} advancing={advancing} />
         </div>
       )}
 
@@ -303,16 +319,23 @@ export default function AdminOrderDetailPage() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  updateOrder({
-                    ...order,
-                    payment: { ...order.payment, rejectionReason: reason },
-                  });
-                  updateOrderStatus(
-                    order.id,
-                    "Payment Pending",
-                    reason || "We could not verify your deposit. Please contact us or resubmit proof on WhatsApp."
-                  );
-                  refresh();
+                  void (async () => {
+                    setStatusError("");
+                    try {
+                      updateOrder({
+                        ...order,
+                        payment: { ...order.payment, rejectionReason: reason },
+                      });
+                      await updateOrderStatus(
+                        order.id,
+                        "Payment Pending",
+                        reason || "We could not verify your deposit. Please contact us or resubmit proof on WhatsApp."
+                      );
+                      refresh();
+                    } catch (err) {
+                      setStatusError(err instanceof Error ? err.message : "Could not reject payment.");
+                    }
+                  })();
                 }}
               >
                 Reject payment proof

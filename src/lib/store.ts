@@ -192,13 +192,13 @@ export async function updateAdminOrder(
   return order;
 }
 
-export function updateOrderStatus(
+export async function updateOrderStatus(
   id: string,
   status: Parameters<typeof local.updateOrderStatus>[1],
   note?: string
 ) {
   const order = isRemoteBackend()
-    ? remote.updateOrderStatus(id, status, note)
+    ? await remote.updateOrderStatus(id, status, note)
     : local.updateOrderStatus(id, status, note);
   notifyStoreUpdate();
   return order;

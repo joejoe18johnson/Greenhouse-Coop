@@ -587,37 +587,26 @@ export async function updateAdminOrder(orderId: string, input: AdminEditOrderInp
   return body.order;
 }
 
-export function updateOrderStatus(id: string, status: OrderStatus, note?: string) {
-  const issuedStatuses: OrderStatus[] = ["Paid", "Processing", "Shipped", "Completed"];
-  const orders = getOrders();
-  const existing = orders.find((order) => order.id === id);
+export async function updateOrderStatus(id: string, status: OrderStatus, note?: string) {
+  const existing = getOrders().find((order) => order.id === id);
   if (existing?.status === status) return existing;
 
-  const next = orders.map((order) => {
-    if (order.id !== id) return order;
-    const now = new Date().toISOString();
-    return {
-      ...order,
-      status,
-      updatedAt: now,
-      invoiceIssuedAt: issuedStatuses.includes(status) ? order.invoiceIssuedAt ?? now : order.invoiceIssuedAt,
-      payment:
-        status === "Paid" ? { ...order.payment, reviewedAt: now, reviewedBy: "admin" } : order.payment,
-      timeline: [...order.timeline, { status, at: now, note: customerTimelineNote(status, note, order.payment) }],
-    };
+  const res = await fetch(`/api/admin/orders/${encodeURIComponent(id)}/status`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status, note }),
   });
 
-  setCache({ orders: next });
-  const updated = next.find((o) => o.id === id);
-
-  if (updated) {
-    void (async () => {
-      const { error } = await supabase().from("orders").update(orderToRow(updated)).eq("id", id);
-      if (error) console.error("Failed to update order status:", error);
-    })();
+  const payload = (await res.json().catch(() => ({}))) as { error?: string; order?: Order };
+  if (!res.ok || !payload.order) {
+    throw new Error(payload.error || "Could not save order status.");
   }
 
-  return updated;
+  setCache({
+    orders: getOrders().map((order) => (order.id === id ? payload.order! : order)),
+  });
+  return payload.order;
 }
 
 export function updateOrder(order: Order) {
