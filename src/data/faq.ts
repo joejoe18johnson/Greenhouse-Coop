@@ -54,6 +54,16 @@ export function whatsappLink(message?: string) {
   return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
 }
 
+export function whatsappShippingQuoteLink(town?: string, district?: string) {
+  const place =
+    town?.trim() && district?.trim()
+      ? `${town.trim()}, ${district.trim()}`
+      : town?.trim() || district?.trim() || "my area";
+  return whatsappLink(
+    `Hello Greenhouse Co-Op, I'd like a shipping quote for my order to ${place}.`
+  );
+}
+
 export function whatsappPaymentLink(reference: string, amount: string, kind: "deposit" | "balance" | "full" = "deposit") {
   const label =
     kind === "full" ? "Full payment" : kind === "balance" ? "Balance" : "Deposit (50%)";
