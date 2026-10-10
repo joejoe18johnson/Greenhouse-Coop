@@ -1,4 +1,5 @@
-import { DEMO_CUSTOMER_EMAIL, TEST_ORDER_REFERENCES } from "@/lib/constants";
+import { TEST_ORDER_REFERENCES } from "@/lib/constants";
+import { DEMO_CUSTOMER_EMAIL } from "@/lib/local-auth-seeds";
 import productCosts from "@/data/product-costs.json";
 import type { Order, OrderStatus } from "@/types";
 

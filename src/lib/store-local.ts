@@ -4,12 +4,8 @@ import couriersSeed from "@/data/couriers.json";
 import idsRatesSeed from "@/data/ids-rates.json";
 import bankSeed from "@/data/bank.json";
 import { verifyDeleteUserConfirmation } from "@/lib/admin-delete-code";
-import {
-  ADMIN_EMAIL,
-  ADMIN_PASSWORD,
-  CATALOG_SEED_VERSION,
-  STORAGE_KEYS,
-} from "@/lib/constants";
+import { CATALOG_SEED_VERSION, STORAGE_KEYS } from "@/lib/constants";
+import { ADMIN_EMAIL, ADMIN_PASSWORD } from "@/lib/local-auth-seeds";
 import { getItem, setItem } from "@/lib/storage";
 import { generateId, generateInvoiceNumber, generateReference, hashPassword } from "@/lib/utils";
 import { normalizePropagationType } from "@/lib/propagation";

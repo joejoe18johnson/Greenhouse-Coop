@@ -1,10 +1,9 @@
+import { PICKUP_LOCATION, STORAGE_KEYS } from "@/lib/constants";
 import {
   ADMIN_EMAIL,
   DEMO_CUSTOMER_EMAIL,
   DEMO_CUSTOMER_PASSWORD,
-  PICKUP_LOCATION,
-  STORAGE_KEYS,
-} from "@/lib/constants";
+} from "@/lib/local-auth-seeds";
 import { getItem, setItem } from "@/lib/storage";
 import { hashPassword } from "@/lib/utils";
 import { recommendBox } from "@/lib/shipping";

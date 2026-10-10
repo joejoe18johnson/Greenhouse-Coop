@@ -1,5 +1,9 @@
 [build]
   command = "npm run build"
 
+# NEXT_PUBLIC_* values are embedded in the client bundle by design.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
