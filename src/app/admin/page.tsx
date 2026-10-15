@@ -11,6 +11,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { ordersNeedingAdminAttention, sortOrdersNewestFirst } from "@/lib/admin-order-attention";
 import { getOrders, getProducts, getUsers } from "@/lib/store";
 import { summarizeFinancials } from "@/lib/financials";
 import { formatBZD } from "@/lib/utils";
@@ -23,7 +24,9 @@ export default function AdminHomePage() {
   const products = getProducts();
   const customers = getUsers().filter((u) => u.role === "customer");
   const financials = summarizeFinancials(orders);
-  const pendingPay = orders.filter((o) => o.status === "Payment Review" || o.status === "Payment Pending");
+  const needsAttention = sortOrdersNewestFirst(ordersNeedingAdminAttention(orders));
+  const paymentReview = orders.filter((o) => o.status === "Payment Review");
+  const newOrders = orders.filter((o) => o.status === "Payment Pending");
   const toFulfill = orders.filter((o) => o.status === "Paid" || o.status === "Processing");
   const sent = orders.filter((o) => o.status === "Shipped");
   const shortSupply = products.filter((p) => (SHORT_SUPPLY_IDS as readonly string[]).includes(p.id));
@@ -31,7 +34,8 @@ export default function AdminHomePage() {
   const stats: { label: string; value: string; icon: LucideIcon; href: string }[] = [
     { label: "Orders", value: String(orders.length), icon: ClipboardList, href: "/admin/orders" },
     { label: "Revenue (confirmed)", value: formatBZD(financials.totalRevenue), icon: Wallet, href: "/admin/financials" },
-    { label: "Awaiting payment", value: String(pendingPay.length), icon: Banknote, href: "/admin/payments" },
+    { label: "New orders", value: String(newOrders.length), icon: ClipboardList, href: "/admin/orders" },
+    { label: "Payment review", value: String(paymentReview.length), icon: Banknote, href: "/admin/payments" },
     { label: "To fulfill", value: String(toFulfill.length), icon: PackageCheck, href: "/admin/orders" },
     { label: "Customers", value: String(customers.length), icon: Users, href: "/admin/customers" },
     { label: "Catalog", value: String(products.length), icon: Sprout, href: "/admin/products" },
@@ -71,10 +75,10 @@ export default function AdminHomePage() {
         <section className="rounded-[24px] bg-white p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-forest">Needs attention</h2>
-            <Link href="/admin/payments" className="text-sm text-forest">Payments</Link>
+            <Link href="/admin/orders" className="text-sm text-forest">All orders</Link>
           </div>
           <div className="mt-4 space-y-2 text-sm">
-            {pendingPay.slice(0, 6).map((o) => (
+            {needsAttention.slice(0, 6).map((o) => (
               <Link key={o.id} href={`/admin/orders/${o.id}`} className="block rounded-xl p-3 hover:bg-cream">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <span className="min-w-0">
@@ -90,7 +94,7 @@ export default function AdminHomePage() {
                 </div>
               </Link>
             ))}
-            {pendingPay.length === 0 && <p className="text-ink/50">No payments waiting.</p>}
+            {needsAttention.length === 0 && <p className="text-ink/50">No orders need attention.</p>}
           </div>
         </section>
 

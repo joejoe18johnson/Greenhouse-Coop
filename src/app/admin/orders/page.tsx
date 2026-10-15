@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { sortOrdersNewestFirst } from "@/lib/admin-order-attention";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -11,8 +13,16 @@ import { ORDER_STATUSES } from "@/lib/constants";
 import type { OrderStatus } from "@/types";
 
 export default function AdminOrdersPage() {
-  const orders = getOrders();
+  const searchParams = useSearchParams();
+  const orders = sortOrdersNewestFirst(getOrders());
   const [status, setStatus] = useState<string>("All");
+
+  useEffect(() => {
+    const fromUrl = searchParams.get("status");
+    if (fromUrl && (fromUrl === "All" || ORDER_STATUSES.includes(fromUrl as OrderStatus))) {
+      setStatus(fromUrl);
+    }
+  }, [searchParams]);
 
   const filtered = useMemo(
     () => (status === "All" ? orders : orders.filter((o) => o.status === status)),
@@ -24,7 +34,9 @@ export default function AdminOrdersPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="page-title font-semibold">Orders</h1>
-          <p className="mt-2 text-sm text-ink/55">{orders.length} total · filter by stage</p>
+          <p className="mt-2 text-sm text-ink/55">
+            {orders.length} total · newest first · open any order to edit, print receipt, confirm payment, and fulfill
+          </p>
         </div>
         <Button asChild className="gap-2">
           <Link href="/admin/orders/new">

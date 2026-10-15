@@ -37,9 +37,7 @@ export function AdminPaymentsQueue() {
     }
   }
 
-  const pending = orders.filter(
-    (o) => o.status === "Payment Review" || o.status === "Payment Pending"
-  );
+  const pending = orders.filter((o) => o.status === "Payment Review");
 
   return (
     <div className="mt-6 space-y-3">
@@ -79,7 +77,15 @@ export function AdminPaymentsQueue() {
           </div>
         </div>
       ))}
-      {pending.length === 0 && <p className="text-ink/50">No payments waiting.</p>}
+      {pending.length === 0 && (
+        <p className="text-ink/50">
+          No payment proofs to review. New orders appear under{" "}
+          <Link href="/admin/orders" className="font-medium text-forest underline">
+            Orders
+          </Link>
+          .
+        </p>
+      )}
     </div>
   );
 }

@@ -90,7 +90,7 @@ function orderMessage(status: OrderStatus | string, order: Order, note?: string)
       }
       return `${order.reference} · ${name} · ${fulfillment}`;
     case "Payment Review":
-      return `${name} submitted payment for ${order.reference} — review in Payments`;
+      return `${name} submitted payment for ${order.reference} — open the order to verify, or use Payments`;
     case "Paid":
       return `${order.reference} is paid (${formatBZD(order.total)}) · move to fulfillment`;
     default:
@@ -138,7 +138,7 @@ export function getAdminNotifications(adminId: string): AdminNotification[] {
         headline: orderHeadline(status, order),
         message: orderMessage(status, order, event.note),
         at: event.at,
-        href: status === "Payment Pending" || status === "Payment Review" ? "/admin/payments" : `/admin/orders/${order.id}`,
+        href: `/admin/orders/${order.id}`,
         orderId: order.id,
         reference: order.reference,
       });

@@ -1,4 +1,7 @@
-import { isFulfillmentActive } from "@/lib/admin-fulfillment";
+import {
+  orderNeedsAdminAttention,
+  orderNeedsPaymentReview,
+} from "@/lib/admin-order-attention";
 import { getOrders, getProducts, getCustomerRequests } from "@/lib/store";
 import { SHORT_SUPPLY_IDS } from "@/lib/constants";
 import { pendingCustomerRequests } from "@/lib/customer-requests";
@@ -15,10 +18,8 @@ export function getAdminCounts(): AdminCounts {
   const orders = getOrders();
   const products = getProducts();
 
-  const payments = orders.filter(
-    (order) => order.status === "Payment Review" || order.status === "Payment Pending"
-  ).length;
-  const ordersAttention = orders.filter((order) => isFulfillmentActive(order)).length;
+  const payments = orders.filter(orderNeedsPaymentReview).length;
+  const ordersAttention = orders.filter(orderNeedsAdminAttention).length;
   const outOfStock = products.filter(
     (product) => product.inStock === false && (SHORT_SUPPLY_IDS as readonly string[]).includes(product.id)
   ).length;
@@ -27,7 +28,7 @@ export function getAdminCounts(): AdminCounts {
     payments,
     orders: ordersAttention,
     products: outOfStock,
-    overview: payments + ordersAttention,
+    overview: ordersAttention,
     requests: pendingCustomerRequests(getCustomerRequests()).length,
   };
 }
