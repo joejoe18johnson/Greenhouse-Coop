@@ -9,6 +9,22 @@ function waitForLayout() {
   });
 }
 
+function sliceCanvasPage(
+  source: HTMLCanvasElement,
+  y: number,
+  sliceHeight: number
+): HTMLCanvasElement {
+  const page = document.createElement("canvas");
+  page.width = source.width;
+  page.height = sliceHeight;
+  const ctx = page.getContext("2d");
+  if (!ctx) return page;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, page.width, page.height);
+  ctx.drawImage(source, 0, y, source.width, sliceHeight, 0, 0, source.width, sliceHeight);
+  return page;
+}
+
 export async function downloadInvoicePdf(element: HTMLElement, filename: string) {
   const html2canvas = (await import("html2canvas")).default;
   const { jsPDF } = await import("jspdf");
@@ -21,6 +37,8 @@ export async function downloadInvoicePdf(element: HTMLElement, filename: string)
 
   await waitForLayout();
 
+  const captureHeight = Math.max(element.scrollHeight, element.offsetHeight);
+
   try {
     const canvas = await html2canvas(element, {
       scale: 2,
@@ -29,25 +47,38 @@ export async function downloadInvoicePdf(element: HTMLElement, filename: string)
       backgroundColor: "#ffffff",
       width: LETTER_WIDTH_PX,
       windowWidth: LETTER_WIDTH_PX,
+      height: captureHeight,
+      windowHeight: captureHeight,
+      scrollX: 0,
+      scrollY: 0,
     });
 
     const pdf = new jsPDF({ orientation: "portrait", unit: "in", format: "letter" });
-    const availWidth = LETTER_WIDTH_IN - MARGIN_IN * 2;
-    const availHeight = LETTER_HEIGHT_IN - MARGIN_IN * 2;
+    const contentWidth = LETTER_WIDTH_IN - MARGIN_IN * 2;
+    const contentHeight = LETTER_HEIGHT_IN - MARGIN_IN * 2;
 
-    const aspect = canvas.height / canvas.width;
-    let drawWidth = availWidth;
-    let drawHeight = drawWidth * aspect;
-
-    if (drawHeight > availHeight) {
-      drawHeight = availHeight;
-      drawWidth = drawHeight / aspect;
+    // Canvas pixels that fit on one printed page at full width (no shrinking).
+    const pageSliceHeightPx = Math.floor((contentHeight / contentWidth) * canvas.width);
+    if (pageSliceHeightPx <= 0) {
+      throw new Error("Could not layout invoice for PDF.");
     }
 
-    const x = (LETTER_WIDTH_IN - drawWidth) / 2;
-    const image = canvas.toDataURL("image/jpeg", 0.94);
+    let y = 0;
+    let pageIndex = 0;
 
-    pdf.addImage(image, "JPEG", x, MARGIN_IN, drawWidth, drawHeight);
+    while (y < canvas.height) {
+      const sliceHeight = Math.min(pageSliceHeightPx, canvas.height - y);
+      const pageCanvas = sliceCanvasPage(canvas, y, sliceHeight);
+      const drawHeightIn = (sliceHeight / canvas.width) * contentWidth;
+      const image = pageCanvas.toDataURL("image/jpeg", 0.94);
+
+      if (pageIndex > 0) pdf.addPage();
+      pdf.addImage(image, "JPEG", MARGIN_IN, MARGIN_IN, contentWidth, drawHeightIn);
+
+      y += sliceHeight;
+      pageIndex += 1;
+    }
+
     pdf.save(filename.endsWith(".pdf") ? filename : `${filename}.pdf`);
   } finally {
     element.classList.remove("invoice-capture");

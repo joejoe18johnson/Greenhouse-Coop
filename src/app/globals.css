@@ -188,4 +188,22 @@
     break-before: page;
     page-break-before: always;
   }
+
+  .invoice-sheet {
+    max-width: none !important;
+    overflow: visible !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .invoice-sheet thead {
+    display: table-header-group;
+  }
+
+  .invoice-sheet tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
