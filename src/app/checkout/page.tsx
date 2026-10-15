@@ -140,7 +140,7 @@ export default function CheckoutPage() {
     );
   }
 
-  function placeOrder() {
+  async function placeOrder() {
     if (submitting) return;
     setError("");
 
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
     setSubmitting(true);
 
     try {
-      const order = createOrder({
+      const order = await createOrder({
         userId: user!.id,
         items: items.map((i) => ({
           productId: i.product.id,

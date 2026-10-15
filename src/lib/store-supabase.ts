@@ -510,34 +510,27 @@ export function updateUser(user: User) {
   })();
 }
 
-export function createOrder(
+export async function createOrder(
   input: Omit<Order, "id" | "createdAt" | "updatedAt" | "timeline" | "invoiceNumber" | "reference"> & {
     reference?: string;
   }
 ) {
-  const now = new Date().toISOString();
-  const order: Order = {
-    ...input,
-    id: crypto.randomUUID(),
-    reference: input.reference ?? generateReference(),
-    invoiceNumber: generateInvoiceNumber(),
-    createdAt: now,
-    updatedAt: now,
-    timeline: [{ status: input.status, at: now, note: customerTimelineNote(input.status, undefined, input.payment) }],
-  };
-
-  const orders = getOrders();
-  orders.unshift(order);
-  setCache({ orders });
-
-  reserveInventoryForOrder(order.items, getProduct, (product) => {
-    void upsertProduct(product);
+  const res = await fetch("/api/orders", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
   });
 
-  void (async () => {
-    const { error } = await supabase().from("orders").insert(orderToRow(order));
-    if (error) console.error("Failed to create order:", error);
-  })();
+  const body = (await res.json().catch(() => ({}))) as { error?: string; order?: Order };
+  if (!res.ok || !body.order) {
+    throw new Error(body.error || "Could not place your order. Please try again.");
+  }
+
+  const order = body.order;
+  setCache({ orders: [order, ...getOrders()] });
+
+  void reloadProductsFromRemote();
 
   return order;
 }

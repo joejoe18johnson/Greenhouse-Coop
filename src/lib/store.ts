@@ -169,8 +169,8 @@ export function updateUser(user: Parameters<typeof local.updateUser>[0]) {
   return local.updateUser(user);
 }
 
-export function createOrder(input: Parameters<typeof local.createOrder>[0]) {
-  const order = isRemoteBackend() ? remote.createOrder(input) : local.createOrder(input);
+export async function createOrder(input: Parameters<typeof local.createOrder>[0]) {
+  const order = isRemoteBackend() ? await remote.createOrder(input) : local.createOrder(input);
   notifyStoreUpdate();
   return order;
 }
