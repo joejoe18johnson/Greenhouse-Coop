@@ -17,6 +17,7 @@ import { formatOrderBalance, formatOrderDeposit, isCashOnDelivery, orderAmountDu
 import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { formatBZD } from "@/lib/utils";
 import { AdminFulfillmentStepper } from "@/components/admin/admin-fulfillment-stepper";
+import { AdminOrderDiscountPanel } from "@/components/admin/admin-order-discount-panel";
 import { canShowFulfillmentStepper, nextFulfillmentStatus } from "@/lib/admin-fulfillment";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 
@@ -218,6 +219,8 @@ export default function AdminOrderDetailPage() {
           ) : null}
         </div>
 
+        <AdminOrderDiscountPanel order={order} onSaved={refresh} />
+
         <div className="rounded-[24px] bg-white p-6 text-sm">
           <h2 className="flex items-center gap-2 font-semibold text-forest">
             <MapPin className="h-4 w-4" /> Fulfillment
@@ -259,6 +262,9 @@ export default function AdminOrderDetailPage() {
             ))}
             {order.deliveryFee > 0 && <li>Local delivery — {formatBZD(order.deliveryFee)}</li>}
             {order.boxFee > 0 && <li>Box — {formatBZD(order.boxFee)}</li>}
+            {order.loyaltyDiscountWaived && (order.loyaltyDiscount ?? 0) === 0 && (
+              <li className="text-ink/50">Loyalty discount waived by admin</li>
+            )}
             {(order.loyaltyDiscount ?? 0) > 0 && (
               <li className="text-leaf">
                 {LOYALTY_DISCOUNT_LABEL} — −{formatBZD(order.loyaltyDiscount!)}

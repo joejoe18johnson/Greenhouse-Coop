@@ -69,6 +69,7 @@ export interface OrderRow {
   loyalty_discount?: number;
   invoice_discount?: number;
   invoice_discount_note?: string | null;
+  loyalty_discount_waived?: boolean;
   box_recommendation: Order["boxRecommendation"];
   status: Order["status"];
   shipping: Order["shipping"];
@@ -182,6 +183,7 @@ export function orderFromRow(row: OrderRow): Order {
     invoiceDiscount:
       Number(row.invoice_discount ?? 0) > 0 ? Number(row.invoice_discount) : undefined,
     invoiceDiscountNote: row.invoice_discount_note?.trim() || undefined,
+    loyaltyDiscountWaived: row.loyalty_discount_waived ?? false,
     boxRecommendation: row.box_recommendation,
     status: row.status,
     shipping: row.shipping,
@@ -210,6 +212,7 @@ export function orderToRow(order: Order): Omit<OrderRow, "created_at" | "updated
     loyalty_discount: order.loyaltyDiscount ?? 0,
     invoice_discount: order.invoiceDiscount ?? 0,
     invoice_discount_note: order.invoiceDiscountNote?.trim() || null,
+    loyalty_discount_waived: order.loyaltyDiscountWaived ?? false,
     box_recommendation: order.boxRecommendation,
     status: order.status,
     shipping: order.shipping,

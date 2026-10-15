@@ -75,6 +75,7 @@ export default function AdminCreateOrderPage() {
   const [linePrices, setLinePrices] = useState<LinePrices>({});
   const [invoiceDiscount, setInvoiceDiscount] = useState(0);
   const [invoiceDiscountNote, setInvoiceDiscountNote] = useState("");
+  const [loyaltyDiscountWaived, setLoyaltyDiscountWaived] = useState(false);
   const [wantsDelivery, setWantsDelivery] = useState(true);
   const [courierId, setCourierId] = useState(couriers[0]?.id || "ids");
   const [paymentMethod, setPaymentMethod] = useState<PaymentInfo["method"]>("cod");
@@ -123,6 +124,7 @@ export default function AdminCreateOrderPage() {
       items: selectedItems,
       invoiceDiscount: invoiceDiscount > 0 ? invoiceDiscount : undefined,
       invoiceDiscountNote: invoiceDiscountNote || undefined,
+      loyaltyDiscountWaived,
       wantsDelivery,
       courierId,
       paymentMethod,
@@ -136,6 +138,7 @@ export default function AdminCreateOrderPage() {
       selectedItems,
       invoiceDiscount,
       invoiceDiscountNote,
+      loyaltyDiscountWaived,
       wantsDelivery,
       courierId,
       paymentMethod,
@@ -317,8 +320,10 @@ export default function AdminCreateOrderPage() {
           <AdminInvoicePricing
             invoiceDiscount={invoiceDiscount}
             invoiceDiscountNote={invoiceDiscountNote}
+            loyaltyDiscountWaived={loyaltyDiscountWaived}
             onInvoiceDiscountChange={setInvoiceDiscount}
             onInvoiceDiscountNoteChange={setInvoiceDiscountNote}
+            onLoyaltyDiscountWaivedChange={setLoyaltyDiscountWaived}
           />
 
           <section className="rounded-[28px] bg-white p-6">

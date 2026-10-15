@@ -43,6 +43,8 @@ export interface AdminCreateOrderInput {
   /** Flat BZD discount applied after loyalty (large-order / custom pricing). */
   invoiceDiscount?: number;
   invoiceDiscountNote?: string;
+  /** Skip automatic 10% loyalty discount for this order. */
+  loyaltyDiscountWaived?: boolean;
   wantsDelivery: boolean;
   courierId?: string;
   paymentMethod: PaymentInfo["method"];
@@ -148,7 +150,9 @@ function computeAdminOrderContent(options: {
     boxFee: quote.boxFee,
   });
   const eligible =
-    options.userId && options.orders
+    !input.loyaltyDiscountWaived &&
+    options.userId &&
+    options.orders
       ? isLoyaltyDiscountEligibleForCheckout(options.userId, options.orders, baseTotal, {
           excludeOrderId: options.excludeOrderId,
         })
@@ -187,6 +191,7 @@ function computeAdminOrderContent(options: {
     invoiceDiscount: invoiceDiscount > 0 ? invoiceDiscount : undefined,
     invoiceDiscountNote:
       invoiceDiscount > 0 ? discountNote || "Custom pricing adjustment" : undefined,
+    loyaltyDiscountWaived: input.loyaltyDiscountWaived ?? false,
     boxRecommendation: quote.box,
     shipping: shippingInfo,
   };
@@ -250,6 +255,7 @@ export function orderToAdminEditInput(order: Order): AdminEditOrderInput {
     })),
     invoiceDiscount: order.invoiceDiscount,
     invoiceDiscountNote: order.invoiceDiscountNote,
+    loyaltyDiscountWaived: order.loyaltyDiscountWaived ?? false,
     wantsDelivery: order.shipping.method !== "pickup",
     courierId: order.shipping.courierId,
     paymentMethod: order.payment.method,
@@ -316,6 +322,32 @@ export function buildAdminOrderUpdate(options: {
     customerNotes: input.customerNotes?.trim() || undefined,
     updatedAt: now,
     timeline: [...existing.timeline, { status: "Updated", at: now, note: editNote }],
+  };
+}
+
+export function buildAdminOrderDiscountInput(
+  order: Order,
+  patch: {
+    invoiceDiscount: number;
+    invoiceDiscountNote: string;
+    loyaltyDiscountWaived: boolean;
+    editNote?: string;
+  }
+): AdminEditOrderInput {
+  const base = orderToAdminEditInput(order);
+  const invoiceDiscount = Math.max(0, Math.floor(patch.invoiceDiscount));
+  return {
+    ...base,
+    invoiceDiscount: invoiceDiscount > 0 ? invoiceDiscount : undefined,
+    invoiceDiscountNote: invoiceDiscount > 0 ? patch.invoiceDiscountNote.trim() || undefined : undefined,
+    loyaltyDiscountWaived: patch.loyaltyDiscountWaived,
+    editNote:
+      patch.editNote?.trim() ||
+      (invoiceDiscount > 0
+        ? `Admin applied a ${formatBZD(invoiceDiscount)} invoice discount.`
+        : patch.loyaltyDiscountWaived
+          ? "Admin removed the automatic loyalty discount from this order."
+          : "Admin updated discounts on this order."),
   };
 }
 

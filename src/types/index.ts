@@ -226,6 +226,8 @@ export interface Order {
   invoiceDiscount?: number;
   /** Label shown on the invoice for invoiceDiscount. */
   invoiceDiscountNote?: string;
+  /** When true, the automatic 10% loyalty discount is not applied (admin override). */
+  loyaltyDiscountWaived?: boolean;
   boxRecommendation: BoxRecommendation;
   status: OrderStatus;
   shipping: ShippingInfo;
