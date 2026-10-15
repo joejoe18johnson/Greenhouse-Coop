@@ -3,10 +3,10 @@ import { validateCartQuantities } from "@/lib/product-quantity";
 import { customerTimelineNote } from "@/lib/order-status-messages";
 import { isSupabaseEnabled } from "@/lib/supabase/config";
 import { requireUser } from "@/lib/supabase/require-user";
+import { insertOrderRow } from "@/lib/supabase/order-persistence";
 import { createServiceClient } from "@/lib/supabase/service";
 import {
   orderFromRow,
-  orderToRow,
   productFromRow,
   productToRow,
   type OrderRow,
@@ -20,21 +20,6 @@ type CustomerCreateOrderBody = Omit<
   Order,
   "id" | "createdAt" | "updatedAt" | "timeline" | "invoiceNumber" | "reference"
 > & { reference?: string };
-
-async function insertOrderRow(
-  db: NonNullable<ReturnType<typeof createServiceClient>>,
-  order: Order
-) {
-  const row = orderToRow(order);
-  let { error } = await db.from("orders").insert(row);
-  if (error?.message?.includes("loyalty_discount_waived")) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- omit optional column for older DBs
-    const { loyalty_discount_waived, ...legacyRow } = row;
-    void loyalty_discount_waived;
-    ({ error } = await db.from("orders").insert(legacyRow));
-  }
-  if (error) throw error;
-}
 
 export async function POST(request: Request) {
   if (!isSupabaseEnabled()) {

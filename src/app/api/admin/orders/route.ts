@@ -8,7 +8,6 @@ import { splitCustomerName } from "@/lib/split-customer-name";
 import { normalizeShippingSettings } from "@/lib/shipping-settings";
 import {
   orderFromRow,
-  orderToRow,
   productFromRow,
   productToRow,
   type OrderRow,
@@ -17,6 +16,7 @@ import {
 import { applyOrderToProductInventory } from "@/lib/product-quantity";
 import { isSupabaseEnabled } from "@/lib/supabase/config";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import { insertOrderRow } from "@/lib/supabase/order-persistence";
 import { createServiceClient } from "@/lib/supabase/service";
 import type { Courier, IdsRates, Order, ShippingSettings } from "@/types";
 import shippingSeed from "@/data/shipping.json";
@@ -200,8 +200,7 @@ export async function POST(request: Request) {
       updatedAt: now,
     };
 
-    const { error: insertError } = await db.from("orders").insert(orderToRow(order));
-    if (insertError) throw insertError;
+    await insertOrderRow(db, order);
 
     for (const item of order.items) {
       const product = products.find((entry) => entry.id === item.productId);

@@ -4,7 +4,8 @@ import {
   validateAdminEditOrderInput,
   type AdminEditOrderInput,
 } from "@/lib/admin-order";
-import { orderFromRow, orderToRow, productFromRow, type OrderRow, type ProductRow } from "@/lib/supabase/mappers";
+import { orderFromRow, productFromRow, type OrderRow, type ProductRow } from "@/lib/supabase/mappers";
+import { updateOrderRow } from "@/lib/supabase/order-persistence";
 import { isSupabaseEnabled } from "@/lib/supabase/config";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -97,8 +98,16 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       orders: customerOrders,
     });
 
-    const { error: updateError } = await db.from("orders").update(orderToRow(order)).eq("id", params.id);
-    if (updateError) throw updateError;
+    await updateOrderRow(db, order);
+
+    await db
+      .from("profiles")
+      .update({
+        first_name: order.shipping.firstName,
+        last_name: order.shipping.lastName,
+        phone: order.shipping.phone,
+      })
+      .eq("id", order.userId);
 
     return NextResponse.json({ ok: true, order });
   } catch (err) {
