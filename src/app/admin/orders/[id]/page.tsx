@@ -14,7 +14,6 @@ import {
   UserRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { DownloadInvoiceButton } from "@/components/invoice/download-invoice-button";
 import { PrintReceiptButton } from "@/components/invoice/print-receipt-button";
@@ -34,6 +33,7 @@ import { LOYALTY_DISCOUNT_LABEL } from "@/lib/loyalty-discount";
 import { formatBZD } from "@/lib/utils";
 import { AdminFulfillmentStepper } from "@/components/admin/admin-fulfillment-stepper";
 import { AdminOrderDiscountPanel } from "@/components/admin/admin-order-discount-panel";
+import { AdminOrderPaymentPanel } from "@/components/admin/admin-order-payment-panel";
 import { canShowFulfillmentStepper, nextFulfillmentStatus } from "@/lib/admin-fulfillment";
 import { COURIER_ESTIMATE_NOTICE } from "@/lib/constants";
 
@@ -43,7 +43,6 @@ export default function AdminOrderDetailPage() {
   const order = getOrders().find((o) => o.id === id);
   const customer = order ? getUsers().find((u) => u.id === order.userId) : null;
   const bank = getBankDetails();
-  const [reason, setReason] = useState("");
   const [advancing, setAdvancing] = useState(false);
   const [statusError, setStatusError] = useState("");
 
@@ -168,6 +167,12 @@ export default function AdminOrderDetailPage() {
           <OrderInvoice id={invoiceId} order={order} customer={customer} bank={bank} />
         </section>
       )}
+
+      <AdminOrderPaymentPanel
+        order={order}
+        onSaved={refresh}
+        onError={(message) => setStatusError(message)}
+      />
 
       <div className="mt-8 rounded-[24px] bg-white p-5 print:hidden">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -385,40 +390,10 @@ export default function AdminOrderDetailPage() {
               : `Expecting ${formatOrderDeposit(order.total)} deposit · ${formatOrderBalance(order.total)} due at pickup`}
           </p>
           {(order.status === "Payment Pending" || order.status === "Payment Review") && (
-            <div className="mt-4 space-y-3">
-              <p className="text-xs text-ink/50">
-                Use the fulfillment step above to confirm payment, or reject below if proof is invalid.
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  void (async () => {
-                    setStatusError("");
-                    try {
-                      updateOrder({
-                        ...order,
-                        payment: { ...order.payment, rejectionReason: reason },
-                      });
-                      await updateOrderStatus(
-                        order.id,
-                        "Payment Pending",
-                        reason || "We could not verify your deposit. Please contact us or resubmit proof on WhatsApp."
-                      );
-                      refresh();
-                    } catch (err) {
-                      setStatusError(err instanceof Error ? err.message : "Could not reject payment.");
-                    }
-                  })();
-                }}
-              >
-                Reject payment proof
-              </Button>
-              <Textarea
-                placeholder="Rejection reason (optional)"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-              />
-            </div>
+            <p className="mt-4 text-xs text-ink/50">
+              Use the <strong className="font-semibold text-forest">Confirm payment</strong> section above this page
+              to mark the deposit received and unlock fulfillment.
+            </p>
           )}
             </>
           )}
