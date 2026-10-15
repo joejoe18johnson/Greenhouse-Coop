@@ -1,4 +1,3 @@
-import { customerTimelineNote } from "@/lib/order-status-messages";
 import { updateStockWaitStatus } from "@/lib/stock-wait-requests";
 import { updateCustomerRequestStatus } from "@/lib/customer-requests";
 import productsSeed from "@/data/products.json";
@@ -30,7 +29,6 @@ import {
 } from "@/lib/admin-order";
 import { syncFeaturedProductOrder } from "@/lib/featured-products";
 import { reserveInventoryForOrder } from "@/lib/inventory";
-import { generateInvoiceNumber, generateReference } from "@/lib/utils";
 import type {
   BankDetails,
   CartItem,

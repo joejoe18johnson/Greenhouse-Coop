@@ -28,7 +28,9 @@ async function insertOrderRow(
   const row = orderToRow(order);
   let { error } = await db.from("orders").insert(row);
   if (error?.message?.includes("loyalty_discount_waived")) {
-    const { loyalty_discount_waived: _waived, ...legacyRow } = row;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- omit optional column for older DBs
+    const { loyalty_discount_waived, ...legacyRow } = row;
+    void loyalty_discount_waived;
     ({ error } = await db.from("orders").insert(legacyRow));
   }
   if (error) throw error;
