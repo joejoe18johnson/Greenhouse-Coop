@@ -3,7 +3,16 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft, Mail, MapPin, MessageSquare, Pencil, Phone, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  FileText,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Pencil,
+  Phone,
+  UserRound,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -330,6 +339,28 @@ export default function AdminOrderDetailPage() {
 
         <div className="rounded-[24px] bg-white p-6">
           <h2 className="font-semibold text-forest">Payment</h2>
+          {showReceipt && (
+            <div className="mt-4 rounded-2xl border border-leaf/25 bg-leaf/5 px-4 py-3 print:hidden">
+              <p className="flex items-center gap-2 text-sm font-semibold text-forest">
+                <FileText className="h-4 w-4 shrink-0" />
+                {receiptDocumentTitle(order.status)}
+              </p>
+              <p className="mt-1 text-xs text-ink/60">
+                Printable receipt with every line item and amount due — at the top of this page, or use the buttons below.
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Button variant="outline" size="sm" asChild>
+                  <a href="#order-receipt">View receipt</a>
+                </Button>
+                <DownloadInvoiceButton
+                  targetId={invoiceId}
+                  filename={`${order.reference}-${order.invoiceNumber}.pdf`}
+                  label={receiptDownloadLabel(order.status)}
+                />
+                <PrintReceiptButton />
+              </div>
+            </div>
+          )}
           {isCod ? (
             <>
               <p className="mt-3 text-sm text-ink/70">
@@ -406,6 +437,35 @@ export default function AdminOrderDetailPage() {
           </ol>
         </div>
       </div>
+
+      {showReceipt && (
+        <section
+          aria-labelledby="order-receipt-bottom-heading"
+          className="mt-8 rounded-[24px] border border-forest/10 bg-white p-6 print:hidden"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 id="order-receipt-bottom-heading" className="font-semibold text-forest">
+                {receiptDocumentTitle(order.status)}
+              </h2>
+              <p className="mt-1 text-sm text-ink/60">
+                Same receipt as at the top of this order — handy if you scrolled down to payment or timeline.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <a href="#order-receipt">Jump to full receipt</a>
+              </Button>
+              <DownloadInvoiceButton
+                targetId={invoiceId}
+                filename={`${order.reference}-${order.invoiceNumber}.pdf`}
+                label={receiptDownloadLabel(order.status)}
+              />
+              <PrintReceiptButton />
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
