@@ -11,6 +11,7 @@ import { PrintReceiptButton } from "@/components/invoice/print-receipt-button";
 import {
   orderPaymentConfirmed,
   orderShowsReceipt,
+  receiptDocumentTitle,
   receiptDownloadLabel,
 } from "@/lib/order-receipt";
 import { OrderInvoice } from "@/components/invoice/order-invoice";
@@ -97,6 +98,30 @@ export default function OrderDetailPage() {
         )}
       </div>
 
+      {showReceipt && (
+        <section id="order-receipt" className="mt-8 scroll-mt-24">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 print:hidden">
+            <h2 className="font-display text-2xl text-forest">{receiptDocumentTitle(order.status)}</h2>
+            <div className="flex flex-wrap gap-2">
+              <DownloadInvoiceButton
+                targetId={invoiceId}
+                filename={`${order.reference}-${order.invoiceNumber}.pdf`}
+                label={receiptDownloadLabel(order.status)}
+              />
+              <PrintReceiptButton />
+            </div>
+          </div>
+          {!invoiceReady && (
+            <p className="mb-4 rounded-2xl border border-citrus/30 bg-citrus/10 px-4 py-3 text-sm text-ink/70 print:hidden">
+              Your order receipt — reference{" "}
+              <strong className="keep-case text-forest">{order.reference}</strong>, line items, and amount due
+              {isCod ? " in cash at handoff" : " (deposit or full payment)"}.
+            </p>
+          )}
+          <OrderInvoice id={invoiceId} order={order} customer={user} bank={bank} />
+        </section>
+      )}
+
       {order.status === "Payment Review" && (
         <OrderStatusBanner status={order.status} payment={order.payment} />
       )}
@@ -168,15 +193,11 @@ export default function OrderDetailPage() {
         ))}
       </ol>
 
-      <div className="mt-8">
-        {showReceipt ? (
-          <OrderInvoice id={invoiceId} order={order} customer={user} bank={bank} />
-        ) : (
-          <p className="rounded-[24px] bg-white/80 p-6 text-sm text-ink/60 print:hidden">
-            This order was cancelled — no receipt is available.
-          </p>
-        )}
-      </div>
+      {!showReceipt && (
+        <p className="mt-8 rounded-[24px] bg-white/80 p-6 text-sm text-ink/60 print:hidden">
+          This order was cancelled — no receipt is available.
+        </p>
+      )}
       <InventoryNotice className="mt-6 print:hidden" />
     </div>
   );

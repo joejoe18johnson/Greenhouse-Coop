@@ -136,7 +136,31 @@ export default function AdminOrderDetailPage() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-[24px] bg-white p-5 print:hidden">
+      {showReceipt && (
+        <section id="order-receipt" className="mt-6 scroll-mt-24">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 print:hidden">
+            <h2 className="font-display text-2xl text-forest">{receiptDocumentTitle(order.status)}</h2>
+            <div className="flex flex-wrap gap-2">
+              <DownloadInvoiceButton
+                targetId={invoiceId}
+                filename={`${order.reference}-${order.invoiceNumber}.pdf`}
+                label={receiptDownloadLabel(order.status)}
+              />
+              <PrintReceiptButton />
+            </div>
+          </div>
+          {!invoiceReady && (
+            <p className="mb-4 rounded-2xl border border-citrus/30 bg-citrus/10 px-4 py-3 text-sm text-ink/70 print:hidden">
+              Hand this to the customer — reference{" "}
+              <strong className="keep-case text-forest">{order.reference}</strong>, full line list, and amount
+              due{isCod ? " in cash at handoff" : " (deposit or full payment)"}.
+            </p>
+          )}
+          <OrderInvoice id={invoiceId} order={order} customer={customer} bank={bank} />
+        </section>
+      )}
+
+      <div className="mt-8 rounded-[24px] bg-white p-5 print:hidden">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-forest">Financials</p>
@@ -192,17 +216,6 @@ export default function AdminOrderDetailPage() {
 
       {statusError && (
         <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600 print:hidden">{statusError}</p>
-      )}
-
-      {showReceipt && !invoiceReady && (
-        <div className="mt-6 rounded-[24px] border border-citrus/30 bg-citrus/10 p-5 text-sm print:hidden">
-          <p className="font-semibold text-forest">Customer receipt</p>
-          <p className="mt-2 text-ink/70">
-            Payment is still pending — you can still download or print this receipt for the customer. It shows
-            reference <strong className="keep-case">{order.reference}</strong>, line items, and what they need to
-            pay (deposit or full amount).
-          </p>
-        </div>
       )}
 
       {canShowFulfillmentStepper(order) && (
@@ -393,13 +406,6 @@ export default function AdminOrderDetailPage() {
           </ol>
         </div>
       </div>
-
-      {showReceipt && (
-        <div className="mt-8">
-          <h2 className="mb-4 font-semibold text-forest print:hidden">{receiptDocumentTitle(order.status)}</h2>
-          <OrderInvoice id={invoiceId} order={order} customer={customer} bank={bank} />
-        </div>
-      )}
     </div>
   );
 }
