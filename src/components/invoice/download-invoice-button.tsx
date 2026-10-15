@@ -8,11 +8,13 @@ import { downloadInvoicePdf } from "@/lib/download-invoice-pdf";
 export function DownloadInvoiceButton({
   targetId,
   filename,
+  label = "Download invoice",
   variant = "outline",
   className,
 }: {
   targetId: string;
   filename: string;
+  label?: string;
   variant?: "default" | "outline" | "ghost";
   className?: string;
 }) {
@@ -41,7 +43,7 @@ export function DownloadInvoiceButton({
     <div className={className}>
       <Button variant={variant} onClick={onDownload} disabled={loading}>
         <Download className="h-4 w-4" />
-        {loading ? "Preparing…" : "Download invoice"}
+        {loading ? "Preparing…" : label}
       </Button>
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
     </div>

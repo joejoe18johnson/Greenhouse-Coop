@@ -7,6 +7,12 @@ import { ArrowLeft, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { DownloadInvoiceButton } from "@/components/invoice/download-invoice-button";
+import { PrintReceiptButton } from "@/components/invoice/print-receipt-button";
+import {
+  orderPaymentConfirmed,
+  orderShowsReceipt,
+  receiptDownloadLabel,
+} from "@/lib/order-receipt";
 import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { OrderStatusBanner } from "@/components/orders/order-status-banner";
@@ -50,7 +56,8 @@ export default function OrderDetailPage() {
     return <div className="px-6 py-20 text-center">Order not found.</div>;
   }
 
-  const invoiceReady = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
+  const invoiceReady = orderPaymentConfirmed(order.status);
+  const showReceipt = orderShowsReceipt(order.status);
   const awaitingPay = order.status === "Payment Pending" || order.status === "Payment Review";
   const courierEstimate =
     order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
@@ -78,11 +85,15 @@ export default function OrderDetailPage() {
             <span className="keep-case">{order.invoiceNumber}</span>
           </p>
         </div>
-        {invoiceReady && (
-          <DownloadInvoiceButton
-            targetId={invoiceId}
-            filename={`${order.invoiceNumber}.pdf`}
-          />
+        {showReceipt && (
+          <div className="flex flex-wrap gap-2">
+            <DownloadInvoiceButton
+              targetId={invoiceId}
+              filename={`${order.reference}-${order.invoiceNumber}.pdf`}
+              label={receiptDownloadLabel(order.status)}
+            />
+            <PrintReceiptButton />
+          </div>
         )}
       </div>
 
@@ -158,12 +169,11 @@ export default function OrderDetailPage() {
       </ol>
 
       <div className="mt-8">
-        {invoiceReady ? (
+        {showReceipt ? (
           <OrderInvoice id={invoiceId} order={order} customer={user} bank={bank} />
         ) : (
           <p className="rounded-[24px] bg-white/80 p-6 text-sm text-ink/60 print:hidden">
-            An invoice is created automatically when Greenhouse Co-Op confirms your{" "}
-            {isCod ? "order" : order.payment.paymentPlan === "full" ? "payment" : "deposit"}.
+            This order was cancelled — no receipt is available.
           </p>
         )}
       </div>

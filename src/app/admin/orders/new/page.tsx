@@ -226,8 +226,9 @@ export default function AdminCreateOrderPage() {
           </Button>
           <h1 className="page-title">Create order</h1>
           <p className="mt-2 max-w-2xl text-sm text-ink/60">
-            Place an order and invoice on behalf of a customer — useful when someone orders by phone,
-            WhatsApp, or in person.
+            Place an order on behalf of a customer — useful when someone orders by phone, WhatsApp, or in
+            person. After you save, open the order to download or print a receipt for them (even before
+            payment is confirmed).
           </p>
         </div>
       </div>

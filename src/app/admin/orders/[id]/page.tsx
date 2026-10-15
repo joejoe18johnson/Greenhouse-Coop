@@ -8,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { DownloadInvoiceButton } from "@/components/invoice/download-invoice-button";
+import { PrintReceiptButton } from "@/components/invoice/print-receipt-button";
+import {
+  orderPaymentConfirmed,
+  orderShowsReceipt,
+  receiptDocumentTitle,
+  receiptDownloadLabel,
+} from "@/lib/order-receipt";
 import { OrderInvoice } from "@/components/invoice/order-invoice";
 import { Checkbox } from "@/components/ui/checkbox";
 import { invoiceFinancials, isDemoOrder, isKnownTestOrder, orderCountsInFinancials } from "@/lib/financials";
@@ -37,7 +44,8 @@ export default function AdminOrderDetailPage() {
     setTick((n) => n + 1);
   }
 
-  const invoiceReady = ["Paid", "Processing", "Shipped", "Completed"].includes(order.status);
+  const invoiceReady = orderPaymentConfirmed(order.status);
+  const showReceipt = orderShowsReceipt(order.status);
   const courierEstimate =
     order.courierEstimate ?? (order as typeof order & { courierFee?: number }).courierFee ?? 0;
 
@@ -110,11 +118,15 @@ export default function AdminOrderDetailPage() {
               Edit order
             </Link>
           </Button>
-          {invoiceReady && (
-            <DownloadInvoiceButton
-              targetId={invoiceId}
-              filename={`${order.invoiceNumber}.pdf`}
-            />
+          {showReceipt && (
+            <>
+              <DownloadInvoiceButton
+                targetId={invoiceId}
+                filename={`${order.reference}-${order.invoiceNumber}.pdf`}
+                label={receiptDownloadLabel(order.status)}
+              />
+              <PrintReceiptButton />
+            </>
           )}
           {!isTerminal && (
             <Button variant="outline" className="border-red-200 text-red-700 hover:bg-red-50" onClick={cancelOrder}>
@@ -180,6 +192,17 @@ export default function AdminOrderDetailPage() {
 
       {statusError && (
         <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600 print:hidden">{statusError}</p>
+      )}
+
+      {showReceipt && !invoiceReady && (
+        <div className="mt-6 rounded-[24px] border border-citrus/30 bg-citrus/10 p-5 text-sm print:hidden">
+          <p className="font-semibold text-forest">Customer receipt</p>
+          <p className="mt-2 text-ink/70">
+            Payment is still pending — you can still download or print this receipt for the customer. It shows
+            reference <strong className="keep-case">{order.reference}</strong>, line items, and what they need to
+            pay (deposit or full amount).
+          </p>
+        </div>
       )}
 
       {canShowFulfillmentStepper(order) && (
@@ -371,9 +394,9 @@ export default function AdminOrderDetailPage() {
         </div>
       </div>
 
-      {invoiceReady && (
+      {showReceipt && (
         <div className="mt-8">
-          <h2 className="mb-4 font-semibold text-forest print:hidden">Invoice</h2>
+          <h2 className="mb-4 font-semibold text-forest print:hidden">{receiptDocumentTitle(order.status)}</h2>
           <OrderInvoice id={invoiceId} order={order} customer={customer} bank={bank} />
         </div>
       )}
