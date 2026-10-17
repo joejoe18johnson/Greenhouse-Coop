@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft, Download, Printer } from "lucide-react";
 import { CatalogDocument } from "@/components/catalog/catalog-document";
+import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/use-products";
 
@@ -30,13 +31,10 @@ function CatalogDownloadContent() {
             </Link>
           </Button>
           <div className="flex flex-wrap gap-2">
+            <DownloadCatalogButton variant="default" className="h-9 px-3 text-sm" />
             <Button size="sm" variant="outline" onClick={() => window.print()}>
               <Printer className="h-4 w-4" />
-              Print / Save PDF
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => window.print()}>
-              <Download className="h-4 w-4" />
-              Save as PDF
+              Print
             </Button>
           </div>
         </div>

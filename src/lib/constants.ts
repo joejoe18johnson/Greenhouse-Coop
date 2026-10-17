@@ -10,6 +10,10 @@ export const BRAND = {
   location: "Belmopan, Cayo, Belize",
 };
 
+/** Pre-generated variety guide PDF (run npm run generate:catalog to refresh). */
+export const CATALOG_PDF_PATH = "/catalog/greenhouse-coop-catalog.pdf";
+export const CATALOG_PDF_FILENAME = "greenhouse-coop-catalog.pdf";
+
 export const PICKUP_LOCATION = "Belmopan Bus Terminal";
 export const PICKUP_NOTE =
   "Collect Your Trees At The Belmopan Bus Terminal — A Central Pickup Point. No Delivery Or Courier Fee. We Will Confirm When The Order Is Ready.";
