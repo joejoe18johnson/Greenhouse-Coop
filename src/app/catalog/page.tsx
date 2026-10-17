@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { CatalogEntry } from "@/components/catalog/catalog-entry";
+import { CatalogOrderFooter } from "@/components/catalog/catalog-order-footer";
 import { InventoryNotice } from "@/components/product/inventory-notice";
 import { useProducts } from "@/hooks/use-products";
 import { CATEGORIES } from "@/lib/constants";
@@ -130,7 +131,9 @@ export default function CatalogPage() {
         <p className="mt-16 text-center text-ink/50">No varieties match that search.</p>
       )}
 
-      <div className="mt-16 rounded-[28px] bg-forest-dark p-8 text-center text-cream">
+      {grouped.length > 0 && <CatalogOrderFooter />}
+
+      <div className="mt-10 rounded-[28px] bg-forest-dark p-6 text-center text-cream sm:mt-16 sm:p-8">
         <p className="font-display text-2xl font-semibold">Want the printable version?</p>
         <p className="mt-2 text-sm text-cream/70">Download the PDF catalog to keep or share offline.</p>
         <div className="mt-5 flex justify-center">

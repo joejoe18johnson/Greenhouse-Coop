@@ -44,7 +44,7 @@ function CatalogDownloadContent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[8.5in] px-4 py-8 print:max-w-none print:p-0">
+      <div className="mx-auto w-full min-w-0 max-w-[8.5in] px-3 py-6 sm:px-4 sm:py-8 print:max-w-none print:p-0">
         <CatalogDocument products={products} />
       </div>
     </div>

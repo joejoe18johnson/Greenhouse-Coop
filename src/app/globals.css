@@ -116,6 +116,14 @@
     @apply pb-20 md:pb-0;
   }
 
+  .catalog-document {
+    min-width: 0;
+  }
+
+  .catalog-document a {
+    overflow-wrap: anywhere;
+  }
+
   .arch-frame {
     border-radius: 180px 180px 28px 28px;
   }
@@ -162,6 +170,10 @@
 
   .catalog-document {
     max-width: none !important;
+  }
+
+  .catalog-document a {
+    word-break: break-word;
   }
 
   .catalog-cover {

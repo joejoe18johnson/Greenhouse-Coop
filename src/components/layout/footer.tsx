@@ -52,7 +52,11 @@ export function Footer() {
         <div>
           <h4 className="mb-4 text-sm font-semibold">Catalog</h4>
           <p className="mb-4 text-sm text-cream/75">
-            Download the current variety guide and product catalog.
+            Download the variety guide or shop online at{" "}
+            <Link href={BRAND.url} className="keep-case underline underline-offset-2 hover:text-cream">
+              {BRAND.website}
+            </Link>
+            .
           </p>
           <DownloadCatalogButton variant="cream" />
         </div>
