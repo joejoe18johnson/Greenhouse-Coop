@@ -2,9 +2,9 @@ import { BRAND } from "@/lib/constants";
 
 export function CatalogOrderFooter({ year = new Date().getFullYear() }: { year?: number }) {
   return (
-    <footer className="catalog-footer mt-10 rounded-2xl border border-forest/10 bg-white/80 px-4 py-5 text-sm leading-relaxed text-ink/70 sm:rounded-[24px] sm:px-5">
+    <footer className="catalog-footer keep-case mt-10 rounded-2xl border border-forest/10 bg-white/80 px-4 py-5 text-sm leading-relaxed text-ink/70 sm:rounded-[24px] sm:px-5">
       <p className="font-display text-lg font-semibold text-forest-dark sm:text-xl">Order online</p>
-      <p className="mt-2 text-pretty">
+      <p className="mt-2 text-pretty normal-case">
         Place your order at{" "}
         <a
           href={BRAND.url}

@@ -13,9 +13,9 @@ export function DownloadCatalogButton({
 }) {
   return (
     <Button variant={variant} className={cn(className)} asChild>
-      <a href="/catalog/greenhouse-coop-catalog.pdf" download="greenhouse-coop-catalog.pdf">
+      <a href="/catalog/download">
         <Download className="h-4 w-4" />
-        Download Catalog
+        Printable catalog
       </a>
     </Button>
   );

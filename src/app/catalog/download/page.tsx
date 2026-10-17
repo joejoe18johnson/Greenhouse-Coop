@@ -34,11 +34,9 @@ function CatalogDownloadContent() {
               <Printer className="h-4 w-4" />
               Print / Save PDF
             </Button>
-            <Button size="sm" asChild>
-              <a href="/catalog/greenhouse-coop-catalog.pdf" download="greenhouse-coop-catalog.pdf">
-                <Download className="h-4 w-4" />
-                Download PDF
-              </a>
+            <Button size="sm" variant="outline" onClick={() => window.print()}>
+              <Download className="h-4 w-4" />
+              Save as PDF
             </Button>
           </div>
         </div>
