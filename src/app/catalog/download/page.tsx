@@ -3,7 +3,7 @@
 import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, Download, Printer } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 import { CatalogDocument } from "@/components/catalog/catalog-document";
 import { DownloadCatalogButton } from "@/components/catalog/download-catalog-button";
 import { Button } from "@/components/ui/button";
